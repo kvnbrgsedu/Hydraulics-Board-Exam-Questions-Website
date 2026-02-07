@@ -32,5 +32,10 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+git pull --rebase --autostash
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
 git push
 exit $LASTEXITCODE
