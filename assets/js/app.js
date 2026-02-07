@@ -705,14 +705,22 @@ const bindEvents = () => {
 // ========== QUIZ FUNCTIONALITY ==========
 
 const quizElements = {
+  header: document.getElementById("quiz-header"),
+  headerCurrent: document.getElementById("quiz-h-current"),
+  headerCount: document.getElementById("quiz-h-count"),
+  headerScore: document.getElementById("quiz-h-score"),
+  headerTotal: document.getElementById("quiz-h-total"),
+  headerProgress: document.getElementById("quiz-h-progress"),
+  headerBack: document.getElementById("quiz-back-btn"),
   start: document.getElementById("quiz-start"),
-  card: document.getElementById("quiz-card"),
+  main: document.getElementById("quiz-main"),
   complete: document.getElementById("quiz-complete"),
   topicSelect: document.getElementById("quiz-topic-select"),
   difficultySelect: document.getElementById("quiz-difficulty-select"),
   startBtn: document.getElementById("quiz-start-btn"),
   question: document.getElementById("quiz-question"),
   topic: document.getElementById("quiz-topic"),
+  difficultyBadge: document.getElementById("quiz-difficulty-badge"),
   hintBtn: document.getElementById("quiz-hint-btn"),
   hint: document.getElementById("quiz-hint"),
   hintText: document.getElementById("quiz-hint-text"),
@@ -722,7 +730,8 @@ const quizElements = {
   feedback: document.getElementById("quiz-feedback"),
   feedbackIcon: document.getElementById("quiz-feedback-icon"),
   feedbackMessage: document.getElementById("quiz-feedback-message"),
-  solution: document.getElementById("quiz-solution"),
+  feedbackDetail: document.getElementById("quiz-feedback-detail"),
+  solutionPanel: document.getElementById("quiz-solution-panel"),
   solutionContent: document.getElementById("quiz-solution-content"),
   solutionToggle: document.getElementById("quiz-solution-toggle"),
   correctAnswer: document.getElementById("quiz-correct-answer"),
@@ -731,14 +740,10 @@ const quizElements = {
   restartBtn: document.getElementById("quiz-restart-btn"),
   retryBtn: document.getElementById("quiz-retry-btn"),
   newTopicBtn: document.getElementById("quiz-new-topic-btn"),
-  current: document.getElementById("quiz-current"),
-  count: document.getElementById("quiz-count"),
-  score: document.getElementById("quiz-score"),
-  total: document.getElementById("quiz-total"),
-  progressFill: document.getElementById("quiz-progress-fill"),
   finalScore: document.getElementById("final-score"),
   finalTotal: document.getElementById("final-total"),
   scorePercentage: document.getElementById("score-percentage"),
+  scoreRating: document.getElementById("score-rating"),
   imageContainer: document.getElementById("quiz-image-container"),
   image: document.getElementById("quiz-image"),
   imageCaption: document.getElementById("quiz-image-caption"),
@@ -784,8 +789,11 @@ const startQuiz = () => {
   quizState.score = 0;
   
   quizElements.start.classList.add("hidden");
-  quizElements.card.classList.remove("hidden");
+  quizElements.main.classList.remove("hidden");
+  quizElements.header.classList.remove("hidden");
   quizElements.complete.classList.add("hidden");
+  
+  window.scrollTo({ top: 0, behavior: "smooth" });
   
   loadQuestion();
 };
@@ -802,8 +810,9 @@ const loadQuestion = () => {
   // Reset UI
   quizElements.question.innerHTML = allowBasicTags(escapeHtml(q.question));
   quizElements.topic.textContent = q.topic;
+  quizElements.difficultyBadge.textContent = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
   quizElements.hintText.textContent = q.hint;
-  quizElements.unit.textContent = q.unit;
+  quizElements.unit.textContent = q.unit || "";
   quizElements.answerInput.value = "";
   quizElements.answerInput.disabled = false;
   quizElements.submitBtn.disabled = false;
@@ -812,7 +821,7 @@ const loadQuestion = () => {
   // Hide elements
   quizElements.hint.classList.add("hidden");
   quizElements.feedback.classList.add("hidden");
-  quizElements.solution.classList.add("hidden");
+  quizElements.solutionPanel.classList.add("hidden");
   quizElements.imageContainer.classList.add("hidden");
   quizElements.solutionImageContainer.classList.add("hidden");
   
@@ -823,18 +832,14 @@ const loadQuestion = () => {
     quizElements.imageContainer.classList.remove("hidden");
   }
   
-  // Update progress
-  quizElements.current.textContent = quizState.currentIndex + 1;
-  quizElements.count.textContent = quizState.currentQuestions.length;
-  quizElements.score.textContent = quizState.score;
-  quizElements.total.textContent = quizState.currentQuestions.length;
+  // Update progress and header
+  quizElements.headerCurrent.textContent = quizState.currentIndex + 1;
+  quizElements.headerCount.textContent = quizState.currentQuestions.length;
+  quizElements.headerScore.textContent = quizState.score;
+  quizElements.headerTotal.textContent = quizState.currentQuestions.length;
   
   const progress = ((quizState.currentIndex) / quizState.currentQuestions.length) * 100;
-  quizElements.progressFill.style.width = `${progress}%`;
-  
-  // Animate card
-  quizElements.card.classList.remove("quiz-card--show");
-  setTimeout(() => quizElements.card.classList.add("quiz-card--show"), 10);
+  quizElements.headerProgress.style.width = `${progress}%`;
   
   // Typeset math
   typesetMath();
@@ -842,7 +847,6 @@ const loadQuestion = () => {
   // Focus input
   setTimeout(() => quizElements.answerInput.focus(), 300);
 };
-
 const checkAnswer = () => {
   if (quizState.answered) return;
   
@@ -859,13 +863,15 @@ const checkAnswer = () => {
   
   if (correct) {
     quizState.score++;
-    showFeedback(true, "Correct! Well done! 🎉");
+    showFeedback(true, "Correct!", "Excellent work! You've mastered this problem.");
   } else {
-    showFeedback(false, "Not quite right. Check the solution below.");
+    const yourAnswer = userAnswer.toFixed(3);
+    const correctAnswer = q.answer.toFixed(3);
+    showFeedback(false, "Incorrect", `Your answer: ${yourAnswer} | Correct: ${correctAnswer}`);
   }
   
-  // Update score display
-  quizElements.score.textContent = quizState.score;
+  // Update score display in header
+  quizElements.headerScore.textContent = quizState.score;
   
   // Show solution
   showSolution(q);
@@ -877,26 +883,23 @@ const checkAnswer = () => {
   
   // Update progress
   const progress = ((quizState.currentIndex + 1) / quizState.currentQuestions.length) * 100;
-  quizElements.progressFill.style.width = `${progress}%`;
+  quizElements.headerProgress.style.width = `${progress}%`;
 };
 
-const showFeedback = (correct, message) => {
+const showFeedback = (correct, message, detail = "") => {
   quizElements.feedback.classList.remove("hidden", "correct", "incorrect");
   quizElements.feedback.classList.add(correct ? "correct" : "incorrect");
   
   quizElements.feedbackIcon.textContent = correct ? "✓" : "✗";
   quizElements.feedbackMessage.textContent = message;
-  
-  // Animate
-  quizElements.feedback.classList.add("feedback-animate");
-  setTimeout(() => quizElements.feedback.classList.remove("feedback-animate"), 600);
+  quizElements.feedbackDetail.textContent = detail;
 };
 
 const showSolution = (q) => {
   quizElements.solutionContent.innerHTML = allowBasicTags(escapeHtml(q.solution))
     .replace(/\\n/g, '<br>');
   
-  quizElements.correctAnswer.innerHTML = `${q.answer} ${q.unit}`;
+  quizElements.correctAnswer.innerHTML = `${q.answer} ${q.unit}`.trim();
   quizElements.finalAnswer.classList.remove("hidden");
   
   if (q.solutionImage) {
@@ -905,15 +908,15 @@ const showSolution = (q) => {
     quizElements.solutionImageContainer.classList.remove("hidden");
   }
   
-  quizElements.solution.classList.remove("hidden");
-  quizElements.solution.classList.add("open");
+  quizElements.solutionPanel.classList.remove("hidden");
   
   // Typeset math in solution
   typesetMath();
 };
 
 const showComplete = () => {
-  quizElements.card.classList.add("hidden");
+  quizElements.main.classList.add("hidden");
+  quizElements.header.classList.add("hidden");
   quizElements.complete.classList.remove("hidden");
   
   quizElements.finalScore.textContent = quizState.score;
@@ -922,9 +925,25 @@ const showComplete = () => {
   const percentage = Math.round((quizState.score / quizState.currentQuestions.length) * 100);
   quizElements.scorePercentage.textContent = `${percentage}%`;
   
-  // Animate
-  quizElements.complete.classList.add("complete-animate");
-  setTimeout(() => quizElements.complete.classList.remove("complete-animate"), 600);
+  // Show rating based on percentage
+  let rating = "Great Job!";
+  if (percentage === 100) rating = "Perfect Score! 🌟";
+  else if (percentage >= 80) rating = "Excellent! 🎯";
+  else if (percentage >= 60) rating = "Good Work! 💪";
+  else if (percentage >= 40) rating = "Keep Practicing! 📚";
+  else rating = "Try Again! 🚀";
+  
+  quizElements.scoreRating.textContent = rating;
+  
+  // Animate progress circle
+  const circleFill = document.getElementById("score-circle__fill");
+  if (circleFill) {
+    const circumference = 283; // 2 * PI * 45
+    const dashOffset = circumference - (percentage / 100) * circumference;
+    circleFill.style.strokeDashoffset = dashOffset;
+  }
+  
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const bindQuizEvents = () => {
@@ -943,9 +962,7 @@ const bindQuizEvents = () => {
   });
   
   quizElements.solutionToggle.addEventListener("click", () => {
-    quizElements.solution.classList.toggle("open");
-    quizElements.solutionToggle.textContent = 
-      quizElements.solution.classList.contains("open") ? "Hide" : "Show";
+    quizElements.solutionPanel.classList.add("hidden");
   });
   
   quizElements.nextBtn.addEventListener("click", () => {
@@ -954,7 +971,14 @@ const bindQuizEvents = () => {
   });
   
   quizElements.restartBtn.addEventListener("click", () => {
-    quizElements.card.classList.add("hidden");
+    quizElements.main.classList.add("hidden");
+    quizElements.header.classList.add("hidden");
+    quizElements.start.classList.remove("hidden");
+  });
+  
+  quizElements.headerBack.addEventListener("click", () => {
+    quizElements.main.classList.add("hidden");
+    quizElements.header.classList.add("hidden");
     quizElements.start.classList.remove("hidden");
   });
   
