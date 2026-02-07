@@ -749,64 +749,81 @@ body.home-page .start-review__controls {
   gap: 20px;
 }
 
-.select-card {
-  position: relative;
-  min-width: 220px;
-  padding: 14px 18px 18px;
-  border-radius: 18px;
-  background: #f7fbfc;
-  border: 1px solid rgba(9, 99, 126, 0.15);
-  box-shadow: 0 10px 26px rgba(9, 99, 126, 0.08);
-  text-align: left;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+body.home-page .home-selects {
+  flex-direction: column;
+  align-items: center;
 }
 
-.select-card::after {
+.home-select-group {
+  position: relative;
+  min-width: 240px;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.home-select-group::after {
   content: "▾";
   position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(4px);
-  color: var(--primary);
+  right: 12px;
+  top: 34px;
+  color: #ffffff;
   transition: transform 0.2s ease;
   pointer-events: none;
 }
 
-.select-card:focus-within {
+.home-select-group:focus-within {
   transform: translateY(-2px);
-  border-color: rgba(8, 131, 149, 0.6);
-  box-shadow: 0 14px 30px rgba(9, 99, 126, 0.16);
 }
 
-.select-card:focus-within::after {
-  transform: translateY(4px) rotate(180deg);
+.home-select-group:focus-within::after {
+  transform: rotate(180deg);
 }
 
-.select-card.has-selection {
-  border-color: rgba(8, 131, 149, 0.6);
-  box-shadow: 0 14px 30px rgba(9, 99, 126, 0.16);
+.home-select-group.has-selection .home-select {
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px rgba(9, 99, 126, 0.18);
 }
 
-.select-card__label {
+.home-select__label {
   display: block;
   font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--secondary);
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 6px;
 }
 
-.select-card select {
+.home-select {
   width: 100%;
-  padding: 10px 36px 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(9, 99, 126, 0.2);
-  background: transparent;
-  color: var(--primary);
+  padding: 12px 36px 12px 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-bottom-width: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   appearance: none;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.home-select:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(9, 99, 126, 0.2);
+}
+
+.home-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(122, 178, 178, 0.35);
+}
+
+.home-select option {
+  color: var(--primary);
+  background: #f7fbfc;
 }
 
 .section-eyebrow {
