@@ -36,24 +36,6 @@ body.home-page .hero__overlay {
   display: none;
 }
 
-body.home-page .hero__content {
-  position: relative;
-}
-
-body.home-page .hero__content::before {
-  content: "";
-  position: absolute;
-  inset: -40px -60px;
-  background: radial-gradient(
-    circle,
-    rgba(235, 244, 246, 0.45),
-    rgba(122, 178, 178, 0.08),
-    rgba(9, 99, 126, 0)
-  );
-  filter: blur(6px);
-  z-index: -1;
-}
-
 body.home-locked {
   overflow: hidden;
   height: 100vh;
@@ -675,84 +657,6 @@ body.home-page.home-locked:not(.home-show-all) #questions {
 body.home-page:not(.home-show-all) #formulas,
 body.home-page:not(.home-show-all) #about {
   display: none;
-}
-
-body.home-page .home-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-body.home-page .flow-lines {
-  position: absolute;
-  inset: -5% -5%;
-  width: 110%;
-  height: 110%;
-  opacity: 0.08;
-  stroke: rgba(235, 244, 246, 0.55);
-  stroke-width: 1.2;
-  fill: none;
-  animation: flowDrift 28s linear infinite;
-  transform: translate3d(var(--flow-x, 0px), var(--flow-y, 0px), 0);
-}
-
-body.home-page .flow-lines path {
-  stroke-dasharray: 12 18;
-  animation: flowDash 18s linear infinite;
-}
-
-body.home-page .home-particles {
-  position: absolute;
-  inset: 0;
-}
-
-body.home-page .home-particle {
-  position: absolute;
-  bottom: -20px;
-  width: var(--size, 4px);
-  height: var(--size, 4px);
-  border-radius: 999px;
-  background: rgba(235, 244, 246, 0.45);
-  opacity: 0.4;
-  animation: particleRise var(--duration, 18s) linear infinite;
-  animation-delay: var(--delay, 0s);
-}
-
-body.home-page.home-pause .flow-lines,
-body.home-page.home-pause .flow-lines path,
-body.home-page.home-pause .home-particle {
-  animation-play-state: paused;
-}
-
-body.home-page .content,
-body.home-page .top-nav,
-body.home-page .sidebar,
-body.home-page .hero {
-  position: relative;
-  z-index: 2;
-}
-
-body.home-page .top-nav__brand,
-body.home-page .top-nav__links a,
-body.home-page .icon-btn,
-body.home-page .sidebar .title,
-body.home-page .sidebar .subtitle,
-body.home-page .filter-label,
-body.home-page .sidebar__nav a,
-body.home-page .toggle__title,
-body.home-page .toggle__subtitle {
-  color: #f7fdff;
-  text-shadow: 0 6px 18px rgba(6, 39, 48, 0.35);
-}
-
-body.home-page .hamburger span {
-  background: #f7fdff;
-}
-
-body.home-page .sidebar {
-  box-shadow: 10px 0 26px rgba(6, 39, 48, 0.18);
 }
 
 body.quiz-page .content {
@@ -1462,38 +1366,6 @@ mark {
   }
   100% {
     background-position: 0% 50%;
-  }
-}
-
-@keyframes flowDash {
-  to {
-    stroke-dashoffset: -200;
-  }
-}
-
-@keyframes flowDrift {
-  0% {
-    transform: translate3d(calc(var(--flow-x, 0px) - 8px), calc(var(--flow-y, 0px) - 6px), 0);
-  }
-  50% {
-    transform: translate3d(calc(var(--flow-x, 0px) + 8px), calc(var(--flow-y, 0px) + 6px), 0);
-  }
-  100% {
-    transform: translate3d(calc(var(--flow-x, 0px) - 8px), calc(var(--flow-y, 0px) - 6px), 0);
-  }
-}
-
-@keyframes particleRise {
-  0% {
-    transform: translateY(0) scale(0.9);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-120vh) scale(1.1);
-    opacity: 0;
   }
 }
 
