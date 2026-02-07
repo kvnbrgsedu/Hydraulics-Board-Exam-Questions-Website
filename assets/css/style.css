@@ -24,16 +24,6 @@ body {
   min-height: 100vh;
 }
 
-body.home-screen {
-  height: 100vh;
-  overflow: hidden;
-}
-
-body.home-screen #progress-bar,
-body.home-screen .back-to-top {
-  display: none;
-}
-
 #progress-bar {
   position: fixed;
   top: 0;
@@ -238,13 +228,6 @@ body.home-screen .back-to-top {
   transition: padding 0.35s ease;
 }
 
-body.home-screen .hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 120px 32px 48px;
-}
-
 .hero::before {
   content: "";
   position: absolute;
@@ -286,11 +269,6 @@ body.home-screen .hero {
   z-index: 3;
 }
 
-body.home-screen .hero__inner {
-  width: 100%;
-  justify-content: center;
-}
-
 .hero__eyebrow {
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -308,55 +286,6 @@ body.home-screen .hero__inner {
 .hero__subtitle {
   color: #e6f2f5;
   max-width: 540px;
-}
-
-body.home-screen .hero__content {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.home-controls {
-  margin-top: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-
-.home-control {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 220px;
-}
-
-.home-control label {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #d8f3f6;
-}
-
-.home-control select {
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: #f7fbfc;
-  color: var(--primary);
-  font-size: 16px;
-  font-weight: 600;
-  box-shadow: 0 12px 24px rgba(9, 99, 126, 0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
-}
-
-.home-control select:focus {
-  outline: none;
-  border-color: rgba(8, 131, 149, 0.8);
-  box-shadow: 0 16px 32px rgba(9, 99, 126, 0.2);
-  transform: translateY(-1px);
 }
 
 .hero__content {
@@ -670,12 +599,6 @@ select option {
   margin-left: 0;
   padding: 32px 32px 80px;
   transition: margin-left 0.35s ease;
-}
-
-body.home-screen .questions-section,
-body.home-screen .formula-section,
-body.home-screen .about-section {
-  display: none;
 }
 
 body.quiz-page .content {
@@ -1374,18 +1297,6 @@ mark {
 @media (max-width: 600px) {
   .hero {
     padding: 110px 20px 40px;
-  }
-
-  body.home-screen .hero {
-    padding: 110px 20px 32px;
-  }
-
-  .home-controls {
-    gap: 14px;
-  }
-
-  .home-control {
-    min-width: 100%;
   }
 
   .content {
