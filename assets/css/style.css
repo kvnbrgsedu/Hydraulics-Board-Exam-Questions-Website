@@ -1169,10 +1169,18 @@ section {
 .chip {
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(8, 131, 149, 0.12);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(9, 99, 126, 0.25);
   color: var(--primary);
   font-size: 12px;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.1);
+}
+
+body.home-page .chip {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(9, 99, 126, 0.35);
+  box-shadow: 0 4px 12px rgba(9, 99, 126, 0.2);
 }
 
 .btn {
@@ -1217,8 +1225,19 @@ section {
 
 .results-info {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text);
   margin-bottom: 16px;
+  font-weight: 500;
+}
+
+body.home-page .results-info {
+  color: #1f2a2e;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: inline-block;
+  border: 1px solid rgba(9, 99, 126, 0.2);
+  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.15);
 }
 
 .grid {
