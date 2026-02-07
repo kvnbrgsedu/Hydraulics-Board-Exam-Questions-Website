@@ -1,6 +1,7 @@
 const DATA_URL = "assets/data/questions.json";
 const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
+const QUIZ_STORAGE_KEY = "quizProgressV2";
 
 const state = {
   year: "all",
@@ -19,6 +20,7 @@ const quizState = {
   selectedTopic: "all",
   selectedDifficulty: "all",
   currentQuestions: [],
+  scoredQuestions: new Set(),
 };
 
 const grid = document.getElementById("question-grid");
@@ -57,6 +59,33 @@ let isPinned = true;
 
 const isDesktop = () => window.matchMedia("(min-width: 1025px)").matches;
 const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+
+const addListener = (element, eventName, handler) => {
+  if (element) {
+    element.addEventListener(eventName, handler);
+  }
+};
+
+const randomBetween = (min, max, step = 1, decimals = 3) => {
+  const steps = Math.floor((max - min) / step);
+  const value = min + Math.floor(Math.random() * (steps + 1)) * step;
+  return Number(value.toFixed(decimals));
+};
+
+const formatNumber = (value, decimals = 3) => Number(value.toFixed(decimals));
+
+const parseNumericInput = (value) => {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) return NaN;
+  const fractionMatch = trimmed.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)$/);
+  if (fractionMatch) {
+    const numerator = Number(fractionMatch[1]);
+    const denominator = Number(fractionMatch[2]);
+    if (denominator === 0) return NaN;
+    return numerator / denominator;
+  }
+  return Number.parseFloat(trimmed);
+};
 
 const setSidebarOpen = (open) => {
   sidebar.classList.toggle("open", open);
@@ -149,6 +178,7 @@ const observer =
     : null;
 
 const renderSkeletons = () => {
+  if (!grid) return;
   grid.innerHTML = "";
   for (let i = 0; i < 6; i += 1) {
     const card = document.createElement("div");
@@ -159,6 +189,7 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
+  if (!yearSelect || !batchSelect || !topicList || !startTopic || !startYear) return;
   yearRange.forEach((year) => {
     const option = document.createElement("option");
     option.value = String(year);
@@ -324,6 +355,7 @@ const renderGrid = (items) => {
 };
 
 const renderCards = () => {
+  if (!grid || !resultsInfo || !emptyState || !activeChips) return;
   const filtered = filterData();
   const isAllView =
     state.year === "all" &&
@@ -365,6 +397,7 @@ const applyFilters = () => {
 };
 
 const buildFormulaGroups = (formulas, query) => {
+  if (!formulaGroups) return;
   const grouped = formulas.reduce((acc, formula) => {
     if (!acc[formula.topic]) acc[formula.topic] = [];
     acc[formula.topic].push(formula);
@@ -401,6 +434,7 @@ const buildFormulaGroups = (formulas, query) => {
 };
 
 const filterFormulas = () => {
+  if (!formulaSearch || !formulaTopic || !formulaGroups || !formulaEmpty) return;
   const query = formulaSearch.value.trim().toLowerCase();
   const topic = formulaTopic.value;
   const filtered = state.formulas.filter((item) => {
@@ -419,6 +453,7 @@ const filterFormulas = () => {
 };
 
 const renderFormulaFilters = () => {
+  if (!formulaTopic) return;
   const topics = Array.from(new Set(state.formulas.map((f) => f.topic))).sort();
   formulaTopic.innerHTML =
     `<option value="all">All Topics</option>` +
@@ -426,6 +461,7 @@ const renderFormulaFilters = () => {
 };
 
 const renderGlobalResults = (query) => {
+  if (!globalSearchResults) return;
   if (!query.trim()) {
     globalSearchResults.classList.remove("show");
     globalSearchResults.innerHTML = "";
@@ -480,19 +516,19 @@ const renderGlobalResults = (query) => {
 };
 
 const bindEvents = () => {
-  yearSelect.addEventListener("change", (event) => {
+  addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
     applyFilters();
     closeSidebarIfAutoHide();
   });
 
-  batchSelect.addEventListener("change", (event) => {
+  addListener(batchSelect, "change", (event) => {
     state.batch = event.target.value;
     applyFilters();
     closeSidebarIfAutoHide();
   });
 
-  topicList.addEventListener("click", (event) => {
+  addListener(topicList, "click", (event) => {
     const button = event.target.closest(".topic-pill");
     if (!button) return;
     state.topic = button.dataset.topic;
@@ -505,24 +541,24 @@ const bindEvents = () => {
     closeSidebarIfAutoHide();
   });
 
-  topicToggle.addEventListener("click", () => {
+  addListener(topicToggle, "click", () => {
     topicToggle.classList.toggle("collapsed");
-    topicList.classList.toggle("collapsed");
+    if (topicList) topicList.classList.toggle("collapsed");
   });
 
-  searchInput.addEventListener("input", (event) => {
+  addListener(searchInput, "input", (event) => {
     state.search = event.target.value;
     applyFilters();
   });
 
-  clearFilters.addEventListener("click", () => {
+  addListener(clearFilters, "click", () => {
     state.year = "all";
     state.batch = "all";
     state.topic = "all";
     state.search = "";
-    yearSelect.value = "all";
-    batchSelect.value = "all";
-    searchInput.value = "";
+    if (yearSelect) yearSelect.value = "all";
+    if (batchSelect) batchSelect.value = "all";
+    if (searchInput) searchInput.value = "";
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) => pill.classList.remove("active"));
@@ -530,7 +566,7 @@ const bindEvents = () => {
     closeSidebarIfAutoHide();
   });
 
-  grid.addEventListener("click", (event) => {
+  addListener(grid, "click", (event) => {
     if (event.target.classList.contains("solution-toggle")) {
       const button = event.target;
       const solution = button.nextElementSibling;
@@ -540,7 +576,7 @@ const bindEvents = () => {
 
     if (event.target.classList.contains("tag")) {
       const { year, batch, topic } = event.target.dataset;
-      if (year && batch) {
+      if (year && batch && yearSelect && batchSelect) {
         state.year = year;
         state.batch = batch;
         yearSelect.value = year;
@@ -559,38 +595,40 @@ const bindEvents = () => {
     }
   });
 
-  window.addEventListener("scroll", () => {
+  addListener(window, "scroll", () => {
     const scrollTop = document.documentElement.scrollTop;
     const scrollHeight =
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight;
     const progress = scrollHeight ? (scrollTop / scrollHeight) * 100 : 0;
-    progressBar.style.width = `${progress}%`;
-    backToTop.classList.toggle("show", scrollTop > 300);
-    document.querySelector(".hero").style.backgroundPositionY = `${
-      scrollTop * 0.2
-    }px`;
-    topNav.classList.toggle("compact", scrollTop > 40);
-    topNav.classList.toggle("scrolled", scrollTop > 120);
+    if (progressBar) progressBar.style.width = `${progress}%`;
+    if (backToTop) backToTop.classList.toggle("show", scrollTop > 300);
+    const hero = document.querySelector(".hero");
+    if (hero) {
+      hero.style.backgroundPositionY = `${scrollTop * 0.2}px`;
+    }
+    if (topNav) {
+      topNav.classList.toggle("compact", scrollTop > 40);
+      topNav.classList.toggle("scrolled", scrollTop > 120);
+    }
   });
 
-  backToTop.addEventListener("click", () => {
+  addListener(backToTop, "click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  hamburger.addEventListener("click", () => {
-    setSidebarOpen(!sidebar.classList.contains("open"));
+  addListener(hamburger, "click", () => {
+    if (sidebar) setSidebarOpen(!sidebar.classList.contains("open"));
   });
 
-  hideSidebarButton.addEventListener("click", () => {
+  addListener(hideSidebarButton, "click", () => {
     isPinned = false;
     localStorage.setItem(SIDEBAR_PIN_KEY, "false");
     syncPinToggle();
     setSidebarOpen(false);
   });
 
-
-  pinToggle.addEventListener("change", (event) => {
+  addListener(pinToggle, "change", (event) => {
     isPinned = event.target.checked;
     localStorage.setItem(SIDEBAR_PIN_KEY, String(isPinned));
     if (isPinned && isDesktop()) {
@@ -600,19 +638,20 @@ const bindEvents = () => {
     }
   });
 
-  sidebar.addEventListener("click", (event) => {
+  addListener(sidebar, "click", (event) => {
     if (event.target.tagName === "A") {
       closeSidebarIfAutoHide();
     }
   });
 
-  document.addEventListener("keydown", (event) => {
+  addListener(document, "keydown", (event) => {
     if (event.key === "Escape") {
       setSidebarOpen(false);
     }
   });
 
-  startCta.addEventListener("click", () => {
+  addListener(startCta, "click", () => {
+    if (!startTopic || !startYear || !yearSelect) return;
     state.topic = startTopic.value;
     state.year = startYear.value;
     yearSelect.value = state.year;
@@ -622,39 +661,46 @@ const bindEvents = () => {
         pill.classList.toggle("active", pill.dataset.topic === state.topic)
       );
     applyFilters();
-    document.getElementById("questions").scrollIntoView({ behavior: "smooth" });
+    const questionsSection = document.getElementById("questions");
+    if (questionsSection) {
+      questionsSection.scrollIntoView({ behavior: "smooth" });
+    }
   });
 
-  formulaSearch.addEventListener("input", filterFormulas);
-  formulaTopic.addEventListener("change", filterFormulas);
+  addListener(formulaSearch, "input", filterFormulas);
+  addListener(formulaTopic, "change", filterFormulas);
 
-  formulaGroups.addEventListener("click", (event) => {
+  addListener(formulaGroups, "click", (event) => {
     const header = event.target.closest(".formula-group__header");
     if (!header) return;
     const group = header.parentElement;
     group.classList.toggle("open");
     const indicator = header.querySelector("span");
-    indicator.textContent = group.classList.contains("open") ? "-" : "+";
+    if (indicator) {
+      indicator.textContent = group.classList.contains("open") ? "-" : "+";
+    }
   });
 
-  globalSearchToggle.addEventListener("click", () => {
+  addListener(globalSearchToggle, "click", () => {
+    if (!topNav) return;
     topNav.classList.toggle("search-open");
-    if (topNav.classList.contains("search-open")) {
+    if (topNav.classList.contains("search-open") && globalSearchInput) {
       globalSearchInput.focus();
     }
   });
 
-  globalSearchInput.addEventListener("input", (event) => {
+  addListener(globalSearchInput, "input", (event) => {
     renderGlobalResults(event.target.value);
   });
 
-  globalSearchResults.addEventListener("click", (event) => {
+  addListener(globalSearchResults, "click", (event) => {
     const item = event.target.closest(".global-search__item");
     if (!item) return;
     const target = item.dataset.target;
-    document.querySelector(target).scrollIntoView({ behavior: "smooth" });
-    topNav.classList.remove("search-open");
-    globalSearchResults.classList.remove("show");
+    const targetElement = document.querySelector(target);
+    if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
+    if (topNav) topNav.classList.remove("search-open");
+    if (globalSearchResults) globalSearchResults.classList.remove("show");
   });
 
   document.querySelectorAll(".nav-link").forEach((link) => {
@@ -667,7 +713,8 @@ const bindEvents = () => {
   });
 
   const sections = ["home", "questions", "quiz", "formulas", "about"];
-  window.addEventListener("scroll", () => {
+  addListener(window, "scroll", () => {
+    if (document.body.classList.contains("quiz-page")) return;
     const scrollPos = window.scrollY + 140;
     let current = "home";
     sections.forEach((id) => {
@@ -681,14 +728,15 @@ const bindEvents = () => {
     });
   });
 
-  document.addEventListener("click", (event) => {
+  addListener(document, "click", (event) => {
+    if (!globalSearch || !globalSearchToggle || !topNav || !globalSearchResults) return;
     if (!globalSearch.contains(event.target) && event.target !== globalSearchToggle) {
       topNav.classList.remove("search-open");
       globalSearchResults.classList.remove("show");
     }
   });
 
-  window.addEventListener("resize", () => {
+  addListener(window, "resize", () => {
     if (!isDesktop()) {
       isPinned = false;
       setSidebarOpen(false);
@@ -705,6 +753,7 @@ const bindEvents = () => {
 // ========== QUIZ FUNCTIONALITY ==========
 
 const quizElements = {
+  pageBack: document.getElementById("quiz-page-back"),
   header: document.getElementById("quiz-header"),
   headerCurrent: document.getElementById("quiz-h-current"),
   headerCount: document.getElementById("quiz-h-count"),
@@ -718,6 +767,7 @@ const quizElements = {
   topicSelect: document.getElementById("quiz-topic-select"),
   difficultySelect: document.getElementById("quiz-difficulty-select"),
   startBtn: document.getElementById("quiz-start-btn"),
+  resumeBtn: document.getElementById("quiz-resume-btn"),
   question: document.getElementById("quiz-question"),
   topic: document.getElementById("quiz-topic"),
   difficultyBadge: document.getElementById("quiz-difficulty-badge"),
@@ -731,15 +781,21 @@ const quizElements = {
   feedbackIcon: document.getElementById("quiz-feedback-icon"),
   feedbackMessage: document.getElementById("quiz-feedback-message"),
   feedbackDetail: document.getElementById("quiz-feedback-detail"),
+  mistakeHint: document.getElementById("quiz-mistake-hint"),
   solutionPanel: document.getElementById("quiz-solution-panel"),
   solutionContent: document.getElementById("quiz-solution-content"),
   solutionToggle: document.getElementById("quiz-solution-toggle"),
+  keyFormula: document.getElementById("quiz-key-formula"),
+  keyFormulaText: document.getElementById("quiz-key-formula-text"),
   correctAnswer: document.getElementById("quiz-correct-answer"),
   finalAnswer: document.getElementById("quiz-final-answer"),
   nextBtn: document.getElementById("quiz-next-btn"),
   restartBtn: document.getElementById("quiz-restart-btn"),
+  retryProblemBtn: document.getElementById("quiz-retry-problem-btn"),
   retryBtn: document.getElementById("quiz-retry-btn"),
   newTopicBtn: document.getElementById("quiz-new-topic-btn"),
+  cardProgress: document.getElementById("quiz-card-progress"),
+  cardCounter: document.getElementById("quiz-card-counter"),
   finalScore: document.getElementById("final-score"),
   finalTotal: document.getElementById("final-total"),
   scorePercentage: document.getElementById("score-percentage"),
@@ -761,15 +817,218 @@ const shuffleArray = (array) => {
   return shuffled;
 };
 
+const difficultyLabels = {
+  easy: "Easy",
+  medium: "Moderate",
+  hard: "Board-level",
+};
+
+const topicFormulaMap = {
+  "Pipe Flow": "Q = A × V",
+  "Open Channel Flow": "Fr = V / √(g × y)",
+  "Pump Calculations": "P = (ρ × g × Q × H) / η",
+  "Fluid Properties": "γ = ρ × g",
+  "Hydrostatics": "p = γ × h",
+};
+
+const generateDynamicQuestions = () => {
+  const questions = [];
+  const pipeDiameter = randomBetween(0.2, 0.6, 0.05, 3);
+  const pipeVelocity = randomBetween(1.5, 3.5, 0.1, 3);
+  const pipeArea = (Math.PI * pipeDiameter ** 2) / 4;
+  const pipeFlow = pipeArea * pipeVelocity * 1000;
+  questions.push({
+    id: `dyn-pipe-${pipeDiameter}-${pipeVelocity}`,
+    topic: "Pipe Flow",
+    difficulty: "medium",
+    question: `A ${formatNumber(pipeDiameter * 1000, 0)}-mm diameter pipe carries water at a velocity of ${formatNumber(pipeVelocity, 2)} m/s. Calculate the flow rate in L/s.`,
+    hint: "Use Q = A × V and convert m³/s to L/s.",
+    solution: `Given:\n- Diameter, D = ${formatNumber(pipeDiameter * 1000, 0)} mm = ${formatNumber(pipeDiameter, 3)} m\n- Velocity, V = ${formatNumber(pipeVelocity, 2)} m/s\n\nStep 1: Area\n$$A = \\frac{\\pi D^2}{4} = ${formatNumber(pipeArea, 4)} \\text{ m}^2$$\n\nStep 2: Flow\n$$Q = A \\times V = ${formatNumber(pipeArea, 4)} \\times ${formatNumber(pipeVelocity, 2)} = ${formatNumber(pipeArea * pipeVelocity, 4)} \\text{ m}^3/\\text{s}$$\n\nStep 3: Convert\n$$Q = ${formatNumber(pipeFlow, 1)} \\text{ L/s}$$`,
+    answer: formatNumber(pipeFlow, 1),
+    tolerance: 0.5,
+    unit: "L/s",
+    keyFormula: "Q = A × V",
+  });
+
+  const depth = randomBetween(1.0, 3.0, 0.25, 2);
+  const velocity = randomBetween(1.5, 4.0, 0.1, 2);
+  const froude = velocity / Math.sqrt(9.81 * depth);
+  questions.push({
+    id: `dyn-froude-${depth}-${velocity}`,
+    topic: "Open Channel Flow",
+    difficulty: "hard",
+    question: `A rectangular channel flows at depth ${formatNumber(depth, 2)} m with velocity ${formatNumber(velocity, 2)} m/s. Compute the Froude number.`,
+    hint: "Use Fr = V / √(g × y).",
+    solution: `Given:\n- Depth, y = ${formatNumber(depth, 2)} m\n- Velocity, V = ${formatNumber(velocity, 2)} m/s\n\n$$Fr = \\frac{V}{\\sqrt{g y}} = \\frac{${formatNumber(velocity, 2)}}{\\sqrt{9.81 \\times ${formatNumber(depth, 2)}}} = ${formatNumber(froude, 3)}$$`,
+    answer: formatNumber(froude, 3),
+    tolerance: 0.02,
+    unit: "",
+    keyFormula: "Fr = V / √(g × y)",
+  });
+
+  const flow = randomBetween(0.03, 0.08, 0.005, 3);
+  const head = randomBetween(18, 35, 1, 2);
+  const efficiency = randomBetween(0.65, 0.85, 0.05, 2);
+  const power = (1000 * 9.81 * flow * head) / efficiency / 1000;
+  questions.push({
+    id: `dyn-pump-${flow}-${head}`,
+    topic: "Pump Calculations",
+    difficulty: "medium",
+    question: `A pump delivers ${formatNumber(flow * 1000, 1)} L/s against a head of ${formatNumber(head, 1)} m with efficiency ${formatNumber(efficiency * 100, 0)}%. Calculate the input power in kW.`,
+    hint: "Power = (ρ g Q H) / η.",
+    solution: `Given:\n- Q = ${formatNumber(flow, 3)} m³/s\n- H = ${formatNumber(head, 1)} m\n- η = ${formatNumber(efficiency, 2)}\n\n$$P = \\frac{1000 \\times 9.81 \\times ${formatNumber(flow, 3)} \\times ${formatNumber(head, 1)}}{${formatNumber(efficiency, 2)}} = ${formatNumber(power, 2)} \\text{ kW}$$`,
+    answer: formatNumber(power, 2),
+    tolerance: 0.2,
+    unit: "kW",
+    keyFormula: "P = (ρ × g × Q × H) / η",
+  });
+
+  const density = randomBetween(780, 1050, 10, 0);
+  const specificWeight = density * 9.81;
+  questions.push({
+    id: `dyn-weight-${density}`,
+    topic: "Fluid Properties",
+    difficulty: "easy",
+    question: `Compute the specific weight of a fluid with density ${density} kg/m³.`,
+    hint: "γ = ρ × g.",
+    solution: `$$\\gamma = ${density} \\times 9.81 = ${formatNumber(specificWeight, 1)} \\text{ N/m}^3$$`,
+    answer: formatNumber(specificWeight, 1),
+    tolerance: 1,
+    unit: "N/m³",
+    keyFormula: "γ = ρ × g",
+  });
+
+  const depthPressure = randomBetween(8, 25, 1, 0);
+  const pressure = depthPressure * 9.81;
+  questions.push({
+    id: `dyn-pressure-${depthPressure}`,
+    topic: "Hydrostatics",
+    difficulty: "easy",
+    question: `Find the hydrostatic pressure at a depth of ${depthPressure} m in water. Provide answer in kPa.`,
+    hint: "p = γ × h (γ = 9.81 kN/m³).",
+    solution: `$$p = 9.81 \\times ${depthPressure} = ${formatNumber(pressure, 2)} \\text{ kPa}$$`,
+    answer: formatNumber(pressure, 2),
+    tolerance: 0.5,
+    unit: "kPa",
+    keyFormula: "p = γ × h",
+  });
+
+  return questions;
+};
+
+const saveQuizProgress = () => {
+  if (!quizState.currentQuestions.length) return;
+  const payload = {
+    selectedTopic: quizState.selectedTopic,
+    selectedDifficulty: quizState.selectedDifficulty,
+    currentIndex: quizState.currentIndex,
+    score: quizState.score,
+    questionIds: quizState.currentQuestions.map((q) => String(q.id)),
+    questions: quizState.currentQuestions,
+    scoredQuestionIds: Array.from(quizState.scoredQuestions || []).map((id) => String(id)),
+    timestamp: Date.now(),
+  };
+  localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(payload));
+};
+
+const loadQuizProgress = () => {
+  const raw = localStorage.getItem(QUIZ_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    return null;
+  }
+};
+
+const clearQuizProgress = () => {
+  localStorage.removeItem(QUIZ_STORAGE_KEY);
+};
+
 const populateQuizTopics = () => {
-  if (!quizState.questions.length) return;
+  if (!quizState.questions.length || !quizElements.topicSelect) return;
   const topics = [...new Set(quizState.questions.map(q => q.topic))].sort();
   quizElements.topicSelect.innerHTML = 
     `<option value="all">All Topics (Random)</option>` +
     topics.map(topic => `<option value="${topic}">${topic}</option>`).join("");
 };
 
+const exitQuizToStart = () => {
+  if (quizElements.main) quizElements.main.classList.add("hidden");
+  if (quizElements.header) quizElements.header.classList.add("hidden");
+  if (quizElements.complete) quizElements.complete.classList.add("hidden");
+  if (quizElements.start) quizElements.start.classList.remove("hidden");
+  saveQuizProgress();
+  if (quizElements.resumeBtn) quizElements.resumeBtn.classList.remove("hidden");
+};
+
+const updateProgressUI = (isAnswered = false) => {
+  const total = quizState.currentQuestions.length || 0;
+  const current = Math.min(quizState.currentIndex + (isAnswered ? 1 : 0), total);
+  const percent = total ? (current / total) * 100 : 0;
+  if (quizElements.headerCurrent) quizElements.headerCurrent.textContent = quizState.currentIndex + 1;
+  if (quizElements.headerCount) quizElements.headerCount.textContent = total;
+  if (quizElements.headerScore) quizElements.headerScore.textContent = quizState.score;
+  if (quizElements.headerTotal) quizElements.headerTotal.textContent = total;
+  if (quizElements.headerProgress) quizElements.headerProgress.style.width = `${percent}%`;
+  if (quizElements.cardProgress) quizElements.cardProgress.style.width = `${percent}%`;
+  if (quizElements.cardCounter) {
+    quizElements.cardCounter.textContent = `Question ${quizState.currentIndex + 1} of ${total}`;
+  }
+};
+
+const resetAnswerUI = () => {
+  if (quizElements.hint) quizElements.hint.classList.add("hidden");
+  if (quizElements.feedback) quizElements.feedback.classList.add("hidden");
+  if (quizElements.solutionPanel) quizElements.solutionPanel.classList.add("hidden");
+  if (quizElements.imageContainer) quizElements.imageContainer.classList.add("hidden");
+  if (quizElements.solutionImageContainer) quizElements.solutionImageContainer.classList.add("hidden");
+  if (quizElements.finalAnswer) quizElements.finalAnswer.classList.add("hidden");
+  if (quizElements.keyFormula) quizElements.keyFormula.classList.add("hidden");
+  if (quizElements.mistakeHint) quizElements.mistakeHint.classList.add("hidden");
+  if (quizElements.solutionToggle) quizElements.solutionToggle.textContent = "−";
+};
+
+const setSolutionVisibility = (visible) => {
+  if (!quizElements.solutionPanel || !quizElements.solutionToggle) return;
+  quizElements.solutionPanel.classList.toggle("hidden", !visible);
+  quizElements.solutionToggle.textContent = visible ? "−" : "+";
+};
+
+const getKeyFormula = (q) => q.keyFormula || topicFormulaMap[q.topic] || "";
+
+const restoreQuizSession = (saved) => {
+  if (!saved || !quizElements.start) return false;
+  let restored = Array.isArray(saved.questions) ? saved.questions : [];
+  if (!restored.length) {
+    const lookup = new Map(quizState.questions.map((q) => [String(q.id), q]));
+    restored = (saved.questionIds || [])
+      .map((id) => lookup.get(String(id)))
+      .filter(Boolean);
+  }
+  if (!restored.length) return false;
+
+  quizState.currentQuestions = restored;
+  quizState.currentIndex = Math.min(saved.currentIndex || 0, restored.length - 1);
+  quizState.score = saved.score || 0;
+  quizState.selectedTopic = saved.selectedTopic || "all";
+  quizState.selectedDifficulty = saved.selectedDifficulty || "all";
+  quizState.scoredQuestions = new Set(saved.scoredQuestionIds || []);
+  quizState.answered = false;
+
+  if (quizElements.topicSelect) quizElements.topicSelect.value = quizState.selectedTopic;
+  if (quizElements.difficultySelect) quizElements.difficultySelect.value = quizState.selectedDifficulty;
+
+  quizElements.start.classList.add("hidden");
+  quizElements.main.classList.remove("hidden");
+  quizElements.header.classList.remove("hidden");
+  quizElements.complete.classList.add("hidden");
+  loadQuestion();
+  return true;
+};
+
 const startQuiz = () => {
+  if (!quizElements.start || !quizElements.main) return;
   quizState.selectedTopic = quizElements.topicSelect.value;
   quizState.selectedDifficulty = quizElements.difficultySelect.value;
   
@@ -787,6 +1046,10 @@ const startQuiz = () => {
   quizState.currentQuestions = shuffleArray(filtered).slice(0, 10);
   quizState.currentIndex = 0;
   quizState.score = 0;
+  quizState.answered = false;
+  quizState.scoredQuestions = new Set();
+  clearQuizProgress();
+  if (quizElements.resumeBtn) quizElements.resumeBtn.classList.add("hidden");
   
   quizElements.start.classList.add("hidden");
   quizElements.main.classList.remove("hidden");
@@ -796,6 +1059,7 @@ const startQuiz = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
   
   loadQuestion();
+  saveQuizProgress();
 };
 
 const loadQuestion = () => {
@@ -810,20 +1074,17 @@ const loadQuestion = () => {
   // Reset UI
   quizElements.question.innerHTML = allowBasicTags(escapeHtml(q.question));
   quizElements.topic.textContent = q.topic;
-  quizElements.difficultyBadge.textContent = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
+  quizElements.difficultyBadge.textContent = difficultyLabels[q.difficulty] || q.difficulty;
   quizElements.hintText.textContent = q.hint;
   quizElements.unit.textContent = q.unit || "";
   quizElements.answerInput.value = "";
   quizElements.answerInput.disabled = false;
   quizElements.submitBtn.disabled = false;
   quizElements.nextBtn.disabled = true;
+  if (quizElements.retryProblemBtn) quizElements.retryProblemBtn.disabled = true;
   
   // Hide elements
-  quizElements.hint.classList.add("hidden");
-  quizElements.feedback.classList.add("hidden");
-  quizElements.solutionPanel.classList.add("hidden");
-  quizElements.imageContainer.classList.add("hidden");
-  quizElements.solutionImageContainer.classList.add("hidden");
+  resetAnswerUI();
   
   // Handle images
   if (q.image) {
@@ -833,28 +1094,23 @@ const loadQuestion = () => {
   }
   
   // Update progress and header
-  quizElements.headerCurrent.textContent = quizState.currentIndex + 1;
-  quizElements.headerCount.textContent = quizState.currentQuestions.length;
-  quizElements.headerScore.textContent = quizState.score;
-  quizElements.headerTotal.textContent = quizState.currentQuestions.length;
-  
-  const progress = ((quizState.currentIndex) / quizState.currentQuestions.length) * 100;
-  quizElements.headerProgress.style.width = `${progress}%`;
+  updateProgressUI(false);
   
   // Typeset math
   typesetMath();
   
   // Focus input
   setTimeout(() => quizElements.answerInput.focus(), 300);
+  saveQuizProgress();
 };
 const checkAnswer = () => {
   if (quizState.answered) return;
   
   const q = quizState.currentQuestions[quizState.currentIndex];
-  const userAnswer = parseFloat(quizElements.answerInput.value);
+  const userAnswer = parseNumericInput(quizElements.answerInput.value);
   
   if (isNaN(userAnswer)) {
-    alert("Please enter a valid numerical answer.");
+    alert("Please enter a valid numerical answer. You can use decimals, fractions (a/b), or scientific notation.");
     return;
   }
   
@@ -862,11 +1118,14 @@ const checkAnswer = () => {
   quizState.answered = true;
   
   if (correct) {
-    quizState.score++;
+    if (!quizState.scoredQuestions.has(String(q.id))) {
+      quizState.score++;
+      quizState.scoredQuestions.add(String(q.id));
+    }
     showFeedback(true, "Correct!", "Excellent work! You've mastered this problem.");
   } else {
-    const yourAnswer = userAnswer.toFixed(3);
-    const correctAnswer = q.answer.toFixed(3);
+    const yourAnswer = formatNumber(userAnswer, 3);
+    const correctAnswer = formatNumber(q.answer, 3);
     showFeedback(false, "Incorrect", `Your answer: ${yourAnswer} | Correct: ${correctAnswer}`);
   }
   
@@ -880,10 +1139,13 @@ const checkAnswer = () => {
   quizElements.answerInput.disabled = true;
   quizElements.submitBtn.disabled = true;
   quizElements.nextBtn.disabled = false;
+  if (quizElements.retryProblemBtn) {
+    quizElements.retryProblemBtn.disabled = correct;
+  }
   
   // Update progress
-  const progress = ((quizState.currentIndex + 1) / quizState.currentQuestions.length) * 100;
-  quizElements.headerProgress.style.width = `${progress}%`;
+  updateProgressUI(true);
+  saveQuizProgress();
 };
 
 const showFeedback = (correct, message, detail = "") => {
@@ -893,12 +1155,32 @@ const showFeedback = (correct, message, detail = "") => {
   quizElements.feedbackIcon.textContent = correct ? "✓" : "✗";
   quizElements.feedbackMessage.textContent = message;
   quizElements.feedbackDetail.textContent = detail;
+
+  if (quizElements.mistakeHint) {
+    if (correct) {
+      quizElements.mistakeHint.classList.add("hidden");
+      quizElements.mistakeHint.textContent = "";
+    } else {
+      quizElements.mistakeHint.textContent = "Review the key formula and check unit conversions before retrying.";
+      quizElements.mistakeHint.classList.remove("hidden");
+    }
+  }
 };
 
 const showSolution = (q) => {
   quizElements.solutionContent.innerHTML = allowBasicTags(escapeHtml(q.solution))
     .replace(/\\n/g, '<br>');
   
+  const keyFormula = getKeyFormula(q);
+  if (quizElements.keyFormula && quizElements.keyFormulaText) {
+    if (keyFormula) {
+      quizElements.keyFormulaText.innerHTML = allowBasicTags(escapeHtml(keyFormula));
+      quizElements.keyFormula.classList.remove("hidden");
+    } else {
+      quizElements.keyFormula.classList.add("hidden");
+    }
+  }
+
   quizElements.correctAnswer.innerHTML = `${q.answer} ${q.unit}`.trim();
   quizElements.finalAnswer.classList.remove("hidden");
   
@@ -908,7 +1190,7 @@ const showSolution = (q) => {
     quizElements.solutionImageContainer.classList.remove("hidden");
   }
   
-  quizElements.solutionPanel.classList.remove("hidden");
+  setSolutionVisibility(true);
   
   // Typeset math in solution
   typesetMath();
@@ -944,84 +1226,110 @@ const showComplete = () => {
   }
   
   window.scrollTo({ top: 0, behavior: "smooth" });
+  clearQuizProgress();
 };
 
 const bindQuizEvents = () => {
-  quizElements.startBtn.addEventListener("click", startQuiz);
-  
-  quizElements.submitBtn.addEventListener("click", checkAnswer);
-  
-  quizElements.answerInput.addEventListener("keypress", (e) => {
+  addListener(quizElements.startBtn, "click", startQuiz);
+  addListener(quizElements.submitBtn, "click", checkAnswer);
+  addListener(quizElements.answerInput, "keypress", (e) => {
     if (e.key === "Enter" && !quizState.answered) {
       checkAnswer();
     }
   });
-  
-  quizElements.hintBtn.addEventListener("click", () => {
-    quizElements.hint.classList.toggle("hidden");
+  addListener(quizElements.hintBtn, "click", () => {
+    if (quizElements.hint) quizElements.hint.classList.toggle("hidden");
   });
-  
-  quizElements.solutionToggle.addEventListener("click", () => {
-    quizElements.solutionPanel.classList.add("hidden");
+  addListener(quizElements.solutionToggle, "click", () => {
+    if (!quizElements.solutionPanel) return;
+    const isHidden = quizElements.solutionPanel.classList.contains("hidden");
+    setSolutionVisibility(isHidden);
   });
-  
-  quizElements.nextBtn.addEventListener("click", () => {
+  addListener(quizElements.nextBtn, "click", () => {
     quizState.currentIndex++;
     loadQuestion();
   });
-  
-  quizElements.restartBtn.addEventListener("click", () => {
-    quizElements.main.classList.add("hidden");
-    quizElements.header.classList.add("hidden");
-    quizElements.start.classList.remove("hidden");
+  addListener(quizElements.restartBtn, "click", exitQuizToStart);
+  addListener(quizElements.headerBack, "click", exitQuizToStart);
+  addListener(quizElements.retryBtn, "click", startQuiz);
+  addListener(quizElements.retryProblemBtn, "click", () => {
+    quizState.answered = false;
+    quizElements.answerInput.disabled = false;
+    quizElements.submitBtn.disabled = false;
+    quizElements.nextBtn.disabled = true;
+    if (quizElements.retryProblemBtn) quizElements.retryProblemBtn.disabled = true;
+    if (quizElements.feedback) quizElements.feedback.classList.add("hidden");
+    setSolutionVisibility(false);
+    if (quizElements.mistakeHint) quizElements.mistakeHint.classList.add("hidden");
+    quizElements.answerInput.focus();
+    saveQuizProgress();
   });
-  
-  quizElements.headerBack.addEventListener("click", () => {
-    quizElements.main.classList.add("hidden");
-    quizElements.header.classList.add("hidden");
-    quizElements.start.classList.remove("hidden");
+  addListener(quizElements.newTopicBtn, "click", () => {
+    if (quizElements.complete) quizElements.complete.classList.add("hidden");
+    if (quizElements.start) quizElements.start.classList.remove("hidden");
+    clearQuizProgress();
   });
-  
-  quizElements.retryBtn.addEventListener("click", () => {
-    startQuiz();
+  addListener(quizElements.pageBack, "click", () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "index.html#questions";
+    }
   });
-  
-  quizElements.newTopicBtn.addEventListener("click", () => {
-    quizElements.complete.classList.add("hidden");
-    quizElements.start.classList.remove("hidden");
+  addListener(quizElements.resumeBtn, "click", () => {
+    const saved = loadQuizProgress();
+    restoreQuizSession(saved);
   });
 };
 
 const initQuiz = async () => {
   try {
+    if (!quizElements.start) return;
     const response = await fetch(QUIZ_URL);
-    quizState.questions = await response.json();
+    const staticQuestions = await response.json();
+    const dynamicQuestions = generateDynamicQuestions();
+    quizState.questions = [...staticQuestions, ...dynamicQuestions];
     populateQuizTopics();
     bindQuizEvents();
+    const saved = loadQuizProgress();
+    if (saved && quizElements.resumeBtn) {
+      quizElements.resumeBtn.classList.remove("hidden");
+    }
   } catch (error) {
     console.error("Failed to load quiz questions:", error);
   }
 };
 
 const init = async () => {
-  renderSkeletons();
-  const response = await fetch(DATA_URL);
-  const data = await response.json();
-  const formulaResponse = await fetch(FORMULA_URL);
-  const formulaData = await formulaResponse.json();
-  state.data = data;
-  state.formulas = formulaData;
-  renderFilters();
-  renderCards();
-  renderFormulaFilters();
-  filterFormulas();
+  const hasQuestionUI = Boolean(grid && resultsInfo);
+  const hasFormulaUI = Boolean(formulaGroups && formulaTopic);
+
+  if (hasQuestionUI) {
+    renderSkeletons();
+    const response = await fetch(DATA_URL);
+    const data = await response.json();
+    state.data = data;
+    renderFilters();
+    renderCards();
+  }
+
+  if (hasFormulaUI) {
+    const formulaResponse = await fetch(FORMULA_URL);
+    const formulaData = await formulaResponse.json();
+    state.formulas = formulaData;
+    renderFormulaFilters();
+    filterFormulas();
+  }
+
   isPinned = loadPinnedPreference();
   if (!isDesktop()) {
     isPinned = false;
   }
   syncPinToggle();
   setSidebarOpen(isPinned && isDesktop());
+
   bindEvents();
+
   await initQuiz();
 };
 
