@@ -55,7 +55,7 @@ body.home-page .hero__overlay {
 body.home-page .ocean {
   height: 18vh;
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   background: linear-gradient(
@@ -73,9 +73,9 @@ body.home-page .wave {
   position: absolute;
   bottom: 0;
   width: 6400px;
-  height: 220px;
+  height: var(--wave-height, 200px);
   background-repeat: repeat-x;
-  background-size: 1600px 220px;
+  background-size: var(--wave-width, 1600px) var(--wave-height, 200px);
   animation-name: waveMove;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -83,21 +83,21 @@ body.home-page .wave {
 }
 
 body.home-page .wave-back {
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg");
+  background-image: url("../images/wave.svg");
   opacity: 0.25;
   animation-duration: 18s;
   bottom: 30px;
 }
 
 body.home-page .wave-mid {
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg");
+  background-image: url("../images/wave.svg");
   opacity: 0.5;
   animation-duration: 12s;
   bottom: 15px;
 }
 
 body.home-page .wave-front {
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg");
+  background-image: url("../images/wave.svg");
   opacity: 0.9;
   animation-duration: 8s;
   bottom: 0;
@@ -106,6 +106,17 @@ body.home-page .wave-front {
 @media (max-width: 768px) {
   body.home-page .ocean {
     height: 22vh;
+  }
+  body.home-page {
+    --wave-height: 160px;
+    --wave-width: 1200px;
+  }
+}
+
+@media (min-width: 1200px) {
+  body.home-page {
+    --wave-height: 220px;
+    --wave-width: 1800px;
   }
 }
 
