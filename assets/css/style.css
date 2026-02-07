@@ -900,6 +900,14 @@ body.home-page .start-review {
   margin-left: auto;
   margin-right: auto;
   padding: 0;
+  position: relative;
+  left: 0;
+  transform: translateX(0);
+  transition: left 0.35s ease, transform 0.35s ease;
+}
+
+body.home-page.sidebar-open .start-review {
+  left: -150px;
 }
 
 .start-review__controls {
