@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
-  <body id="top">
+  <body id="top" class="home-locked">
     <div id="progress-bar"></div>
 
     <header class="top-nav" id="top-nav">
@@ -34,7 +34,6 @@
       <div class="top-nav__right">
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
-          <a href="#questions" class="nav-link">Questions</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
           <a href="#formulas" class="nav-link">Formula Sheet</a>
           <a href="#about" class="nav-link">About</a>
@@ -59,12 +58,28 @@
       <div class="hero__overlay"></div>
       <div class="hero__inner">
         <div class="hero__content">
-          <p class="hero__eyebrow">PH Civil Engineering Review</p>
           <h1>Hydraulics Board Exam Review (PH)</h1>
           <p class="hero__subtitle">
-            A complete, organized archive of Philippine board exam hydraulics
-            questions from 2011-2025, designed for focused and effective review.
+            A focused, organized archive of Civil Engineering Hydraulics board
+            exam questions, grouped by topic and year for structured review.
           </p>
+        </div>
+        <div class="hero__controls" aria-label="Select review filters">
+          <div class="selection-field">
+            <label for="start-topic">Select Topic</label>
+            <select id="start-topic">
+              <option value="all">All Topics</option>
+            </select>
+          </div>
+          <div class="selection-field">
+            <label for="start-year">Select Year</label>
+            <select id="start-year">
+              <option value="all">All Years</option>
+            </select>
+          </div>
+          <button id="start-cta" class="btn btn--primary" disabled>
+            Start Review
+          </button>
         </div>
       </div>
     </header>
@@ -140,27 +155,6 @@
     </aside>
 
     <main class="content">
-      <section class="start-review">
-        <div>
-          <p class="section-eyebrow">Start Reviewing</p>
-          <h2>Quick Access Controls</h2>
-          <p class="section-subtitle">
-            Choose a topic and jump straight into the questions.
-          </p>
-        </div>
-        <div class="start-review__controls">
-          <select id="start-topic">
-            <option value="all">All Topics</option>
-          </select>
-          <select id="start-year">
-            <option value="all">All Years</option>
-          </select>
-          <button id="start-cta" class="btn btn--primary">
-            View Questions
-          </button>
-        </div>
-      </section>
-
       <section id="questions" class="questions-section">
       <section class="active-filters">
         <div id="active-chips" class="chips"></div>

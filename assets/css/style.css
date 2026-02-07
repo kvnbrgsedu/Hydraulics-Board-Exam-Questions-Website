@@ -24,6 +24,16 @@ body {
   min-height: 100vh;
 }
 
+body.home-locked {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body.home-locked .content,
+body.home-locked #back-to-top {
+  display: none;
+}
+
 #progress-bar {
   position: fixed;
   top: 0;
@@ -228,6 +238,13 @@ body {
   transition: padding 0.35s ease;
 }
 
+body.home-locked .hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-bottom: 48px;
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -269,6 +286,13 @@ body {
   z-index: 3;
 }
 
+body.home-locked .hero__inner {
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  text-align: center;
+}
+
 .hero__eyebrow {
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -288,9 +312,77 @@ body {
   max-width: 540px;
 }
 
+body.home-locked .hero__subtitle {
+  max-width: 640px;
+}
+
 .hero__content {
   animation: fadeInUp 0.8s ease forwards;
   opacity: 0;
+}
+
+body.home-locked .hero__content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.hero__controls {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 18px 20px;
+  border-radius: 20px;
+  box-shadow: 0 18px 32px rgba(9, 99, 126, 0.2);
+  animation: fadeInUp 0.9s ease forwards;
+  opacity: 0;
+}
+
+.selection-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.hero__controls label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #e6f6f8;
+}
+
+body.home-locked .hero__controls select {
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  background: #f7fbfc;
+  color: var(--primary);
+  border: 1px solid rgba(9, 99, 126, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.home-locked .hero__controls select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(8, 131, 149, 0.18);
+  transform: translateY(-1px);
+}
+
+body.home-locked .hero__controls .btn {
+  padding: 14px 22px;
+  font-size: 15px;
+  border-radius: 14px;
+}
+
+body.home-locked .hero__controls .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .hamburger {
@@ -2478,5 +2570,25 @@ mark {
   
   .quiz-complete__actions {
     gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  body.home-locked .hero h1 {
+    font-size: 30px;
+  }
+
+  body.home-locked .hero__controls {
+    width: 100%;
+  }
+
+  body.home-locked .selection-field {
+    width: 100%;
+    min-width: auto;
+  }
+
+  body.home-locked .hero__controls select,
+  body.home-locked .hero__controls .btn {
+    width: 100%;
   }
 }
