@@ -35,7 +35,7 @@
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
-          <a href="#formulas" class="nav-link">Formula Sheet</a>
+          <a href="#formulas" class="nav-link">Formulas</a>
           <a href="#about" class="nav-link">About</a>
         </nav>
         <div class="top-nav__actions">
@@ -54,45 +54,37 @@
       </div>
     </header>
 
-    <header class="hero hero--fullscreen" id="home">
-      <div class="hero__overlay"></div>
-      <div class="hero__inner">
-        <div class="hero__content">
-          <p class="hero__eyebrow">PH Civil Engineering Review</p>
-          <h1>Hydraulics Board Exam Review</h1>
-          <p class="hero__subtitle">
-            A complete, organized archive of Philippine board exam hydraulics
-            questions from 2011-2025, designed for focused and effective review.
+    <!-- Home Screen: Non-scrollable, Single Viewport -->
+    <section class="home-screen" id="home">
+      <div class="home-screen__content">
+        <div class="home-screen__header">
+          <p class="home-screen__eyebrow">Civil Engineering Board Exam Review</p>
+          <h1 class="home-screen__title">Hydraulics Review (PH)</h1>
+          <p class="home-screen__description">
+            Organized archive of Philippine board exam hydraulics questions from 2011-2025. 
+            Select a topic or year to begin your focused review.
           </p>
-          
-          <!-- Home Screen Selection Dropdowns -->
-          <div class="home-selectors">
-            <div class="selector-card">
-              <label for="home-topic-select" class="selector-label">
-                <span class="selector-icon">📚</span>
-                Select Topic
-              </label>
-              <select id="home-topic-select" class="selector-dropdown">
-                <option value="">Choose a topic...</option>
-              </select>
-            </div>
-            
-            <div class="selector-or">OR</div>
-            
-            <div class="selector-card">
-              <label for="home-year-select" class="selector-label">
-                <span class="selector-icon">📅</span>
-                Select Year
-              </label>
-              <select id="home-year-select" class="selector-dropdown">
-                <option value="">Choose a year...</option>
-              </select>
-            </div>
+        </div>
+
+        <div class="home-screen__selectors">
+          <div class="selector-card">
+            <label class="selector-card__label" for="home-topic-select">Select Topic</label>
+            <select id="home-topic-select" class="selector-card__input">
+              <option value="">Choose a topic...</option>
+            </select>
+          </div>
+
+          <div class="selector-card">
+            <label class="selector-card__label" for="home-year-select">Select Year</label>
+            <select id="home-year-select" class="selector-card__input">
+              <option value="">Choose a year...</option>
+            </select>
           </div>
         </div>
       </div>
-    </header>
+    </section>
 
+    <!-- Sidebar: Filters (only visible when toggled) -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar__brand">
         <div>
@@ -138,10 +130,9 @@
       <div class="filter-block">
         <p class="filter-label">Quick Navigation</p>
         <nav class="sidebar__nav">
-          <a href="#questions">All Questions</a>
           <a href="quiz.html">Interactive Quiz</a>
           <a href="#formulas">Formula Sheet</a>
-          <a href="#results-info">Results Summary</a>
+          <a href="#about">About</a>
         </nav>
       </div>
 
@@ -163,22 +154,18 @@
       </button>
     </aside>
 
-    <main class="content">
-      <!-- Dynamic Questions Display -->
-      <section id="dynamic-questions" class="dynamic-questions hidden">
+    <!-- Questions Section: Hidden until topic/year selected -->
+    <main class="content" id="content-area">
+      <section id="questions" class="questions-section hidden">
         <div class="questions-header">
-          <button id="back-to-home" class="btn btn--back">
-            <span class="back-arrow">←</span> Back to Home
-          </button>
-          <div id="selection-info" class="selection-info"></div>
+          <button id="back-to-home" class="btn btn--ghost">← Back to Home</button>
+          <div id="results-info" class="results-info"></div>
         </div>
-        
+
         <section class="active-filters">
           <div id="active-chips" class="chips"></div>
           <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
         </section>
-
-        <section id="results-info" class="results-info"></section>
 
         <section id="question-grid" class="grid"></section>
         <section id="empty-state" class="empty hidden">
@@ -188,34 +175,10 @@
         </section>
       </section>
 
-      <!-- Original sections remain hidden until accessed -->
-      <section class="start-review hidden">
-        <div>
-          <p class="section-eyebrow">Start Reviewing</p>
-          <h2>Quick Access Controls</h2>
-          <p class="section-subtitle">
-            Choose a topic and jump straight into the questions.
-          </p>
-        </div>
-        <div class="start-review__controls">
-          <select id="start-topic">
-            <option value="all">All Topics</option>
-          </select>
-          <select id="start-year">
-            <option value="all">All Years</option>
-          </select>
-          <button id="start-cta" class="btn btn--primary">
-            View Questions
-          </button>
-        </div>
-      </section>
-
-      <section id="questions" class="questions-section hidden">
-      </section>
-
-
-      <section id="formulas" class="formula-section">
+      <!-- Formula Section -->
+      <section id="formulas" class="formula-section hidden">
         <div class="section-header">
+          <button id="back-to-home-formulas" class="btn btn--ghost">← Back to Home</button>
           <p class="section-eyebrow">Formula Sheet</p>
           <h2>Hydraulics Formula Library</h2>
           <p class="section-subtitle">
@@ -240,7 +203,9 @@
         </div>
       </section>
 
-      <section id="about" class="about-section">
+      <!-- About Section -->
+      <section id="about" class="about-section hidden">
+        <button id="back-to-home-about" class="btn btn--ghost">← Back to Home</button>
         <div class="section-header">
           <p class="section-eyebrow">About</p>
           <h2>Designed for Focused Review</h2>
@@ -275,7 +240,7 @@
       </section>
     </main>
 
-    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+    <button id="back-to-top" class="back-to-top hidden" aria-label="Back to top">
       ↑
     </button>
 

@@ -39,9 +39,6 @@ const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
 const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
-const startTopic = document.getElementById("start-topic");
-const startYear = document.getElementById("start-year");
-const startCta = document.getElementById("start-cta");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -52,13 +49,15 @@ const globalSearch = document.getElementById("global-search");
 const globalSearchInput = document.getElementById("global-search-input");
 const globalSearchResults = document.getElementById("global-search-results");
 
-// Home screen selectors
+// Home screen elements
 const homeTopicSelect = document.getElementById("home-topic-select");
 const homeYearSelect = document.getElementById("home-year-select");
-const dynamicQuestions = document.getElementById("dynamic-questions");
-const backToHome = document.getElementById("back-to-home");
-const selectionInfo = document.getElementById("selection-info");
-const heroSection = document.querySelector(".hero");
+const backToHomeBtn = document.getElementById("back-to-home");
+const backToHomeFormulasBtn = document.getElementById("back-to-home-formulas");
+const backToHomeAboutBtn = document.getElementById("back-to-home-about");
+const questionsSection = document.getElementById("questions");
+const formulasSection = document.getElementById("formulas");
+const aboutSection = document.getElementById("about");
 
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
@@ -468,6 +467,61 @@ const renderFormulaFilters = () => {
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 };
 
+// Home Screen Navigation Functions
+const showHomeScreen = () => {
+  document.body.classList.add("home-visible");
+  document.body.classList.remove("content-visible");
+  if (questionsSection) questionsSection.classList.add("hidden");
+  if (formulasSection) formulasSection.classList.add("hidden");
+  if (aboutSection) aboutSection.classList.add("hidden");
+  if (backToTop) backToTop.classList.add("hidden");
+  window.scrollTo(0, 0);
+  
+  // Update nav links
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.classList.toggle("active", link.getAttribute("href") === "#home");
+  });
+};
+
+const showQuestionsSection = () => {
+  document.body.classList.remove("home-visible");
+  document.body.classList.add("content-visible");
+  if (questionsSection) questionsSection.classList.remove("hidden");
+  if (formulasSection) formulasSection.classList.add("hidden");
+  if (aboutSection) aboutSection.classList.add("hidden");
+  if (backToTop) backToTop.classList.remove("hidden");
+  window.scrollTo(0, 0);
+};
+
+const showSection = (sectionId) => {
+  document.body.classList.remove("home-visible");
+  document.body.classList.add("content-visible");
+  if (questionsSection) questionsSection.classList.add("hidden");
+  if (formulasSection) formulasSection.classList.add("hidden");
+  if (aboutSection) aboutSection.classList.add("hidden");
+  
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.classList.remove("hidden");
+  }
+  if (backToTop) backToTop.classList.remove("hidden");
+  window.scrollTo(0, 0);
+};
+
+const populateHomeSelectors = () => {
+  if (!homeTopicSelect || !homeYearSelect) return;
+  
+  // Populate topics from data
+  const topics = [...new Set(state.data.map(item => item.topic))].filter(Boolean).sort();
+  homeTopicSelect.innerHTML = '<option value="">Choose a topic...</option>' +
+    topics.map(topic => `<option value="${topic}">${topic}</option>`).join("");
+  
+  // Populate years
+  const years = [...new Set(state.data.map(item => item.year))].filter(Boolean).sort((a, b) => b - a);
+  homeYearSelect.innerHTML = '<option value="">Choose a year...</option>' +
+    years.map(year => `<option value="${year}">${year}</option>`).join("");
+};
+
 const renderGlobalResults = (query) => {
   if (!globalSearchResults) return;
   if (!query.trim()) {
@@ -523,84 +577,81 @@ const renderGlobalResults = (query) => {
   globalSearchResults.classList.toggle("show", true);
 };
 
-// Home Screen Dynamic Question Display
-const populateHomeSelectors = () => {
-  if (!homeTopicSelect || !homeYearSelect) return;
-  
-  const topics = Array.from(
-    new Set(state.data.map((item) => item.topic))
-  ).sort();
-  
-  homeTopicSelect.innerHTML = 
-    `<option value="">Choose a topic...</option>` +
-    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
-  
-  homeYearSelect.innerHTML = 
-    `<option value="">Choose a year...</option>` +
-    yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
-};
+const bindEvents = () => {
+  // Home screen selection handlers
+  addListener(homeTopicSelect, "change", (event) => {
+    if (event.target.value) {
+      state.topic = event.target.value;
+      state.year = "all";
+      state.batch = "all";
+      if (yearSelect) yearSelect.value = "all";
+      if (batchSelect) batchSelect.value = "all";
+      document.querySelectorAll(".topic-pill").forEach((pill) =>
+        pill.classList.toggle("active", pill.dataset.topic === state.topic)
+      );
+      applyFilters();
+      showQuestionsSection();
+    }
+  });
 
-const showQuestionsSection = (selectionType, selectionValue) => {
-  if (!heroSection || !dynamicQuestions || !selectionInfo) return;
-  
-  // Hide home screen, show questions
-  heroSection.classList.add("hidden");
-  dynamicQuestions.classList.remove("hidden");
-  
-  // Update selection info
-  const label = selectionType === "topic" ? "Topic" : "Year";
-  selectionInfo.innerHTML = `
-    <span class="selection-badge">${label}: ${selectionValue}</span>
-  `;
-  
-  // Apply filters and render
-  if (selectionType === "topic") {
-    state.topic = selectionValue;
-    state.year = "all";
-    state.batch = "all";
-    if (yearSelect) yearSelect.value = "all";
-    if (batchSelect) batchSelect.value = "all";
-  } else if (selectionType === "year") {
-    state.year = selectionValue;
-    state.topic = "all";
-    state.batch = "all";
-    if (topicList) {
-      document.querySelectorAll(".topic-pill").forEach((pill) => 
+  addListener(homeYearSelect, "change", (event) => {
+    if (event.target.value) {
+      state.year = event.target.value;
+      state.topic = "all";
+      state.batch = "all";
+      if (yearSelect) yearSelect.value = event.target.value;
+      if (batchSelect) batchSelect.value = "all";
+      document.querySelectorAll(".topic-pill").forEach((pill) =>
         pill.classList.remove("active")
       );
+      applyFilters();
+      showQuestionsSection();
     }
-  }
-  
-  renderCards();
-  
-  // Smooth scroll to top of questions
-  requestAnimationFrame(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
-};
 
-const hideQuestionsSection = () => {
-  if (!heroSection || !dynamicQuestions) return;
-  
-  // Show home screen, hide questions
-  heroSection.classList.remove("hidden");
-  dynamicQuestions.classList.add("hidden");
-  
-  // Reset selectors
-  if (homeTopicSelect) homeTopicSelect.value = "";
-  if (homeYearSelect) homeYearSelect.value = "";
-  
-  // Reset filters
-  state.topic = "all";
-  state.year = "all";
-  state.batch = "all";
-  state.search = "";
-  
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+  // Back to home buttons
+  addListener(backToHomeBtn, "click", () => {
+    showHomeScreen();
+    // Reset selections
+    if (homeTopicSelect) homeTopicSelect.value = "";
+    if (homeYearSelect) homeYearSelect.value = "";
+  });
 
-const bindEvents = () => {
+  addListener(backToHomeFormulasBtn, "click", () => {
+    showHomeScreen();
+  });
+
+  addListener(backToHomeAboutBtn, "click", () => {
+    showHomeScreen();
+  });
+
+  // Nav link handlers
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href");
+      
+      // Update active state
+      document.querySelectorAll(".nav-link").forEach((item) => 
+        item.classList.remove("active")
+      );
+      link.classList.add("active");
+      
+      // Handle navigation
+      if (href === "#home") {
+        event.preventDefault();
+        showHomeScreen();
+        if (homeTopicSelect) homeTopicSelect.value = "";
+        if (homeYearSelect) homeYearSelect.value = "";
+      } else if (href === "#formulas") {
+        event.preventDefault();
+        showSection("formulas");
+      } else if (href === "#about") {
+        event.preventDefault();
+        showSection("about");
+      }
+    });
+  });
+
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
     applyFilters();
@@ -735,23 +786,6 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startCta, "click", () => {
-    if (!startTopic || !startYear || !yearSelect) return;
-    state.topic = startTopic.value;
-    state.year = startYear.value;
-    yearSelect.value = state.year;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
-    applyFilters();
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
-      questionsSection.scrollIntoView({ behavior: "smooth" });
-    }
-  });
-
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
 
@@ -788,31 +822,6 @@ const bindEvents = () => {
     if (globalSearchResults) globalSearchResults.classList.remove("show");
   });
 
-  document.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      document
-        .querySelectorAll(".nav-link")
-        .forEach((item) => item.classList.remove("active"));
-      link.classList.add("active");
-    });
-  });
-
-  const sections = ["home", "questions", "quiz", "formulas", "about"];
-  addListener(window, "scroll", () => {
-    if (document.body.classList.contains("quiz-page")) return;
-    const scrollPos = window.scrollY + 140;
-    let current = "home";
-    sections.forEach((id) => {
-      const section = document.getElementById(id);
-      if (section && section.offsetTop <= scrollPos) {
-        current = id;
-      }
-    });
-    document.querySelectorAll(".nav-link").forEach((item) => {
-      item.classList.toggle("active", item.getAttribute("href") === `#${current}`);
-    });
-  });
-
   addListener(document, "click", (event) => {
     if (!globalSearch || !globalSearchToggle || !topNav || !globalSearchResults) return;
     if (!globalSearch.contains(event.target) && event.target !== globalSearchToggle) {
@@ -832,29 +841,6 @@ const bindEvents = () => {
       }
     }
     syncPinToggle();
-  });
-  
-  // Home screen selectors
-  addListener(homeTopicSelect, "change", (event) => {
-    const topic = event.target.value;
-    if (topic) {
-      // Clear the other selector
-      if (homeYearSelect) homeYearSelect.value = "";
-      showQuestionsSection("topic", topic);
-    }
-  });
-  
-  addListener(homeYearSelect, "change", (event) => {
-    const year = event.target.value;
-    if (year) {
-      // Clear the other selector
-      if (homeTopicSelect) homeTopicSelect.value = "";
-      showQuestionsSection("year", year);
-    }
-  });
-  
-  addListener(backToHome, "click", () => {
-    hideQuestionsSection();
   });
 };
 
@@ -1418,8 +1404,10 @@ const init = async () => {
     const data = await response.json();
     state.data = data;
     renderFilters();
-    populateHomeSelectors();
     renderCards();
+    
+    // Populate home screen selectors
+    populateHomeSelectors();
   }
 
   if (hasFormulaUI) {
@@ -1440,6 +1428,9 @@ const init = async () => {
   bindEvents();
 
   await initQuiz();
+  
+  // Show home screen by default
+  showHomeScreen();
 };
 
 init();
