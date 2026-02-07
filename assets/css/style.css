@@ -55,12 +55,14 @@ body.home-locked {
   align-items: center;
   justify-content: space-between;
   padding: 0 32px;
-  background: transparent;
+  background: linear-gradient(120deg, rgba(9, 99, 126, 0.92), rgba(8, 131, 149, 0.9), rgba(122, 178, 178, 0.88));
+  background-size: 200% 200%;
+  animation: headerGradient 18s ease infinite;
   backdrop-filter: none;
   z-index: 70;
   border-bottom: 1px solid transparent;
   transition: height 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  animation: navEntrance 0.6s ease;
+  animation: navEntrance 0.6s ease, headerGradient 18s ease infinite;
   opacity: 1;
 }
 
@@ -138,7 +140,7 @@ body.home-locked {
 }
 
 .top-nav.scrolled {
-  background: rgba(255, 255, 255, 0.96);
+  background: linear-gradient(120deg, #f7fbfc, #eef7f9, #f2f8fa);
   border-bottom-color: rgba(9, 99, 126, 0.08);
 }
 
@@ -1287,6 +1289,18 @@ mark {
   }
 }
 
+@keyframes headerGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -1359,6 +1373,10 @@ mark {
   }
 
   body.home-page {
+    animation: none;
+  }
+
+  .top-nav {
     animation: none;
   }
 
