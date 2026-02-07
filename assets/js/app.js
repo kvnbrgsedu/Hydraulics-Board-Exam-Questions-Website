@@ -95,7 +95,7 @@ const setSidebarOpen = (open) => {
 
 const loadPinnedPreference = () => {
   const stored = localStorage.getItem(SIDEBAR_PIN_KEY);
-  if (stored === null) return false;
+  if (stored === null) return true;
   return stored === "true";
 };
 
