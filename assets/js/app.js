@@ -416,8 +416,21 @@ const syncStartSelectCards = () => {
 const updateHomeLock = () => {
   if (!document.body.classList.contains("home-page")) return;
   const hasSelection = state.topic !== "all" || state.year !== "all";
-  document.body.classList.toggle("home-locked", !hasSelection);
+  const shouldLock = !hasSelection && !document.body.classList.contains("home-show-all");
+  document.body.classList.toggle("home-locked", shouldLock);
   syncStartSelectCards();
+};
+
+const updateHomeViewFromHash = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const hash = window.location.hash;
+  const showAll = hash === "#formulas" || hash === "#about";
+  document.body.classList.toggle("home-show-all", showAll);
+  if (showAll) {
+    document.body.classList.remove("home-locked");
+  } else {
+    updateHomeLock();
+  }
 };
 
 const clearGlobalSearchResults = () => {
@@ -747,6 +760,7 @@ const bindEvents = () => {
         .querySelectorAll(".nav-link")
         .forEach((item) => item.classList.remove("active"));
       link.classList.add("active");
+      updateHomeViewFromHash();
     });
   });
 
@@ -1395,6 +1409,8 @@ const init = async () => {
 
   bindEvents();
   updateHomeLock();
+  updateHomeViewFromHash();
+  addListener(window, "hashchange", updateHomeViewFromHash);
 
   await initQuiz();
 };

@@ -587,12 +587,12 @@ body.home-page.home-locked .content {
   overflow: hidden;
 }
 
-body.home-page.home-locked #questions {
+body.home-page.home-locked:not(.home-show-all) #questions {
   display: none;
 }
 
-body.home-page #formulas,
-body.home-page #about {
+body.home-page:not(.home-show-all) #formulas,
+body.home-page:not(.home-show-all) #about {
   display: none;
 }
 
