@@ -1273,7 +1273,7 @@ const bindQuizEvents = () => {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = "review.html#questions";
+      window.location.href = "index.html#questions";
     }
   });
   addListener(quizElements.resumeBtn, "click", () => {
