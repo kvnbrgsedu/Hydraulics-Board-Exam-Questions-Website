@@ -1,0 +1,56 @@
+[
+  {
+    "id": "fp-01",
+    "topic": "Fluid Properties",
+    "formula": "\\(\\rho = \\frac{m}{V}\\)",
+    "description": "Density definition (mass per unit volume)."
+  },
+  {
+    "id": "fp-02",
+    "topic": "Fluid Properties",
+    "formula": "\\(\\gamma = \\rho g\\)",
+    "description": "Specific weight of a fluid."
+  },
+  {
+    "id": "hs-01",
+    "topic": "Hydrostatics",
+    "formula": "\\(F = \\gamma A \\bar{y}\\)",
+    "description": "Hydrostatic force on a plane surface."
+  },
+  {
+    "id": "hs-02",
+    "topic": "Hydrostatics",
+    "formula": "\\(y_{cp} = \\bar{y} + \\frac{I_G}{\\bar{y}A}\\)",
+    "description": "Center of pressure for a submerged plane area."
+  },
+  {
+    "id": "pf-01",
+    "topic": "Pipe Flow",
+    "formula": "\\(Re = \\frac{\\rho V D}{\\mu}\\)",
+    "description": "Reynolds number for internal flow."
+  },
+  {
+    "id": "pf-02",
+    "topic": "Pipe Flow",
+    "formula": "\\(h_f = f\\frac{L}{D}\\frac{V^2}{2g}\\)",
+    "description": "Darcy-Weisbach head loss."
+  },
+  {
+    "id": "oc-01",
+    "topic": "Open Channel Flow",
+    "formula": "\\(R = \\frac{A}{P}\\)",
+    "description": "Hydraulic radius definition."
+  },
+  {
+    "id": "pt-01",
+    "topic": "Pumps and Turbines",
+    "formula": "\\(P = \\frac{\\rho g Q H}{\\eta}\\)",
+    "description": "Input power for a pump."
+  },
+  {
+    "id": "da-01",
+    "topic": "Dimensional Analysis",
+    "formula": "\\(\\pi = \\frac{F}{\\rho V^2 D^2}\\)",
+    "description": "Typical drag coefficient group."
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "2011-apr-01",
+    "number": 1,
+    "year": "2011",
+    "batch": "April",
+    "topic": "Fluid Properties",
+    "question": "Determine the specific gravity of a liquid if 6.5 kN of force is required to lift a 0.25 m^2 plate from the surface.",
+    "solution": "Use \\(F = SG \\cdot \\gamma_w \\cdot A\\). Solve for \\(SG = \\frac{F}{\\gamma_w A}\\), with \\(\\gamma_w = 9.81\\,\\text{kN/m}^3\\).",
+    "image": ""
+  },
+  {
+    "id": "2012-nov-02",
+    "number": 2,
+    "year": "2012",
+    "batch": "November",
+    "topic": "Hydrostatics",
+    "question": "A vertical rectangular gate is 1.2 m wide and 2.0 m high, with its top edge 0.5 m below the water surface. Compute the hydrostatic force and center of pressure.",
+    "solution": "Use \\(F = \\gamma_w A \\bar{y}\\). Center of pressure: \\(y_{cp} = \\bar{y} + \\frac{I}{\\bar{y}A}\\).",
+    "image": "assets/images/placeholder.svg"
+  },
+  {
+    "id": "2016-apr-05",
+    "number": 5,
+    "year": "2016",
+    "batch": "April",
+    "topic": "Pipe Flow",
+    "question": "Water flows through a 150 mm diameter pipe at 0.035 m³/s. Determine the Reynolds number and classify the flow.",
+    "solution": "Compute \\(V = \\frac{Q}{A}\\). Then \\(Re = \\frac{\\rho V D}{\\mu}\\). Compare with the transition range.",
+    "image": ""
+  },
+  {
+    "id": "2018-nov-09",
+    "number": 9,
+    "year": "2018",
+    "batch": "November",
+    "topic": "Open Channel Flow",
+    "question": "A trapezoidal channel has base 2 m, side slope 1H:1V, and flow depth 1 m. Find the wetted perimeter and hydraulic radius.",
+    "solution": "Area \\(A = y(b + zy)\\). Wetted perimeter \\(P = b + 2y\\sqrt{1 + z^2}\\). Hydraulic radius \\(R = \\frac{A}{P}\\).",
+    "image": ""
+  },
+  {
+    "id": "2020-apr-12",
+    "number": 12,
+    "year": "2020",
+    "batch": "April",
+    "topic": "Pumps and Turbines",
+    "question": "A pump delivers 0.06 m³/s against a head of 18 m with efficiency of 78%. Find the required input power.",
+    "solution": "Water power: \\(P_w = \\rho g Q H\\). Input power: \\(P_{in} = \\frac{P_w}{\\eta}\\).",
+    "image": ""
+  },
+  {
+    "id": "2021-nov-03",
+    "number": 3,
+    "year": "2021",
+    "batch": "November",
+    "topic": "Dimensional Analysis",
+    "question": "Using Buckingham Pi, determine dimensionless groups for drag force on a sphere in a fluid.",
+    "solution": "Variables: \\(F, \\rho, V, D, \\mu\\). Groups: \\(C_d = \\frac{F}{\\rho V^2 D^2}\\) and \\(Re = \\frac{\\rho V D}{\\mu}\\).",
+    "image": ""
+  },
+  {
+    "id": "2023-apr-07",
+    "number": 7,
+    "year": "2023",
+    "batch": "April",
+    "topic": "Fluid Kinematics",
+    "question": "Given a 2D velocity field u = 2x, v = -2y, determine the type of flow and check continuity.",
+    "solution": "Check \\(\\frac{\\partial u}{\\partial x} + \\frac{\\partial v}{\\partial y} = 2 - 2 = 0\\) (continuity satisfied).",
+    "image": ""
+  },
+  {
+    "id": "2025-nov-14",
+    "number": 14,
+    "year": "2025",
+    "batch": "November",
+    "topic": "Fluid Dynamics",
+    "question": "Apply Bernoulli between two points with elevation difference 6 m and compute the pressure head difference assuming negligible losses.",
+    "solution": "If velocities are equal and losses are negligible, \\(\\Delta(P/\\gamma) = \\Delta z\\).",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s01",
+    "number": 1,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Pipe Flow",
+    "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the ff:<br><br>Volume flow rate in m^3/s and L/s<br>Mass flow rate in kg/s<br>Weight flow rate in N/s<br><br>Given:<br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br>Required:<br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
+    "solution": "Solution:<br><br>\\(Q = Av\\)<br>\\(= \\frac{\\pi}{4}(0.1\\,m)(4\\,m/s)\\)<br>\\(Q = 0.031416\\,m^3/s\\)<br>\\(Q = 31.416\\,L/s\\)<br>\\(Q = 0.031\\,m^3/s\\)<br><br>\\(M = \\rho Q\\)<br>\\(=1000(0.031)\\)<br>\\(M = 31\\,kg/s\\)<br><br>\\(W = \\delta Q\\)<br>\\(=9810(0.031)\\)<br>\\(W = 304.11\\,N/s\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s02",
+    "number": 2,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Fluid Kinematics",
+    "question": "Situation 2 – Neglecting air resistance, determine to what height a vertical jet of water could rise if projected with a velocity of 32 m/s?<br><br>Given:<br>Velocity (v) = 32 m/s<br><br>Required:<br>Height (H)",
+    "solution": "Solution:<br><br>\\(H = \\frac{v^2}{2g}\\)<br>\\(= \\frac{{(32\\,m/s)}^2}{2(9.81\\,m/s^2)}\\)<br>\\(H = 52.192\\,m\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s03",
+    "number": 3,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Fluid Kinematics",
+    "question": "Situation 3 – If a jet is inclined upward 30° from the horizontal, what must be its velocity to reach over a 4 m wall at a horizontal distance of 25 m. Neglect friction.<br><br>Given:<br>Angle θ = 30°<br>Vertical distance (y) = 4 m<br>Horizontal distance (x) = 25 m<br><br>Required:<br>Velocity (v)",
+    "solution": "Solution:<br><br>\\(y = x\\tan\\theta-\\frac{g x^2}{2v^2{\\cos{\\theta}}^2}\\)<br>\\(4\\,m = 25\\,m[\\tan(30)]- \\frac{9.81\\,m/s^2\\,(25\\,m)^2}{2v^2[\\cos(30)^2]}\\)<br>\\(v = 19.793\\,m/s\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s04",
+    "number": 4,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Pipe Flow",
+    "question": "Situation 4 – Air is moving through a square 500 mm by 500 mm duct at 200 m^3/min. What is its mean velocity?<br><br>Given:<br>Base (b) & height (h) = 500 mm<br>Flow rate (Q) = 200 m^3/min<br><br>Required:<br>Velocity (v)",
+    "solution": "Solution:<br><br>\\(Q = Av\\)<br>\\(200\\,m^3/min\\,(\\frac{1\\,min}{60\\,s})=(0.5\\,m)^2(v)\\)<br>\\(v = 13.333\\,m/s\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s05",
+    "number": 5,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Fluid Kinematics",
+    "question": "Situation 5 – The water tank in the figure is being filled through section 1 at 7 m/s and through section 3 at 17 L/s. If water level h is constant, determine the exit velocity.<br><br>Given:<br>Section 1 velocity (v_1) = 7 m/s<br>Section 3 flow rate (Q_3) = 17 L/s<br><br>Required:<br>Section 2 velocity (v_2)",
+    "solution": "Solution:<br><br>\\(Q_1+Q_3=Q_2\\)<br>\\(A_1v_1+Q_3=A_2v_2\\)<br>\\(\\frac{\\pi}{4}(0.04\\,m)^2(7\\,m/s) + 17\\,L/s = \\frac{\\pi}{4}(0.06\\,m)^2(v_2)\\)<br>\\(v_2=9.124\\,m/s\\)",
+    "image": "assets/images/placeholder.svg"
+  },
+  {
+    "id": "2024-apr-s06",
+    "number": 6,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Fluid Dynamics",
+    "question": "Situation 6 – A diverging tube discharges water from a reservoir at a depth of h = 12 m below the water surface. The diameter of the tube gradually increases from 150 mm at the throat to 225 mm at the outlet. Neglecting friction, determine the ff:<br><br>Maximum possible rate of discharge through this tube<br>Corresponding possible pressure at the throat<br><br>Given:<br>Depth (h) = 12 m<br>Diameter of throat (D_2) = 150 mm<br>Diameter of outlet (D_3) = 225 mm<br><br>Required:<br>Discharge through the tube (Q)<br>Pressure at the throat (P_2)",
+    "solution": "Solution:<br><br>\\(\\frac{v^2}{2g}\\rightarrow\\frac{8Q^2}{\\pi^2 g D^4}\\)<br>\\(E_1=E_3\\)<br>\\((\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_1=(\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_3\\)<br>\\(0+0+12=\\frac{8Q^2}{\\pi^2(9.81\\,m/s^2){(0.225\\,m)}^4}+0+0\\)<br>\\(Q=0.61\\,m^3/s\\)<br><br>\\(E_2=E_3\\)<br>\\((\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_2=(\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_3\\)<br>\\(\\frac{8{(0.61\\,m^3/s)}^2}{\\pi^2(9.81\\,m/s^2){(0.15\\,m)}^4}+\\frac{P}{9.81\\,kN/m^3}+0=\\frac{[\\frac{0.61\\,m^3/s}{\\frac{\\pi}{4}(0.225\\,m)^2}]^2}{2(9.81\\,m/s^2)}+0+0\\)<br>\\(P_2=478.09\\,kPa\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s07",
+    "number": 7,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Pipe Flow",
+    "question": "Situation 7 – A horizontal pipe gradually changes from 350 mm diameter section to 125 mm diameter section. The pressure at the 350 mm section is 120 kPa and at the 125 mm section is 80 kPa. If the flow rate is 18 L/s of water, compute for the head lost between the two sections.<br><br>Diameter 1 (D1) = 350 mm<br>Pressure 1 (P1) = 120 kPa<br>Diameter 2 (D2) = 125 mm<br>Pressure 2 (P2) = 80 kPa<br>Flow rate (Q) = 18 L/s<br><br>Required:<br>Head loss (HL)",
+    "solution": "Solution:<br><br>\\(\\frac{v^2}{2g}\\rightarrow\\frac{8Q^2}{\\pi^2 g D^4}\\)<br>\\(E_1-HL=E_2\\)<br>\\((\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_1-HL=(\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_2\\)<br>\\(\\frac{8{(0.018\\,m^3/s)}^2}{\\pi^2(9.81\\,m/s^2){(0.35\\,m)}^4}+\\frac{120\\,kPa}{9.81\\,kN/m^3}+0-HL=\\frac{8{(0.018\\,m^3/s)}^2}{\\pi^2(9.81\\,m/s^2){(0.125\\,m)}^4}+\\frac{80\\,kPa}{9.81\\,kN/m^3}+0\\)<br>\\(HL = 3.97\\,m\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s08",
+    "number": 8,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Fluid Dynamics",
+    "question": "Situation 8 – A liquid having a specific gravity of 1.665 is flowing in a 75 mm diameter pipe. The total head at a given point was found to be 18 Joule per Newton. The elevation of the pipe above the datum is 3.2 m and the pressure in the pipe is 70.6 kPa. Compute for the velocity of flow and the horsepower in the stream at that point.<br><br>Given:<br>Specific gravity (sg) = 1.665<br>Diameter (D) = 75 mm<br>Total head (E) = 18 Joule per Newton<br>Datum (z) = 3.2 m<br>Pressure (P) = 70.6 kPa<br><br>Required:<br>Velocity (v)<br>Power (P)",
+    "solution": "Solution:<br><br>\\(E=\\frac{v^2}{2g}+\\frac{P}{\\delta}+z\\)<br>\\(18\\,m = \\frac{v^2}{2(9.81\\,m/s^2)}+\\frac{70.6\\,kPa}{9.81\\,kN/m^3}+3.2\\,m\\)<br>\\(v=14.338\\,m/s\\)<br><br>\\(P=Q\\delta E\\)<br>\\(= \\frac{\\pi}{4}(0.075\\,m)^2(14.338\\,m/s)[9810\\,N/m^3(1.665)](18\\,m)\\)<br>\\(=\\frac{18623.304\\,watts}{746\\,hp}\\)<br>\\(P=24.964\\,hp\\)",
+    "image": ""
+  },
+  {
+    "id": "2024-apr-s09",
+    "number": 9,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Open Channel Flow",
+    "question": "Situation 9 – High velocity water flows up an inclined plane as shown. What are the two possible depths of flow at section 2? Neglect losses.<br><br>Given:<br>Velocity (v) = 9.806 m/s<br>Depth at section 1 (d1) = 500 mm<br>Datum (z) = 2.5 m<br>Channel width (w) = 2 m<br><br>Required:<br>Two possible depths at section 2 (d2)",
+    "solution": "Solution:<br><br>\\(Q=Av\\)<br>\\(=0.5\\,m(2)(9.806\\,m/s)\\)<br>\\(Q=9.806\\,m^3/s\\)<br><br>\\(E_1=d_1+\\frac{v^2}{2g}\\)<br>\\(=0.5\\,m+\\frac{(9.806\\,m/s)^2}{2(9.81\\,m/s^2)}\\)<br>\\(E_1=5.401\\,m\\)<br>\\(E_2=E_1-z\\)<br>\\(=5.401\\,m-2.5\\,m\\)<br>\\(E_2=2.901\\,m\\)<br><br>\\(E_2=d_2+\\frac{v^2}{2g}\\)<br>\\(2.901\\,m = d_2+\\frac{(\\frac{9.806\\,m^3/s}{2d_2})}{2(9.81\\,m/s^2)}\\)<br>\\(d_2=2.738\\,m\\,or\\,0.756\\,m\\)",
+    "image": "assets/images/placeholder.svg"
+  },
+  {
+    "id": "2024-apr-s10",
+    "number": 10,
+    "year": "2024",
+    "batch": "April",
+    "topic": "Pumps and Turbines",
+    "question": "Situation 10 – A turbine is rated 900 hp when the flow of water through is 780 L/s. Assuming efficiency of 85%, compute for the head acting on the turbine.<br><br>Given:<br>Power output = 900 hp<br>Flow rate = 780 L/s<br>Efficiency = 85%<br><br>Required:<br>Head extracted (HE)",
+    "solution": "Solution:<br><br>\\(Efficiency=\\frac{Output}{Input}(100)\\)<br>\\(0.85=\\frac{900\\,hp}{Input}\\)<br>\\(P_I=1058.824\\,hp(764\\,watts)\\)<br>\\(P_I=789882.353\\,watts\\)<br><br>\\(P=Q\\delta HE\\)<br>\\(789882.353\\,watts=0.78\\,m^3/s(9810\\,N/m^3)(HE)\\)<br>\\(HE=103.228\\,m\\)",
+    "image": ""
+  }
+]
