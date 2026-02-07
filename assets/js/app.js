@@ -396,6 +396,7 @@ const updateHomeVisibility = () => {
     questionsSection.classList.toggle("hidden", !shouldShowQuestions);
   }
   document.body.classList.toggle("home-locked", !shouldShowQuestions);
+  document.body.classList.toggle("questions-only", shouldShowQuestions);
   return shouldShowQuestions;
 };
 
