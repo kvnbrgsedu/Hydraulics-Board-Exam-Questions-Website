@@ -551,7 +551,11 @@ const bindEvents = () => {
     applyFilters();
   });
 
-  addListener(clearFilters, "click", () => {
+  addListener(clearFilters, "click", (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     state.year = "all";
     state.batch = "all";
     state.topic = "all";
@@ -563,6 +567,10 @@ const bindEvents = () => {
       .querySelectorAll(".topic-pill")
       .forEach((pill) => pill.classList.remove("active"));
     applyFilters();
+    const questionsSection = document.getElementById("questions");
+    if (questionsSection) {
+      questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     closeSidebarIfAutoHide();
   });
 
