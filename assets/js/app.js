@@ -24,20 +24,12 @@ const quizState = {
 };
 
 const grid = document.getElementById("question-grid");
-const yearSelect = document.getElementById("year-select");
-const batchSelect = document.getElementById("batch-select");
-const topicList = document.getElementById("topic-list");
-const searchInput = document.getElementById("search-input");
 const resultsInfo = document.getElementById("results-info");
 const emptyState = document.getElementById("empty-state");
-const activeChips = document.getElementById("active-chips");
-const clearFilters = document.getElementById("clear-filters");
-const backToTop = document.getElementById("back-to-top");
-const progressBar = document.getElementById("progress-bar");
+const questionsShell = document.getElementById("questions-shell");
 const sidebar = document.getElementById("sidebar");
 const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
-const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
 const startTopic = document.getElementById("start-topic");
 const startYear = document.getElementById("start-year");
@@ -47,10 +39,6 @@ const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
 const formulaEmpty = document.getElementById("formula-empty");
 const topNav = document.getElementById("top-nav");
-const globalSearchToggle = document.getElementById("global-search-toggle");
-const globalSearch = document.getElementById("global-search");
-const globalSearchInput = document.getElementById("global-search-input");
-const globalSearchResults = document.getElementById("global-search-results");
 
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
@@ -189,33 +177,10 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!yearSelect || !batchSelect || !topicList || !startTopic || !startYear) return;
-  yearRange.forEach((year) => {
-    const option = document.createElement("option");
-    option.value = String(year);
-    option.textContent = year;
-    yearSelect.appendChild(option);
-  });
-
-  const batches = Array.from(
-    new Set(state.data.map((item) => item.batch))
-  ).sort();
-  batches.forEach((batch) => {
-    const option = document.createElement("option");
-    option.value = batch;
-    option.textContent = batch;
-    batchSelect.appendChild(option);
-  });
-
+  if (!startTopic || !startYear) return;
   const topics = Array.from(
     new Set(state.data.map((item) => item.topic))
   ).sort();
-  topicList.innerHTML = topics
-    .map(
-      (topic) =>
-        `<button class="topic-pill" data-topic="${topic}">${topic}</button>`
-    )
-    .join("");
 
   startTopic.innerHTML =
     `<option value="all">All Topics</option>` +
@@ -226,30 +191,11 @@ const renderFilters = () => {
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
 };
 
-const updateActiveChips = () => {
-  const chips = [];
-  if (state.year !== "all") chips.push(`Year: ${state.year}`);
-  if (state.batch !== "all") chips.push(`Batch: ${state.batch}`);
-  if (state.topic !== "all") chips.push(`Topic: ${state.topic}`);
-  if (state.search.trim()) chips.push(`Search: "${state.search.trim()}"`);
-
-  activeChips.innerHTML = chips
-    .map((chip) => `<span class="chip">${chip}</span>`)
-    .join("");
-};
-
 const filterData = () =>
   state.data.filter((item) => {
     const matchesYear = state.year === "all" || item.year === state.year;
-    const matchesBatch = state.batch === "all" || item.batch === state.batch;
     const matchesTopic = state.topic === "all" || item.topic === state.topic;
-    const query = state.search.trim().toLowerCase();
-    const matchesSearch =
-      !query ||
-      item.question.toLowerCase().includes(query) ||
-      item.topic.toLowerCase().includes(query) ||
-      `${item.year} ${item.batch}`.toLowerCase().includes(query);
-    return matchesYear && matchesBatch && matchesTopic && matchesSearch;
+    return matchesYear && matchesTopic;
   });
 
 const buildCardHtml = (item) => {
@@ -354,19 +300,24 @@ const renderGrid = (items) => {
   grid.innerHTML = items.map((item) => buildCardHtml(item)).join("");
 };
 
-const renderCards = () => {
-  if (!grid || !resultsInfo || !emptyState || !activeChips) return;
-  const filtered = filterData();
-  const isAllView =
-    state.year === "all" &&
-    state.batch === "all" &&
-    state.topic === "all" &&
-    !state.search.trim();
+const hasSelection = () => state.year !== "all" || state.topic !== "all";
 
-  updateActiveChips();
-  resultsInfo.textContent = isAllView
-    ? `${filtered.length} questions grouped by year.`
-    : `${filtered.length} question${filtered.length === 1 ? "" : "s"} found.`;
+const setQuestionVisibility = (visible) => {
+  if (!questionsShell) return;
+  questionsShell.classList.toggle("hidden", !visible);
+  if (visible) {
+    requestAnimationFrame(() => questionsShell.classList.add("is-visible"));
+  } else {
+    questionsShell.classList.remove("is-visible");
+  }
+};
+
+const renderCards = () => {
+  if (!grid || !resultsInfo || !emptyState) return;
+  const filtered = filterData();
+  resultsInfo.textContent = `${filtered.length} question${
+    filtered.length === 1 ? "" : "s"
+  } found.`;
   emptyState.classList.toggle("hidden", filtered.length > 0);
 
   if (filtered.length === 0) {
@@ -374,25 +325,16 @@ const renderCards = () => {
     return;
   }
 
-  if (isAllView) {
-    renderTimeline(filtered);
-  } else {
-    renderGrid(filtered);
-  }
-
+  renderGrid(filtered);
   typesetMath();
-  requestAnimationFrame(() => {
-    document.querySelectorAll(".year-header.reveal").forEach((header) => {
-      if (!observer) {
-        header.classList.add("is-visible");
-        return;
-      }
-      observer.observe(header);
-    });
-  });
 };
 
 const applyFilters = () => {
+  if (!hasSelection()) {
+    setQuestionVisibility(false);
+    return;
+  }
+  setQuestionVisibility(true);
   renderCards();
 };
 
@@ -460,112 +402,7 @@ const renderFormulaFilters = () => {
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 };
 
-const renderGlobalResults = (query) => {
-  if (!globalSearchResults) return;
-  if (!query.trim()) {
-    globalSearchResults.classList.remove("show");
-    globalSearchResults.innerHTML = "";
-    return;
-  }
-
-  const matches = [];
-  state.data.forEach((item) => {
-    const haystack = `${item.question} ${item.topic} ${item.year} ${item.batch}`;
-    if (haystack.toLowerCase().includes(query.toLowerCase())) {
-      matches.push({
-        label: `Q${item.number} - ${item.topic}`,
-        detail: item.question,
-        target: "#questions",
-        type: "question",
-      });
-    }
-  });
-
-  state.formulas.forEach((item) => {
-    const haystack = `${item.description} ${item.topic} ${item.formula}`;
-    if (haystack.toLowerCase().includes(query.toLowerCase())) {
-      matches.push({
-        label: `${item.topic} Formula`,
-        detail: item.description,
-        target: "#formulas",
-        type: "formula",
-      });
-    }
-  });
-
-  globalSearchResults.innerHTML = matches
-    .slice(0, 8)
-    .map(
-      (item) => `
-        <div class="global-search__item" data-target="${item.target}">
-          <strong>${buildHighlights(item.label, query)}</strong>
-          <div>${buildHighlights(item.detail, query)}</div>
-        </div>
-      `
-    )
-    .join("");
-  if (!matches.length) {
-    globalSearchResults.innerHTML = `
-      <div class="global-search__item">
-        <strong>No matches found</strong>
-        <div>Try another keyword or topic.</div>
-      </div>
-    `;
-  }
-  globalSearchResults.classList.toggle("show", true);
-};
-
 const bindEvents = () => {
-  addListener(yearSelect, "change", (event) => {
-    state.year = event.target.value;
-    applyFilters();
-    closeSidebarIfAutoHide();
-  });
-
-  addListener(batchSelect, "change", (event) => {
-    state.batch = event.target.value;
-    applyFilters();
-    closeSidebarIfAutoHide();
-  });
-
-  addListener(topicList, "click", (event) => {
-    const button = event.target.closest(".topic-pill");
-    if (!button) return;
-    state.topic = button.dataset.topic;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
-    applyFilters();
-    closeSidebarIfAutoHide();
-  });
-
-  addListener(topicToggle, "click", () => {
-    topicToggle.classList.toggle("collapsed");
-    if (topicList) topicList.classList.toggle("collapsed");
-  });
-
-  addListener(searchInput, "input", (event) => {
-    state.search = event.target.value;
-    applyFilters();
-  });
-
-  addListener(clearFilters, "click", () => {
-    state.year = "all";
-    state.batch = "all";
-    state.topic = "all";
-    state.search = "";
-    if (yearSelect) yearSelect.value = "all";
-    if (batchSelect) batchSelect.value = "all";
-    if (searchInput) searchInput.value = "";
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) => pill.classList.remove("active"));
-    applyFilters();
-    closeSidebarIfAutoHide();
-  });
-
   addListener(grid, "click", (event) => {
     if (event.target.classList.contains("solution-toggle")) {
       const button = event.target;
@@ -575,46 +412,18 @@ const bindEvents = () => {
     }
 
     if (event.target.classList.contains("tag")) {
-      const { year, batch, topic } = event.target.dataset;
-      if (year && batch && yearSelect && batchSelect) {
+      const { year, topic } = event.target.dataset;
+      if (year && startYear) {
         state.year = year;
-        state.batch = batch;
-        yearSelect.value = year;
-        batchSelect.value = batch;
+        startYear.value = year;
       }
       if (topic) {
         state.topic = topic;
-        document
-          .querySelectorAll(".topic-pill")
-          .forEach((pill) =>
-            pill.classList.toggle("active", pill.dataset.topic === topic)
-          );
+        if (startTopic) startTopic.value = topic;
       }
       applyFilters();
       closeSidebarIfAutoHide();
     }
-  });
-
-  addListener(window, "scroll", () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-    const progress = scrollHeight ? (scrollTop / scrollHeight) * 100 : 0;
-    if (progressBar) progressBar.style.width = `${progress}%`;
-    if (backToTop) backToTop.classList.toggle("show", scrollTop > 300);
-    const hero = document.querySelector(".hero");
-    if (hero) {
-      hero.style.backgroundPositionY = `${scrollTop * 0.2}px`;
-    }
-    if (topNav) {
-      topNav.classList.toggle("compact", scrollTop > 40);
-      topNav.classList.toggle("scrolled", scrollTop > 120);
-    }
-  });
-
-  addListener(backToTop, "click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   addListener(hamburger, "click", () => {
@@ -650,22 +459,16 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startCta, "click", () => {
-    if (!startTopic || !startYear || !yearSelect) return;
+  const handleSelectionChange = () => {
+    if (!startTopic || !startYear) return;
     state.topic = startTopic.value;
     state.year = startYear.value;
-    yearSelect.value = state.year;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
     applyFilters();
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
-      questionsSection.scrollIntoView({ behavior: "smooth" });
-    }
-  });
+  };
+
+  addListener(startTopic, "change", handleSelectionChange);
+  addListener(startYear, "change", handleSelectionChange);
+  addListener(startCta, "click", handleSelectionChange);
 
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
@@ -681,28 +484,6 @@ const bindEvents = () => {
     }
   });
 
-  addListener(globalSearchToggle, "click", () => {
-    if (!topNav) return;
-    topNav.classList.toggle("search-open");
-    if (topNav.classList.contains("search-open") && globalSearchInput) {
-      globalSearchInput.focus();
-    }
-  });
-
-  addListener(globalSearchInput, "input", (event) => {
-    renderGlobalResults(event.target.value);
-  });
-
-  addListener(globalSearchResults, "click", (event) => {
-    const item = event.target.closest(".global-search__item");
-    if (!item) return;
-    const target = item.dataset.target;
-    const targetElement = document.querySelector(target);
-    if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
-    if (topNav) topNav.classList.remove("search-open");
-    if (globalSearchResults) globalSearchResults.classList.remove("show");
-  });
-
   document.querySelectorAll(".nav-link").forEach((link) => {
     link.addEventListener("click", () => {
       document
@@ -710,30 +491,6 @@ const bindEvents = () => {
         .forEach((item) => item.classList.remove("active"));
       link.classList.add("active");
     });
-  });
-
-  const sections = ["home", "questions", "quiz", "formulas", "about"];
-  addListener(window, "scroll", () => {
-    if (document.body.classList.contains("quiz-page")) return;
-    const scrollPos = window.scrollY + 140;
-    let current = "home";
-    sections.forEach((id) => {
-      const section = document.getElementById(id);
-      if (section && section.offsetTop <= scrollPos) {
-        current = id;
-      }
-    });
-    document.querySelectorAll(".nav-link").forEach((item) => {
-      item.classList.toggle("active", item.getAttribute("href") === `#${current}`);
-    });
-  });
-
-  addListener(document, "click", (event) => {
-    if (!globalSearch || !globalSearchToggle || !topNav || !globalSearchResults) return;
-    if (!globalSearch.contains(event.target) && event.target !== globalSearchToggle) {
-      topNav.classList.remove("search-open");
-      globalSearchResults.classList.remove("show");
-    }
   });
 
   addListener(window, "resize", () => {
@@ -1305,12 +1062,11 @@ const init = async () => {
   const hasFormulaUI = Boolean(formulaGroups && formulaTopic);
 
   if (hasQuestionUI) {
-    renderSkeletons();
     const response = await fetch(DATA_URL);
     const data = await response.json();
     state.data = data;
     renderFilters();
-    renderCards();
+    setQuestionVisibility(false);
   }
 
   if (hasFormulaUI) {
