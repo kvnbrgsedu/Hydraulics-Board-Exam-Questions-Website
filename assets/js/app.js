@@ -39,9 +39,6 @@ const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
 const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
-const startTopic = document.getElementById("start-topic");
-const startYear = document.getElementById("start-year");
-const startCta = document.getElementById("start-cta");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -51,6 +48,11 @@ const globalSearchToggle = document.getElementById("global-search-toggle");
 const globalSearch = document.getElementById("global-search");
 const globalSearchInput = document.getElementById("global-search-input");
 const globalSearchResults = document.getElementById("global-search-results");
+const homeTopicSelect = document.getElementById("home-topic-select");
+const homeYearSelect = document.getElementById("home-year-select");
+const homeScreen = document.querySelector(".home-screen");
+const questionsView = document.getElementById("questions-view");
+const backToHomeBtn = document.getElementById("back-to-home");
 
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
@@ -189,7 +191,7 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!yearSelect || !batchSelect || !topicList || !startTopic || !startYear) return;
+  if (!yearSelect || !batchSelect || !topicList) return;
   yearRange.forEach((year) => {
     const option = document.createElement("option");
     option.value = String(year);
@@ -217,13 +219,18 @@ const renderFilters = () => {
     )
     .join("");
 
-  startTopic.innerHTML =
-    `<option value="all">All Topics</option>` +
-    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  // Populate home screen dropdowns
+  if (homeTopicSelect) {
+    homeTopicSelect.innerHTML =
+      `<option value="all">All Topics</option>` +
+      topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  }
 
-  startYear.innerHTML =
-    `<option value="all">All Years</option>` +
-    yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
+  if (homeYearSelect) {
+    homeYearSelect.innerHTML =
+      `<option value="all">All Years</option>` +
+      yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
+  }
 };
 
 const updateActiveChips = () => {
@@ -518,6 +525,8 @@ const renderGlobalResults = (query) => {
 const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
+    // Sync with home year selector
+    if (homeYearSelect) homeYearSelect.value = state.year;
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -532,6 +541,8 @@ const bindEvents = () => {
     const button = event.target.closest(".topic-pill");
     if (!button) return;
     state.topic = button.dataset.topic;
+    // Sync with home topic selector
+    if (homeTopicSelect) homeTopicSelect.value = state.topic;
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) =>
@@ -559,9 +570,18 @@ const bindEvents = () => {
     if (yearSelect) yearSelect.value = "all";
     if (batchSelect) batchSelect.value = "all";
     if (searchInput) searchInput.value = "";
+    if (homeTopicSelect) homeTopicSelect.value = "all";
+    if (homeYearSelect) homeYearSelect.value = "all";
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) => pill.classList.remove("active"));
+    
+    // Return to home screen when clearing all filters
+    if (questionsView && homeScreen) {
+      questionsView.classList.add("hidden");
+      homeScreen.style.display = "flex";
+    }
+    
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -650,21 +670,43 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startCta, "click", () => {
-    if (!startTopic || !startYear || !yearSelect) return;
-    state.topic = startTopic.value;
-    state.year = startYear.value;
-    yearSelect.value = state.year;
+  // Home screen dropdown handlers
+  const showQuestionsView = () => {
+    if (homeScreen) homeScreen.style.display = "none";
+    if (questionsView) questionsView.classList.remove("hidden");
+    applyFilters();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const showHomeScreen = () => {
+    if (questionsView) questionsView.classList.add("hidden");
+    if (homeScreen) homeScreen.style.display = "flex";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  addListener(homeTopicSelect, "change", (event) => {
+    state.topic = event.target.value;
+    // Sync sidebar topic pills
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) =>
         pill.classList.toggle("active", pill.dataset.topic === state.topic)
       );
-    applyFilters();
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
-      questionsSection.scrollIntoView({ behavior: "smooth" });
+    if (state.topic !== "all" || state.year !== "all") {
+      showQuestionsView();
     }
+  });
+
+  addListener(homeYearSelect, "change", (event) => {
+    state.year = event.target.value;
+    if (yearSelect) yearSelect.value = state.year;
+    if (state.topic !== "all" || state.year !== "all") {
+      showQuestionsView();
+    }
+  });
+
+  addListener(backToHomeBtn, "click", () => {
+    showHomeScreen();
   });
 
   addListener(formulaSearch, "input", filterFormulas);
@@ -704,7 +746,23 @@ const bindEvents = () => {
   });
 
   document.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", () => {
+    link.addEventListener("click", (e) => {
+      const href = link.getAttribute("href");
+      
+      // Handle home navigation
+      if (href === "#home") {
+        e.preventDefault();
+        if (questionsView && !questionsView.classList.contains("hidden")) {
+          // If on questions view, go back to home
+          if (homeScreen) homeScreen.style.display = "flex";
+          questionsView.classList.add("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          // Already on home, just scroll to top
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+      
       document
         .querySelectorAll(".nav-link")
         .forEach((item) => item.classList.remove("active"));

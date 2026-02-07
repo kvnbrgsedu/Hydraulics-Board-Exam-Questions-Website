@@ -34,7 +34,6 @@
       <div class="top-nav__right">
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
-          <a href="#questions" class="nav-link">Questions</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
           <a href="#formulas" class="nav-link">Formula Sheet</a>
           <a href="#about" class="nav-link">About</a>
@@ -55,19 +54,33 @@
       </div>
     </header>
 
-    <header class="hero" id="home">
-      <div class="hero__overlay"></div>
-      <div class="hero__inner">
-        <div class="hero__content">
-          <p class="hero__eyebrow">PH Civil Engineering Review</p>
-          <h1>Hydraulics Board Exam Review (PH)</h1>
-          <p class="hero__subtitle">
-            A complete, organized archive of Philippine board exam hydraulics
-            questions from 2011-2025, designed for focused and effective review.
-          </p>
+    <section class="home-screen" id="home">
+      <div class="home-screen__content">
+        <h1 class="home-screen__title">Hydraulics Board Exam Reviewer</h1>
+        <p class="home-screen__description">
+          Select a topic or exam year to access board-style practice questions.
+          Build confidence through focused, organized review.
+        </p>
+        
+        <div class="home-screen__selectors">
+          <div class="selector-group">
+            <label for="home-topic-select" class="selector-label">Select Topic</label>
+            <select id="home-topic-select" class="home-selector">
+              <option value="all">All Topics</option>
+            </select>
+          </div>
+          
+          <div class="selector-group">
+            <label for="home-year-select" class="selector-label">Select Exam Year</label>
+            <select id="home-year-select" class="home-selector">
+              <option value="all">All Years</option>
+            </select>
+          </div>
         </div>
+        
+        <p class="home-screen__hint">Choose one or both filters to get started</p>
       </div>
-    </header>
+    </section>
 
     <aside class="sidebar" id="sidebar">
       <div class="sidebar__brand">
@@ -114,10 +127,10 @@
       <div class="filter-block">
         <p class="filter-label">Quick Navigation</p>
         <nav class="sidebar__nav">
-          <a href="#questions">All Questions</a>
+          <a href="#home">Home</a>
           <a href="quiz.html">Interactive Quiz</a>
           <a href="#formulas">Formula Sheet</a>
-          <a href="#results-info">Results Summary</a>
+          <a href="#about">About</a>
         </nav>
       </div>
 
@@ -140,28 +153,13 @@
     </aside>
 
     <main class="content">
-      <section class="start-review">
-        <div>
-          <p class="section-eyebrow">Start Reviewing</p>
-          <h2>Quick Access Controls</h2>
-          <p class="section-subtitle">
-            Choose a topic and jump straight into the questions.
-          </p>
-        </div>
-        <div class="start-review__controls">
-          <select id="start-topic">
-            <option value="all">All Topics</option>
-          </select>
-          <select id="start-year">
-            <option value="all">All Years</option>
-          </select>
-          <button id="start-cta" class="btn btn--primary">
-            View Questions
+      <section id="questions-view" class="questions-view hidden">
+        <div class="questions-view__header">
+          <button id="back-to-home" class="btn btn--ghost">
+            ← Back to Home
           </button>
         </div>
-      </section>
-
-      <section id="questions" class="questions-section">
+        
       <section class="active-filters">
         <div id="active-chips" class="chips"></div>
         <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
@@ -176,7 +174,6 @@
         <p>Try adjusting your filters or search keywords.</p>
       </section>
       </section>
-
 
       <section id="formulas" class="formula-section">
         <div class="section-header">

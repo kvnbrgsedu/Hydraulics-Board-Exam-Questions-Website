@@ -220,6 +220,143 @@ body {
   background: rgba(9, 99, 126, 0.08);
 }
 
+/* ===== HOME SCREEN ===== */
+.home-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px 32px;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(9, 99, 126, 0.03) 0%,
+    rgba(122, 178, 178, 0.05) 50%,
+    rgba(9, 99, 126, 0.03) 100%
+  );
+}
+
+.home-screen__content {
+  max-width: 680px;
+  width: 100%;
+  text-align: center;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.home-screen__title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #09637e;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+.home-screen__description {
+  font-size: 18px;
+  color: #5f7d82;
+  margin: 0 0 48px;
+  line-height: 1.6;
+  max-width: 580px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home-screen__selectors {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  align-items: flex-end;
+}
+
+.selector-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.selector-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #09637e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.home-selector {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  font-family: "Poppins", sans-serif;
+  color: #062730;
+  background: #ffffff;
+  border: 2px solid #d0e4e7;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.08);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2309637e' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+}
+
+.home-selector:hover {
+  border-color: #088395;
+  box-shadow: 0 4px 16px rgba(9, 99, 126, 0.15);
+  transform: translateY(-2px);
+}
+
+.home-selector:focus {
+  outline: none;
+  border-color: #088395;
+  box-shadow: 0 0 0 4px rgba(8, 131, 149, 0.1), 0 4px 16px rgba(9, 99, 126, 0.15);
+}
+
+.home-selector option {
+  padding: 12px;
+  font-size: 15px;
+}
+
+.home-screen__hint {
+  font-size: 14px;
+  color: #7ab2b2;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ===== QUESTIONS VIEW ===== */
+.questions-view {
+  padding-top: 32px;
+}
+
+.questions-view.hidden {
+  display: none;
+}
+
+.questions-view__header {
+  max-width: 1440px;
+  margin: 0 auto 24px;
+  padding: 0 32px;
+}
+
+#back-to-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#back-to-home:hover {
+  background: rgba(9, 99, 126, 0.08);
+  transform: translateX(-4px);
+}
+
 .hero {
   padding: 120px 32px 80px 32px;
   position: relative;
@@ -1292,6 +1429,48 @@ mark {
   .top-nav__right {
     gap: 10px;
   }
+
+  .home-screen__selectors {
+    gap: 16px;
+  }
+
+  .home-selector {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-screen {
+    padding: 60px 24px 24px;
+  }
+
+  .home-screen__title {
+    font-size: 32px;
+  }
+
+  .home-screen__description {
+    font-size: 16px;
+    margin-bottom: 36px;
+  }
+
+  .home-screen__selectors {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .selector-group {
+    width: 100%;
+  }
+
+  .home-selector {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+
+  .questions-view__header {
+    padding: 0 24px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1319,6 +1498,33 @@ mark {
 
   .timeline {
     padding-left: 16px;
+  }
+
+  .home-screen {
+    padding: 50px 20px 20px;
+  }
+
+  .home-screen__title {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .home-screen__description {
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  .home-screen__hint {
+    font-size: 13px;
+  }
+
+  .questions-view__header {
+    padding: 0 20px;
+  }
+
+  #back-to-home {
+    font-size: 14px;
+    padding: 8px 16px;
   }
 }
 
