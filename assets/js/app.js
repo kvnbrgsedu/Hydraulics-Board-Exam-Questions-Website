@@ -396,6 +396,7 @@ const updateHomeVisibility = () => {
     questionsSection.classList.toggle("hidden", !shouldShowQuestions);
   }
   document.body.classList.toggle("home-locked", !shouldShowQuestions);
+  document.body.classList.toggle("questions-only", shouldShowQuestions);
   return shouldShowQuestions;
 };
 
@@ -724,6 +725,10 @@ const bindEvents = () => {
         .querySelectorAll(".nav-link")
         .forEach((item) => item.classList.remove("active"));
       link.classList.add("active");
+      const href = link.getAttribute("href") || "";
+      if (href.includes("#formulas") || href.includes("#about")) {
+        document.body.classList.remove("questions-only");
+      }
     });
   });
 
