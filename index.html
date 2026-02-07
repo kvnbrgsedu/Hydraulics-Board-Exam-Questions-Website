@@ -34,6 +34,7 @@
       <div class="top-nav__right">
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
+          <a href="#questions" class="nav-link">Questions</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
           <a href="#formulas" class="nav-link">Formula Sheet</a>
           <a href="#about" class="nav-link">About</a>
@@ -103,10 +104,11 @@
       </div>
 
       <div class="filter-block">
-        <label class="filter-label" for="topic-select">Topics</label>
-        <select id="topic-select">
-          <option value="all">All Topics</option>
-        </select>
+        <button class="filter-label filter-toggle" id="topic-toggle">
+          Topics
+          <span class="chevron">▾</span>
+        </button>
+        <div id="topic-list" class="topic-list"></div>
       </div>
 
       <div class="filter-block">
