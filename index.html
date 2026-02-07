@@ -13,9 +13,10 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
-  <body id="top" class="home-screen">
+  <body id="top">
+    <div id="progress-bar"></div>
 
-    <header class="top-nav top-nav--minimal" id="top-nav">
+    <header class="top-nav" id="top-nav">
       <div class="top-nav__brand">
         <button
           class="hamburger"
@@ -34,32 +35,87 @@
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
+          <a href="#formulas" class="nav-link">Formula Sheet</a>
+          <a href="#about" class="nav-link">About</a>
         </nav>
+        <div class="top-nav__actions">
+          <button id="global-search-toggle" class="icon-btn" aria-label="Search">
+            ⌕
+          </button>
+          <div class="global-search" id="global-search">
+            <input
+              id="global-search-input"
+              type="text"
+              placeholder="Search questions, formulas, topics, years..."
+            />
+            <div id="global-search-results" class="global-search__results"></div>
+          </div>
+        </div>
       </div>
     </header>
 
-    <main class="home-shell" id="home">
-      <section class="home-hero">
-        <p class="home-hero__eyebrow">PH Civil Engineering Review</p>
-        <h1>Hydraulics Board Exam Review (PH)</h1>
-        <p class="home-hero__subtitle">
-          Focused, topic- and year-based practice questions curated for the
-          Philippine Civil Engineering Hydraulics board exam.
-        </p>
-      </section>
+    <header class="hero" id="home">
+      <div class="hero__overlay"></div>
+      <div class="hero__inner">
+        <div class="hero__content">
+          <p class="hero__eyebrow">PH Civil Engineering Review</p>
+          <h1>Hydraulics Board Exam Review (PH)</h1>
+          <p class="hero__subtitle">
+            A complete, organized archive of Philippine board exam hydraulics
+            questions from 2011-2025, designed for focused and effective review.
+          </p>
+        </div>
+      </div>
+    </header>
 
     <aside class="sidebar" id="sidebar">
       <div class="sidebar__brand">
         <div>
-          <p class="title">Hydraulics Review</p>
-          <p class="subtitle">Quick Navigation</p>
+          <p class="title">Hydraulics QBank</p>
+          <p class="subtitle">Official Board Exams</p>
         </div>
       </div>
 
       <div class="filter-block">
+        <label class="filter-label" for="search-input">Search</label>
+        <div class="search">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Search questions, topics, years..."
+          />
+          <span class="search-icon">⌕</span>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <label class="filter-label" for="year-select">Year</label>
+        <select id="year-select">
+          <option value="all">All Years</option>
+        </select>
+      </div>
+
+      <div class="filter-block">
+        <label class="filter-label" for="batch-select">Exam Batch</label>
+        <select id="batch-select">
+          <option value="all">All Batches</option>
+        </select>
+      </div>
+
+      <div class="filter-block">
+        <label class="filter-label" for="topic-select">Topics</label>
+        <select id="topic-select">
+          <option value="all">All Topics</option>
+        </select>
+      </div>
+
+      <div class="filter-block">
+        <p class="filter-label">Quick Navigation</p>
         <nav class="sidebar__nav">
-          <a href="#home">Home</a>
+          <a href="#questions">All Questions</a>
           <a href="quiz.html">Interactive Quiz</a>
+          <a href="#formulas">Formula Sheet</a>
+          <a href="#results-info">Results Summary</a>
         </nav>
       </div>
 
@@ -81,42 +137,109 @@
       </button>
     </aside>
 
-      <section class="home-controls">
-        <div class="home-controls__copy">
+    <main class="content">
+      <section class="start-review">
+        <div>
           <p class="section-eyebrow">Start Reviewing</p>
-          <h2>Select a Topic and Year</h2>
+          <h2>Quick Access Controls</h2>
           <p class="section-subtitle">
-            Choose a topic or year to load the practice questions instantly.
+            Choose a topic and jump straight into the questions.
           </p>
         </div>
-        <div class="home-controls__inputs">
-          <label class="control-label" for="start-topic">Select Topic</label>
-          <select id="start-topic" class="control-select">
+        <div class="start-review__controls">
+          <select id="start-topic">
             <option value="all">All Topics</option>
           </select>
-          <label class="control-label" for="start-year">Select Year</label>
-          <select id="start-year" class="control-select">
+          <select id="start-year">
             <option value="all">All Years</option>
           </select>
-          <button id="start-cta" class="btn btn--primary btn--lg">
-            Load Questions
+          <button id="start-cta" class="btn btn--primary">
+            View Questions
           </button>
         </div>
       </section>
 
-      <section id="questions-shell" class="questions-shell hidden" aria-live="polite">
-        <div class="questions-shell__header">
-          <h3>Questions</h3>
-          <p id="results-info" class="results-info"></p>
+      <section id="questions" class="questions-section">
+      <section class="active-filters">
+        <div id="active-chips" class="chips"></div>
+        <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
+      </section>
+
+      <section id="results-info" class="results-info"></section>
+
+      <section id="question-grid" class="grid"></section>
+      <section id="empty-state" class="empty hidden">
+        <div class="empty__bubble"></div>
+        <h3>No results found</h3>
+        <p>Try adjusting your filters or search keywords.</p>
+      </section>
+      </section>
+
+
+      <section id="formulas" class="formula-section">
+        <div class="section-header">
+          <p class="section-eyebrow">Formula Sheet</p>
+          <h2>Hydraulics Formula Library</h2>
+          <p class="section-subtitle">
+            Filter by topic and search formulas instantly.
+          </p>
         </div>
-        <section id="question-grid" class="grid"></section>
-        <section id="empty-state" class="empty hidden">
+        <div class="formula-controls">
+          <input
+            id="formula-search"
+            type="text"
+            placeholder="Search formulas..."
+          />
+          <select id="formula-topic">
+            <option value="all">All Topics</option>
+          </select>
+        </div>
+        <div id="formula-groups" class="formula-groups"></div>
+        <div id="formula-empty" class="empty hidden">
           <div class="empty__bubble"></div>
-          <h3>No results found</h3>
-          <p>Try a different topic or year.</p>
-        </section>
+          <h3>No formulas found</h3>
+          <p>Try a different topic or keyword.</p>
+        </div>
+      </section>
+
+      <section id="about" class="about-section">
+        <div class="section-header">
+          <p class="section-eyebrow">About</p>
+          <h2>Designed for Focused Review</h2>
+          <p class="section-subtitle">
+            Built to make board exam preparation organized, accessible, and
+            premium in quality.
+          </p>
+        </div>
+        <div class="about-grid">
+          <div class="about-card">
+            <h3>Official Question Archive</h3>
+            <p>
+              Consolidated hydraulics board exam questions from 2011-2025 with
+              clean organization by year, batch, and topic.
+            </p>
+          </div>
+          <div class="about-card">
+            <h3>Formula-first Recall</h3>
+            <p>
+              A dedicated formula sheet with instant filtering and math-ready
+              rendering for quick refreshers.
+            </p>
+          </div>
+          <div class="about-card">
+            <h3>Premium Review Experience</h3>
+            <p>
+              A calm, readable interface with purposeful animations to reduce
+              friction during study sessions.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
+
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+      ↑
+    </button>
 
     <script src="assets/js/app.js"></script>
   </body>

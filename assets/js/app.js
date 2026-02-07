@@ -24,9 +24,16 @@ const quizState = {
 };
 
 const grid = document.getElementById("question-grid");
+const yearSelect = document.getElementById("year-select");
+const batchSelect = document.getElementById("batch-select");
+const topicSelect = document.getElementById("topic-select");
+const searchInput = document.getElementById("search-input");
 const resultsInfo = document.getElementById("results-info");
 const emptyState = document.getElementById("empty-state");
-const questionsShell = document.getElementById("questions-shell");
+const activeChips = document.getElementById("active-chips");
+const clearFilters = document.getElementById("clear-filters");
+const backToTop = document.getElementById("back-to-top");
+const progressBar = document.getElementById("progress-bar");
 const sidebar = document.getElementById("sidebar");
 const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
@@ -39,6 +46,10 @@ const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
 const formulaEmpty = document.getElementById("formula-empty");
 const topNav = document.getElementById("top-nav");
+const globalSearchToggle = document.getElementById("global-search-toggle");
+const globalSearch = document.getElementById("global-search");
+const globalSearchInput = document.getElementById("global-search-input");
+const globalSearchResults = document.getElementById("global-search-results");
 
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
@@ -177,10 +188,31 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!startTopic || !startYear) return;
+  if (!yearSelect || !batchSelect || !topicSelect || !startTopic || !startYear) return;
+  yearRange.forEach((year) => {
+    const option = document.createElement("option");
+    option.value = String(year);
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  });
+
+  const batches = Array.from(
+    new Set(state.data.map((item) => item.batch))
+  ).sort();
+  batches.forEach((batch) => {
+    const option = document.createElement("option");
+    option.value = batch;
+    option.textContent = batch;
+    batchSelect.appendChild(option);
+  });
+
   const topics = Array.from(
     new Set(state.data.map((item) => item.topic))
   ).sort();
+
+  topicSelect.innerHTML =
+    `<option value="all">All Topics</option>` +
+    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
   startTopic.innerHTML =
     `<option value="all">All Topics</option>` +
@@ -191,11 +223,30 @@ const renderFilters = () => {
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
 };
 
+const updateActiveChips = () => {
+  const chips = [];
+  if (state.year !== "all") chips.push(`Year: ${state.year}`);
+  if (state.batch !== "all") chips.push(`Batch: ${state.batch}`);
+  if (state.topic !== "all") chips.push(`Topic: ${state.topic}`);
+  if (state.search.trim()) chips.push(`Search: "${state.search.trim()}"`);
+
+  activeChips.innerHTML = chips
+    .map((chip) => `<span class="chip">${chip}</span>`)
+    .join("");
+};
+
 const filterData = () =>
   state.data.filter((item) => {
     const matchesYear = state.year === "all" || item.year === state.year;
+    const matchesBatch = state.batch === "all" || item.batch === state.batch;
     const matchesTopic = state.topic === "all" || item.topic === state.topic;
-    return matchesYear && matchesTopic;
+    const query = state.search.trim().toLowerCase();
+    const matchesSearch =
+      !query ||
+      item.question.toLowerCase().includes(query) ||
+      item.topic.toLowerCase().includes(query) ||
+      `${item.year} ${item.batch}`.toLowerCase().includes(query);
+    return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
 
 const buildCardHtml = (item) => {
