@@ -1,0 +1,10 @@
+{
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "gitdoc.enabled": true,
+  "gitdoc.autoCommitDelay": 5000,
+  "gitdoc.autoPushDelay": 10000,
+  "gitdoc.commitMessageFormat": "Auto-commit: ${date}",
+  "gitdoc.commitValidationLevel": "none",
+  "gitdoc.pullOnOpen": true
+}
