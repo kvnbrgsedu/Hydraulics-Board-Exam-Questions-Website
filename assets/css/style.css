@@ -226,14 +226,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 32px 32px;
+  padding: 80px 32px 60px;
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(9, 99, 126, 0.03) 0%,
-    rgba(122, 178, 178, 0.05) 50%,
-    rgba(9, 99, 126, 0.03) 100%
+    #062730 0%,
+    #09637e 50%,
+    #062730 100%
   );
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
 }
 
 .home-screen__content {
@@ -246,14 +248,15 @@ body {
 .home-screen__title {
   font-size: 42px;
   font-weight: 700;
-  color: #09637e;
+  color: #f8feff;
   margin: 0 0 16px;
   line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .home-screen__description {
   font-size: 18px;
-  color: #5f7d82;
+  color: #d8f3f6;
   margin: 0 0 48px;
   line-height: 1.6;
   max-width: 580px;
@@ -279,7 +282,7 @@ body {
 .selector-label {
   font-size: 14px;
   font-weight: 600;
-  color: #09637e;
+  color: #7ab2b2;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -322,39 +325,22 @@ body {
 
 .home-screen__hint {
   font-size: 14px;
-  color: #7ab2b2;
+  color: #d0e4e7;
   margin: 0;
   font-style: italic;
+  opacity: 0.9;
 }
 
-/* ===== QUESTIONS VIEW ===== */
-.questions-view {
+/* ===== QUESTIONS SECTION ===== */
+.questions-section {
   padding-top: 32px;
+  background: #f8feff;
+  min-height: 0;
+  transition: all 0.3s ease;
 }
 
-.questions-view.hidden {
+.questions-section.hidden {
   display: none;
-}
-
-.questions-view__header {
-  max-width: 1440px;
-  margin: 0 auto 24px;
-  padding: 0 32px;
-}
-
-#back-to-home {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  padding: 10px 20px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-#back-to-home:hover {
-  background: rgba(9, 99, 126, 0.08);
-  transform: translateX(-4px);
 }
 
 .hero {
@@ -1386,6 +1372,18 @@ mark {
   }
 }
 
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero::before {
     animation: none;
@@ -1468,8 +1466,8 @@ mark {
     font-size: 16px;
   }
 
-  .questions-view__header {
-    padding: 0 24px;
+  .questions-section {
+    padding: 24px 24px 32px;
   }
 }
 
@@ -1518,13 +1516,8 @@ mark {
     font-size: 13px;
   }
 
-  .questions-view__header {
-    padding: 0 20px;
-  }
-
-  #back-to-home {
-    font-size: 14px;
-    padding: 8px 16px;
+  .questions-section {
+    padding: 20px 20px 32px;
   }
 }
 
