@@ -31,8 +31,6 @@ body.home-page {
 }
 
 body.home-page .content,
-body.home-page .top-nav,
-body.home-page .sidebar,
 body.home-page .hero {
   position: relative;
   z-index: 2;
