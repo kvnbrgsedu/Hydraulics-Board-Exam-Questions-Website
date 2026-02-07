@@ -30,6 +30,12 @@ body.home-page {
   animation: homeGradient 22s ease infinite;
 }
 
+body.home-page .hero::before,
+body.home-page .hero::after,
+body.home-page .hero__overlay {
+  display: none;
+}
+
 body.home-locked {
   overflow: hidden;
   height: 100vh;
@@ -132,6 +138,29 @@ body.home-locked {
 
 .top-nav__links a.active {
   text-shadow: 0 0 12px rgba(122, 178, 178, 0.6);
+}
+
+.top-nav__links a,
+.icon-btn,
+.sidebar__nav a,
+.btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease,
+    background 0.2s ease;
+}
+
+.top-nav__links a:hover,
+.icon-btn:hover,
+.sidebar__nav a:hover,
+.btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 10px 20px rgba(9, 99, 126, 0.18);
+}
+
+.top-nav__links a:active,
+.icon-btn:active,
+.sidebar__nav a:active,
+.btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .top-nav__actions {
@@ -333,6 +362,15 @@ body.home-page .hero__inner {
 body.home-page .hero__content {
   text-align: center;
   max-width: 720px;
+}
+
+.hero h1 {
+  animation: fadeInUp 0.8s ease;
+}
+
+.hero__subtitle {
+  animation: fadeInUp 0.8s ease;
+  animation-delay: 0.12s;
 }
 
 .hamburger {
@@ -692,10 +730,12 @@ body.sidebar-open .hero {
 body.home-page .start-review {
   justify-content: center;
   text-align: center;
-  background: rgba(255, 255, 255, 0.92);
+  background: transparent;
+  box-shadow: none;
   max-width: 860px;
   margin-left: auto;
   margin-right: auto;
+  padding: 0;
 }
 
 .start-review__controls {
