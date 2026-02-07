@@ -39,6 +39,9 @@ const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
 const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
+const startTopic = document.getElementById("start-topic");
+const startYear = document.getElementById("start-year");
+const startCta = document.getElementById("start-cta");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -48,16 +51,6 @@ const globalSearchToggle = document.getElementById("global-search-toggle");
 const globalSearch = document.getElementById("global-search");
 const globalSearchInput = document.getElementById("global-search-input");
 const globalSearchResults = document.getElementById("global-search-results");
-
-// Home screen elements
-const homeTopicSelect = document.getElementById("home-topic-select");
-const homeYearSelect = document.getElementById("home-year-select");
-const backToHomeBtn = document.getElementById("back-to-home");
-const backToHomeFormulasBtn = document.getElementById("back-to-home-formulas");
-const backToHomeAboutBtn = document.getElementById("back-to-home-about");
-const questionsSection = document.getElementById("questions");
-const formulasSection = document.getElementById("formulas");
-const aboutSection = document.getElementById("about");
 
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
@@ -359,14 +352,6 @@ const renderGrid = (items) => {
   grid.classList.remove("timeline");
   grid.classList.add("grid");
   grid.innerHTML = items.map((item) => buildCardHtml(item)).join("");
-  
-  // Add staggered animation delays for cards
-  requestAnimationFrame(() => {
-    const cards = grid.querySelectorAll('.card');
-    cards.forEach((card, index) => {
-      card.style.animationDelay = `${index * 0.05}s`;
-    });
-  });
 };
 
 const renderCards = () => {
@@ -475,61 +460,6 @@ const renderFormulaFilters = () => {
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 };
 
-// Home Screen Navigation Functions
-const showHomeScreen = () => {
-  document.body.classList.add("home-visible");
-  document.body.classList.remove("content-visible");
-  if (questionsSection) questionsSection.classList.add("hidden");
-  if (formulasSection) formulasSection.classList.add("hidden");
-  if (aboutSection) aboutSection.classList.add("hidden");
-  if (backToTop) backToTop.classList.add("hidden");
-  window.scrollTo(0, 0);
-  
-  // Update nav links
-  document.querySelectorAll(".nav-link").forEach((link) => {
-    link.classList.toggle("active", link.getAttribute("href") === "#home");
-  });
-};
-
-const showQuestionsSection = () => {
-  document.body.classList.remove("home-visible");
-  document.body.classList.add("content-visible");
-  if (questionsSection) questionsSection.classList.remove("hidden");
-  if (formulasSection) formulasSection.classList.add("hidden");
-  if (aboutSection) aboutSection.classList.add("hidden");
-  if (backToTop) backToTop.classList.remove("hidden");
-  window.scrollTo(0, 0);
-};
-
-const showSection = (sectionId) => {
-  document.body.classList.remove("home-visible");
-  document.body.classList.add("content-visible");
-  if (questionsSection) questionsSection.classList.add("hidden");
-  if (formulasSection) formulasSection.classList.add("hidden");
-  if (aboutSection) aboutSection.classList.add("hidden");
-  
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.classList.remove("hidden");
-  }
-  if (backToTop) backToTop.classList.remove("hidden");
-  window.scrollTo(0, 0);
-};
-
-const populateHomeSelectors = () => {
-  if (!homeTopicSelect || !homeYearSelect) return;
-  
-  // Populate topics from data
-  const topics = [...new Set(state.data.map(item => item.topic))].filter(Boolean).sort();
-  homeTopicSelect.innerHTML = '<option value="">Choose a topic...</option>' +
-    topics.map(topic => `<option value="${topic}">${topic}</option>`).join("");
-  
-  // Populate years
-  const years = [...new Set(state.data.map(item => item.year))].filter(Boolean).sort((a, b) => b - a);
-  homeYearSelect.innerHTML = '<option value="">Choose a year...</option>' +
-    years.map(year => `<option value="${year}">${year}</option>`).join("");
-};
-
 const renderGlobalResults = (query) => {
   if (!globalSearchResults) return;
   if (!query.trim()) {
@@ -586,80 +516,6 @@ const renderGlobalResults = (query) => {
 };
 
 const bindEvents = () => {
-  // Home screen selection handlers
-  addListener(homeTopicSelect, "change", (event) => {
-    if (event.target.value) {
-      state.topic = event.target.value;
-      state.year = "all";
-      state.batch = "all";
-      if (yearSelect) yearSelect.value = "all";
-      if (batchSelect) batchSelect.value = "all";
-      document.querySelectorAll(".topic-pill").forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
-      applyFilters();
-      showQuestionsSection();
-    }
-  });
-
-  addListener(homeYearSelect, "change", (event) => {
-    if (event.target.value) {
-      state.year = event.target.value;
-      state.topic = "all";
-      state.batch = "all";
-      if (yearSelect) yearSelect.value = event.target.value;
-      if (batchSelect) batchSelect.value = "all";
-      document.querySelectorAll(".topic-pill").forEach((pill) =>
-        pill.classList.remove("active")
-      );
-      applyFilters();
-      showQuestionsSection();
-    }
-  });
-
-  // Back to home buttons
-  addListener(backToHomeBtn, "click", () => {
-    showHomeScreen();
-    // Reset selections
-    if (homeTopicSelect) homeTopicSelect.value = "";
-    if (homeYearSelect) homeYearSelect.value = "";
-  });
-
-  addListener(backToHomeFormulasBtn, "click", () => {
-    showHomeScreen();
-  });
-
-  addListener(backToHomeAboutBtn, "click", () => {
-    showHomeScreen();
-  });
-
-  // Nav link handlers
-  document.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", (event) => {
-      const href = link.getAttribute("href");
-      
-      // Update active state
-      document.querySelectorAll(".nav-link").forEach((item) => 
-        item.classList.remove("active")
-      );
-      link.classList.add("active");
-      
-      // Handle navigation
-      if (href === "#home") {
-        event.preventDefault();
-        showHomeScreen();
-        if (homeTopicSelect) homeTopicSelect.value = "";
-        if (homeYearSelect) homeYearSelect.value = "";
-      } else if (href === "#formulas") {
-        event.preventDefault();
-        showSection("formulas");
-      } else if (href === "#about") {
-        event.preventDefault();
-        showSection("about");
-      }
-    });
-  });
-
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
     applyFilters();
@@ -794,6 +650,23 @@ const bindEvents = () => {
     }
   });
 
+  addListener(startCta, "click", () => {
+    if (!startTopic || !startYear || !yearSelect) return;
+    state.topic = startTopic.value;
+    state.year = startYear.value;
+    yearSelect.value = state.year;
+    document
+      .querySelectorAll(".topic-pill")
+      .forEach((pill) =>
+        pill.classList.toggle("active", pill.dataset.topic === state.topic)
+      );
+    applyFilters();
+    const questionsSection = document.getElementById("questions");
+    if (questionsSection) {
+      questionsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
 
@@ -828,6 +701,31 @@ const bindEvents = () => {
     if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
     if (topNav) topNav.classList.remove("search-open");
     if (globalSearchResults) globalSearchResults.classList.remove("show");
+  });
+
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      document
+        .querySelectorAll(".nav-link")
+        .forEach((item) => item.classList.remove("active"));
+      link.classList.add("active");
+    });
+  });
+
+  const sections = ["home", "questions", "quiz", "formulas", "about"];
+  addListener(window, "scroll", () => {
+    if (document.body.classList.contains("quiz-page")) return;
+    const scrollPos = window.scrollY + 140;
+    let current = "home";
+    sections.forEach((id) => {
+      const section = document.getElementById(id);
+      if (section && section.offsetTop <= scrollPos) {
+        current = id;
+      }
+    });
+    document.querySelectorAll(".nav-link").forEach((item) => {
+      item.classList.toggle("active", item.getAttribute("href") === `#${current}`);
+    });
   });
 
   addListener(document, "click", (event) => {
@@ -1413,9 +1311,6 @@ const init = async () => {
     state.data = data;
     renderFilters();
     renderCards();
-    
-    // Populate home screen selectors
-    populateHomeSelectors();
   }
 
   if (hasFormulaUI) {
@@ -1436,9 +1331,6 @@ const init = async () => {
   bindEvents();
 
   await initQuiz();
-  
-  // Show home screen by default
-  showHomeScreen();
 };
 
 init();

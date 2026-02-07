@@ -34,8 +34,9 @@
       <div class="top-nav__right">
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
+          <a href="#questions" class="nav-link">Questions</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
-          <a href="#formulas" class="nav-link">Formulas</a>
+          <a href="#formulas" class="nav-link">Formula Sheet</a>
           <a href="#about" class="nav-link">About</a>
         </nav>
         <div class="top-nav__actions">
@@ -54,37 +55,20 @@
       </div>
     </header>
 
-    <!-- Home Screen: Non-scrollable, Single Viewport -->
-    <section class="home-screen" id="home">
-      <div class="home-screen__content">
-        <div class="home-screen__header">
-          <p class="home-screen__eyebrow">Civil Engineering Board Exam Review</p>
-          <h1 class="home-screen__title">Hydraulics Review (PH)</h1>
-          <p class="home-screen__description">
-            Organized archive of Philippine board exam hydraulics questions from 2011-2025. 
-            Select a topic or year to begin your focused review.
+    <header class="hero" id="home">
+      <div class="hero__overlay"></div>
+      <div class="hero__inner">
+        <div class="hero__content">
+          <p class="hero__eyebrow">PH Civil Engineering Review</p>
+          <h1>Hydraulics Board Exam Review (PH)</h1>
+          <p class="hero__subtitle">
+            A complete, organized archive of Philippine board exam hydraulics
+            questions from 2011-2025, designed for focused and effective review.
           </p>
         </div>
-
-        <div class="home-screen__selectors">
-          <div class="selector-card">
-            <label class="selector-card__label" for="home-topic-select">Select Topic</label>
-            <select id="home-topic-select" class="selector-card__input">
-              <option value="">Choose a topic...</option>
-            </select>
-          </div>
-
-          <div class="selector-card">
-            <label class="selector-card__label" for="home-year-select">Select Year</label>
-            <select id="home-year-select" class="selector-card__input">
-              <option value="">Choose a year...</option>
-            </select>
-          </div>
-        </div>
       </div>
-    </section>
+    </header>
 
-    <!-- Sidebar: Filters (only visible when toggled) -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar__brand">
         <div>
@@ -130,9 +114,10 @@
       <div class="filter-block">
         <p class="filter-label">Quick Navigation</p>
         <nav class="sidebar__nav">
+          <a href="#questions">All Questions</a>
           <a href="quiz.html">Interactive Quiz</a>
           <a href="#formulas">Formula Sheet</a>
-          <a href="#about">About</a>
+          <a href="#results-info">Results Summary</a>
         </nav>
       </div>
 
@@ -154,31 +139,47 @@
       </button>
     </aside>
 
-    <!-- Questions Section: Hidden until topic/year selected -->
-    <main class="content" id="content-area">
-      <section id="questions" class="questions-section hidden">
-        <div class="questions-header">
-          <button id="back-to-home" class="btn btn--ghost">← Back to Home</button>
-          <div id="results-info" class="results-info"></div>
+    <main class="content">
+      <section class="start-review">
+        <div>
+          <p class="section-eyebrow">Start Reviewing</p>
+          <h2>Quick Access Controls</h2>
+          <p class="section-subtitle">
+            Choose a topic and jump straight into the questions.
+          </p>
         </div>
-
-        <section class="active-filters">
-          <div id="active-chips" class="chips"></div>
-          <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
-        </section>
-
-        <section id="question-grid" class="grid"></section>
-        <section id="empty-state" class="empty hidden">
-          <div class="empty__bubble"></div>
-          <h3>No results found</h3>
-          <p>Try adjusting your filters or search keywords.</p>
-        </section>
+        <div class="start-review__controls">
+          <select id="start-topic">
+            <option value="all">All Topics</option>
+          </select>
+          <select id="start-year">
+            <option value="all">All Years</option>
+          </select>
+          <button id="start-cta" class="btn btn--primary">
+            View Questions
+          </button>
+        </div>
       </section>
 
-      <!-- Formula Section -->
-      <section id="formulas" class="formula-section hidden">
+      <section id="questions" class="questions-section">
+      <section class="active-filters">
+        <div id="active-chips" class="chips"></div>
+        <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
+      </section>
+
+      <section id="results-info" class="results-info"></section>
+
+      <section id="question-grid" class="grid"></section>
+      <section id="empty-state" class="empty hidden">
+        <div class="empty__bubble"></div>
+        <h3>No results found</h3>
+        <p>Try adjusting your filters or search keywords.</p>
+      </section>
+      </section>
+
+
+      <section id="formulas" class="formula-section">
         <div class="section-header">
-          <button id="back-to-home-formulas" class="btn btn--ghost">← Back to Home</button>
           <p class="section-eyebrow">Formula Sheet</p>
           <h2>Hydraulics Formula Library</h2>
           <p class="section-subtitle">
@@ -203,9 +204,7 @@
         </div>
       </section>
 
-      <!-- About Section -->
-      <section id="about" class="about-section hidden">
-        <button id="back-to-home-about" class="btn btn--ghost">← Back to Home</button>
+      <section id="about" class="about-section">
         <div class="section-header">
           <p class="section-eyebrow">About</p>
           <h2>Designed for Focused Review</h2>
@@ -240,7 +239,7 @@
       </section>
     </main>
 
-    <button id="back-to-top" class="back-to-top hidden" aria-label="Back to top">
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
       ↑
     </button>
 
