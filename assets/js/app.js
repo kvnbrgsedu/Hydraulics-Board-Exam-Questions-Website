@@ -421,6 +421,46 @@ const updateHomeLock = () => {
   syncStartSelectCards();
 };
 
+const initHomeBackground = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const particlesContainer = document.querySelector(".home-particles");
+  if (particlesContainer && !particlesContainer.childElementCount) {
+    const count = 18;
+    for (let i = 0; i < count; i += 1) {
+      const dot = document.createElement("span");
+      dot.className = "home-particle";
+      const size = 3 + Math.random() * 3;
+      const left = Math.random() * 100;
+      const duration = 16 + Math.random() * 10;
+      const delay = Math.random() * 6;
+      dot.style.setProperty("--size", `${size}px`);
+      dot.style.left = `${left}%`;
+      dot.style.setProperty("--duration", `${duration}s`);
+      dot.style.setProperty("--delay", `${delay}s`);
+      particlesContainer.appendChild(dot);
+    }
+  }
+
+  let rafId = null;
+  const handleMove = (event) => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 12;
+      const y = (event.clientY / window.innerHeight - 0.5) * 8;
+      document.body.style.setProperty("--flow-x", `${x}px`);
+      document.body.style.setProperty("--flow-y", `${y}px`);
+      rafId = null;
+    });
+  };
+  window.addEventListener("mousemove", handleMove);
+
+  const content = document.querySelector(".content");
+  if (content) {
+    content.addEventListener("mouseenter", () => document.body.classList.add("home-pause"));
+    content.addEventListener("mouseleave", () => document.body.classList.remove("home-pause"));
+  }
+};
+
 const updateHomeViewFromHash = () => {
   if (!document.body.classList.contains("home-page")) return;
   const hash = window.location.hash;
@@ -1411,6 +1451,7 @@ const init = async () => {
   updateHomeLock();
   updateHomeViewFromHash();
   addListener(window, "hashchange", updateHomeViewFromHash);
+  initHomeBackground();
 
   await initQuiz();
 };

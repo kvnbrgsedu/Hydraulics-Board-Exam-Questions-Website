@@ -25,9 +25,66 @@ body {
 }
 
 body.home-page {
-  background: linear-gradient(135deg, #09637e, #088395, #7ab2b2, #ebf4f6);
+  background: linear-gradient(135deg, #063848, #09637e, #088395, #7ab2b2);
   background-size: 400% 400%;
   animation: homeGradient 22s ease infinite;
+}
+
+body.home-page .content,
+body.home-page .top-nav,
+body.home-page .sidebar,
+body.home-page .hero {
+  position: relative;
+  z-index: 2;
+}
+
+body.home-page .home-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+body.home-page .flow-lines {
+  position: absolute;
+  inset: -6% -6%;
+  width: 112%;
+  height: 112%;
+  opacity: 0.08;
+  stroke: rgba(235, 244, 246, 0.55);
+  stroke-width: 1.2;
+  fill: none;
+  animation: flowDrift 28s linear infinite;
+  transform: translate3d(var(--flow-x, 0px), var(--flow-y, 0px), 0);
+}
+
+body.home-page .flow-lines path {
+  stroke-dasharray: 12 18;
+  animation: flowDash 18s linear infinite;
+}
+
+body.home-page .home-particles {
+  position: absolute;
+  inset: 0;
+}
+
+body.home-page .home-particle {
+  position: absolute;
+  bottom: -20px;
+  width: var(--size, 4px);
+  height: var(--size, 4px);
+  border-radius: 999px;
+  background: rgba(235, 244, 246, 0.45);
+  opacity: 0.4;
+  animation: particleRise var(--duration, 18s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+body.home-page.home-pause .flow-lines,
+body.home-page.home-pause .flow-lines path,
+body.home-page.home-pause .home-particle {
+  animation-play-state: paused;
 }
 
 body.home-page .hero::before,
@@ -375,6 +432,23 @@ body.home-page .hero__content {
   max-width: 720px;
 }
 
+body.home-page .hero__content {
+  position: relative;
+}
+
+body.home-page .hero__content::before {
+  content: "";
+  position: absolute;
+  inset: -40px -60px;
+  background: radial-gradient(
+    circle,
+    rgba(235, 244, 246, 0.45),
+    rgba(122, 178, 178, 0.08),
+    rgba(9, 99, 126, 0)
+  );
+  filter: blur(6px);
+  z-index: -1;
+}
 .hero h1 {
   animation: fadeInUp 0.8s ease;
 }
@@ -1366,6 +1440,38 @@ mark {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+@keyframes flowDrift {
+  0% {
+    transform: translate3d(calc(var(--flow-x, 0px) - 8px), calc(var(--flow-y, 0px) - 6px), 0);
+  }
+  50% {
+    transform: translate3d(calc(var(--flow-x, 0px) + 8px), calc(var(--flow-y, 0px) + 6px), 0);
+  }
+  100% {
+    transform: translate3d(calc(var(--flow-x, 0px) - 8px), calc(var(--flow-y, 0px) - 6px), 0);
+  }
+}
+
+@keyframes particleRise {
+  0% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.1);
+    opacity: 0;
   }
 }
 
