@@ -563,6 +563,7 @@ const loadFormulaData = async () => {
 const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
+    if (startYear) startYear.value = state.year;
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -575,6 +576,7 @@ const bindEvents = () => {
 
   addListener(topicSelect, "change", (event) => {
     state.topic = event.target.value;
+    if (startTopic) startTopic.value = state.topic;
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -613,10 +615,12 @@ const bindEvents = () => {
         state.batch = batch;
         yearSelect.value = year;
         batchSelect.value = batch;
+        if (startYear) startYear.value = year;
       }
       if (topic) {
         state.topic = topic;
         if (topicSelect) topicSelect.value = topic;
+        if (startTopic) startTopic.value = topic;
       }
       applyFilters();
       closeSidebarIfAutoHide();

@@ -24,6 +24,17 @@ body {
   min-height: 100vh;
 }
 
+body.home-page {
+  background: linear-gradient(135deg, #09637e, #088395, #7ab2b2, #ebf4f6);
+  background-size: 400% 400%;
+  animation: homeGradient 22s ease infinite;
+}
+
+body.home-locked {
+  overflow: hidden;
+  height: 100vh;
+}
+
 #progress-bar {
   position: fixed;
   top: 0;
@@ -109,6 +120,10 @@ body {
 
 .top-nav__links a:hover {
   color: var(--accent);
+}
+
+.top-nav__links a.active {
+  text-shadow: 0 0 12px rgba(122, 178, 178, 0.6);
 }
 
 .top-nav__actions {
@@ -269,6 +284,10 @@ body {
   z-index: 3;
 }
 
+body.home-page .hero__inner {
+  justify-content: center;
+}
+
 .hero__eyebrow {
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -291,6 +310,11 @@ body {
 .hero__content {
   animation: fadeInUp 0.8s ease;
   opacity: 1;
+}
+
+body.home-page .hero__content {
+  text-align: center;
+  max-width: 720px;
 }
 
 .hamburger {
@@ -554,6 +578,20 @@ select option {
   transition: margin-left 0.35s ease;
 }
 
+body.home-page.home-locked .content {
+  min-height: calc(100vh - 72px);
+  overflow: hidden;
+}
+
+body.home-page.home-locked #questions {
+  display: none;
+}
+
+body.home-page #formulas,
+body.home-page #about {
+  display: none;
+}
+
 body.quiz-page .content {
   padding-top: 100px;
   animation: fadeInUp 0.6s ease;
@@ -633,10 +671,84 @@ body.sidebar-open .hero {
   flex-wrap: wrap;
 }
 
+body.home-page .start-review {
+  justify-content: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .start-review__controls {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+body.home-page .start-review__controls {
+  justify-content: center;
+  gap: 20px;
+}
+
+.select-card {
+  position: relative;
+  min-width: 220px;
+  padding: 14px 18px 18px;
+  border-radius: 18px;
+  background: #f7fbfc;
+  border: 1px solid rgba(9, 99, 126, 0.15);
+  box-shadow: 0 10px 26px rgba(9, 99, 126, 0.08);
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.select-card::after {
+  content: "▾";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(4px);
+  color: var(--primary);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.select-card:focus-within {
+  transform: translateY(-2px);
+  border-color: rgba(8, 131, 149, 0.6);
+  box-shadow: 0 14px 30px rgba(9, 99, 126, 0.16);
+}
+
+.select-card:focus-within::after {
+  transform: translateY(4px) rotate(180deg);
+}
+
+.select-card.has-selection {
+  border-color: rgba(8, 131, 149, 0.6);
+  box-shadow: 0 14px 30px rgba(9, 99, 126, 0.16);
+}
+
+.select-card__label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 6px;
+}
+
+.select-card select {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(9, 99, 126, 0.2);
+  background: transparent;
+  color: var(--primary);
+  font-family: inherit;
+  font-size: 15px;
+  appearance: none;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .section-eyebrow {
@@ -944,6 +1056,13 @@ section {
   gap: 12px;
 }
 
+.question-card {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: questionReveal 0.45s ease forwards;
+  animation-delay: var(--stagger, 0ms);
+}
+
 .card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
@@ -1145,6 +1264,25 @@ mark {
   }
 }
 
+@keyframes questionReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes homeGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -1208,6 +1346,16 @@ mark {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .question-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  body.home-page {
+    animation: none;
   }
 
   .hero::before {
