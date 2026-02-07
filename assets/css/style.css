@@ -8,6 +8,12 @@
   --card: #f9fdff;
   --shadow: 0 20px 45px rgba(9, 99, 126, 0.15);
   --shadow-hover: 0 30px 60px rgba(9, 99, 126, 0.2);
+  --sky-start: #fffdea;
+  --sky-mid: #e6f7ff;
+  --sky-end: #b7e8eb;
+  --ocean-dark: #014f63;
+  --ocean-mid: #017b8a;
+  --ocean-light: #02aab0;
 }
 
 * {
@@ -30,7 +36,12 @@ body {
 }
 
 body.home-page {
-  background: #b7e8eb;
+  background: radial-gradient(
+    ellipse at center,
+    var(--sky-start) 0%,
+    var(--sky-mid) 40%,
+    var(--sky-end) 100%
+  );
   overflow: hidden;
   position: relative;
 }
@@ -42,34 +53,60 @@ body.home-page .hero__overlay {
 }
 
 body.home-page .ocean {
-  height: 5%;
+  height: 18vh;
   width: 100%;
   position: absolute;
   bottom: 0;
   left: 0;
-  background: #015871;
+  background: linear-gradient(
+    to top,
+    var(--ocean-dark),
+    var(--ocean-mid),
+    var(--ocean-light)
+  );
   overflow: hidden;
   z-index: 0;
   pointer-events: none;
 }
 
 body.home-page .wave {
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg")
-    repeat-x;
   position: absolute;
-  top: -198px;
+  bottom: 0;
   width: 6400px;
-  height: 198px;
-  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+  height: 220px;
+  background-repeat: repeat-x;
+  background-size: 1600px 220px;
+  animation-name: waveMove;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
   transform: translate3d(0, 0, 0);
-  opacity: 0.9;
 }
 
-body.home-page .wave:nth-of-type(2) {
-  top: -175px;
-  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite,
-    swell 7s ease -1.25s infinite;
-  opacity: 1;
+body.home-page .wave-back {
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg");
+  opacity: 0.25;
+  animation-duration: 18s;
+  bottom: 30px;
+}
+
+body.home-page .wave-mid {
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg");
+  opacity: 0.5;
+  animation-duration: 12s;
+  bottom: 15px;
+}
+
+body.home-page .wave-front {
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg");
+  opacity: 0.9;
+  animation-duration: 8s;
+  bottom: 0;
+}
+
+@media (max-width: 768px) {
+  body.home-page .ocean {
+    height: 22vh;
+  }
 }
 
 body.home-page .content,
@@ -1399,22 +1436,12 @@ mark {
   }
 }
 
-@keyframes wave {
-  0% {
-    margin-left: 0;
+@keyframes waveMove {
+  from {
+    transform: translateX(0);
   }
-  100% {
-    margin-left: -1600px;
-  }
-}
-
-@keyframes swell {
-  0%,
-  100% {
-    transform: translate3d(0, -25px, 0);
-  }
-  50% {
-    transform: translate3d(0, 5px, 0);
+  to {
+    transform: translateX(-1600px);
   }
 }
 
