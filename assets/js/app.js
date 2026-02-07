@@ -425,8 +425,9 @@ const initHomeBackground = () => {
   if (!document.body.classList.contains("home-page")) return;
   
   const fogContainer = document.getElementById("fog-animation");
+  let fogAnimation = null;
   if (fogContainer && window.lottie && !fogContainer.hasChildNodes()) {
-    lottie.loadAnimation({
+    fogAnimation = lottie.loadAnimation({
       container: fogContainer,
       renderer: "svg",
       loop: true,
@@ -470,14 +471,14 @@ const initHomeBackground = () => {
   if (content) {
     content.addEventListener("mouseenter", () => {
       document.body.classList.add("home-pause");
-      if (fogContainer && fogContainer.lottie) {
-        fogContainer.lottie.pause();
+      if (fogAnimation) {
+        fogAnimation.pause();
       }
     });
     content.addEventListener("mouseleave", () => {
       document.body.classList.remove("home-pause");
-      if (fogContainer && fogContainer.lottie) {
-        fogContainer.lottie.play();
+      if (fogAnimation) {
+        fogAnimation.play();
       }
     });
   }
