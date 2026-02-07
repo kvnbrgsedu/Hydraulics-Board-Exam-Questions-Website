@@ -269,6 +269,12 @@ body.home-page .top-nav.scrolled {
   box-shadow: none;
 }
 
+body.home-page .top-nav__brand,
+body.home-page .top-nav__links a,
+body.home-page .icon-btn {
+  text-shadow: 0 6px 18px rgba(6, 39, 48, 0.35);
+}
+
 .top-nav .hamburger {
   display: flex;
 }
