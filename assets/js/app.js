@@ -45,6 +45,7 @@ const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
 const formulaEmpty = document.getElementById("formula-empty");
+const questionsSection = document.getElementById("questions");
 const topNav = document.getElementById("top-nav");
 const globalSearchToggle = document.getElementById("global-search-toggle");
 const globalSearch = document.getElementById("global-search");
@@ -390,6 +391,15 @@ const applyFilters = () => {
   renderCards();
 };
 
+const updateHomeVisibility = () => {
+  const shouldShowQuestions = state.topic !== "all" || state.year !== "all";
+  if (questionsSection) {
+    questionsSection.classList.toggle("hidden", !shouldShowQuestions);
+  }
+  document.body.classList.toggle("home-locked", !shouldShowQuestions);
+  return shouldShowQuestions;
+};
+
 const clearGlobalSearchResults = () => {
   if (!globalSearchResults) return;
   globalSearchResults.classList.remove("show");
@@ -536,6 +546,7 @@ const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
     applyFilters();
+    updateHomeVisibility();
     closeSidebarIfAutoHide();
   });
 
@@ -548,6 +559,7 @@ const bindEvents = () => {
   addListener(topicSelect, "change", (event) => {
     state.topic = event.target.value;
     applyFilters();
+    updateHomeVisibility();
     closeSidebarIfAutoHide();
   });
 
@@ -565,6 +577,7 @@ const bindEvents = () => {
     if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
     applyFilters();
+    updateHomeVisibility();
     closeSidebarIfAutoHide();
   });
 
@@ -589,6 +602,7 @@ const bindEvents = () => {
         if (topicSelect) topicSelect.value = topic;
       }
       applyFilters();
+    updateHomeVisibility();
       closeSidebarIfAutoHide();
     }
   });
@@ -655,8 +669,8 @@ const bindEvents = () => {
     yearSelect.value = state.year;
     if (topicSelect) topicSelect.value = state.topic;
     applyFilters();
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
+    const canScroll = updateHomeVisibility();
+    if (canScroll && questionsSection) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
     }
   });
@@ -1326,6 +1340,8 @@ const init = async () => {
   }
   syncPinToggle();
   setSidebarOpen(isPinned && isDesktop());
+
+  updateHomeVisibility();
 
   bindEvents();
 
