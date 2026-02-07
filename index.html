@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
-  <body id="top">
+  <body id="top" class="home-page home-locked">
     <div id="progress-bar"></div>
 
     <header class="top-nav" id="top-nav">
@@ -140,23 +140,19 @@
 
     <main class="content">
       <section class="start-review">
-        <div>
-          <p class="section-eyebrow">Start Reviewing</p>
-          <h2>Quick Access Controls</h2>
-          <p class="section-subtitle">
-            Choose a topic and jump straight into the questions.
-          </p>
-        </div>
         <div class="start-review__controls">
-          <select id="start-topic">
-            <option value="all">All Topics</option>
-          </select>
-          <select id="start-year">
-            <option value="all">All Years</option>
-          </select>
-          <button id="start-cta" class="btn btn--primary">
-            View Questions
-          </button>
+          <div class="select-card" data-select-card="topic">
+            <label class="select-card__label" for="start-topic">Topic</label>
+            <select id="start-topic">
+              <option value="all">All Topics</option>
+            </select>
+          </div>
+          <div class="select-card" data-select-card="year">
+            <label class="select-card__label" for="start-year">Year</label>
+            <select id="start-year">
+              <option value="all">All Years</option>
+            </select>
+          </div>
         </div>
       </section>
 

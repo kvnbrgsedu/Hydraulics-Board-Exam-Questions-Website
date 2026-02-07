@@ -40,7 +40,7 @@ const pinToggle = document.getElementById("pin-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
 const startTopic = document.getElementById("start-topic");
 const startYear = document.getElementById("start-year");
-const startCta = document.getElementById("start-cta");
+const startReviewCards = document.querySelectorAll("[data-select-card]");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -246,7 +246,7 @@ const filterData = () =>
     return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
 
-const buildCardHtml = (item) => {
+const buildCardHtml = (item, index = 0) => {
   const question = buildHighlights(item.question, state.search);
   const solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
@@ -270,7 +270,7 @@ const buildCardHtml = (item) => {
     : "";
 
   return `
-    <article class="card">
+    <article class="card question-card" style="--stagger: ${index * 40}ms;">
       <div class="card__header">
         <span>Question ${item.number}</span>
         <span>${item.topic}</span>
@@ -306,6 +306,7 @@ const renderTimeline = (items) => {
 
   const years = Object.keys(grouped).sort();
   const batchOrder = ["April", "November"];
+  let timelineIndex = 0;
   grid.innerHTML = years
     .map((year) => {
       const batches = grouped[year];
@@ -321,7 +322,9 @@ const renderTimeline = (items) => {
               </div>
               <div class="batch-content open">
                 <div class="year-grid grid">
-                  ${batches[batch].map((item) => buildCardHtml(item)).join("")}
+                  ${batches[batch]
+                    .map((item) => buildCardHtml(item, timelineIndex++))
+                    .join("")}
                 </div>
               </div>
             </div>
@@ -345,7 +348,7 @@ const renderTimeline = (items) => {
 const renderGrid = (items) => {
   grid.classList.remove("timeline");
   grid.classList.add("grid");
-  grid.innerHTML = items.map((item) => buildCardHtml(item)).join("");
+  grid.innerHTML = items.map((item, index) => buildCardHtml(item, index)).join("");
 };
 
 const renderCards = () => {
@@ -396,6 +399,23 @@ const getLoadErrorMessage = (label) => {
 
 const applyFilters = () => {
   renderCards();
+  updateHomeLock();
+};
+
+const syncStartSelectCards = () => {
+  if (!startReviewCards.length) return;
+  startReviewCards.forEach((card) => {
+    const select = card.querySelector("select");
+    if (!select) return;
+    card.classList.toggle("has-selection", select.value !== "all");
+  });
+};
+
+const updateHomeLock = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const hasSelection = state.topic !== "all" || state.year !== "all";
+  document.body.classList.toggle("home-locked", !hasSelection);
+  syncStartSelectCards();
 };
 
 const clearGlobalSearchResults = () => {
@@ -572,6 +592,8 @@ const bindEvents = () => {
     if (batchSelect) batchSelect.value = "all";
     if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
+    if (startTopic) startTopic.value = "all";
+    if (startYear) startYear.value = "all";
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -656,7 +678,7 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startCta, "click", () => {
+  const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
     state.topic = startTopic.value;
     state.year = startYear.value;
@@ -664,10 +686,13 @@ const bindEvents = () => {
     if (topicSelect) topicSelect.value = state.topic;
     applyFilters();
     const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
+    if (questionsSection && !document.body.classList.contains("home-locked")) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
     }
-  });
+  };
+
+  addListener(startTopic, "change", handleStartSelection);
+  addListener(startYear, "change", handleStartSelection);
 
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
@@ -1363,6 +1388,7 @@ const init = async () => {
   setSidebarOpen(isPinned && isDesktop());
 
   bindEvents();
+  updateHomeLock();
 
   await initQuiz();
 };
