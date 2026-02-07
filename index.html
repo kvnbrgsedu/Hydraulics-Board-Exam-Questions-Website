@@ -13,230 +13,31 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
-  <body id="top" class="home-locked">
-    <div id="progress-bar"></div>
-
-    <header class="top-nav" id="top-nav">
-      <div class="top-nav__brand">
-        <button
-          class="hamburger"
-          id="hamburger"
-          aria-label="Toggle sidebar"
-          aria-expanded="false"
-          aria-controls="sidebar"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        <span>Hydraulics Review (PH)</span>
-      </div>
-      <div class="top-nav__right">
-        <nav class="top-nav__links">
-          <a href="#home" class="nav-link active">Home</a>
-          <a href="quiz.html" class="nav-link">Quiz</a>
-          <a href="#formulas" class="nav-link">Formula Sheet</a>
-          <a href="#about" class="nav-link">About</a>
-        </nav>
-        <div class="top-nav__actions">
-          <button id="global-search-toggle" class="icon-btn" aria-label="Search">
-            ⌕
-          </button>
-          <div class="global-search" id="global-search">
-            <input
-              id="global-search-input"
-              type="text"
-              placeholder="Search questions, formulas, topics, years..."
-            />
-            <div id="global-search-results" class="global-search__results"></div>
-          </div>
-        </div>
-      </div>
+  <body class="landing-page">
+    <header class="landing-nav">
+      <div class="landing-brand">Hydraulics Review (PH)</div>
+      <nav class="landing-links">
+        <a href="review.html">Question Bank</a>
+        <a href="quiz.html">Quiz</a>
+      </nav>
     </header>
 
-    <header class="hero" id="home">
-      <div class="hero__overlay"></div>
-      <div class="hero__inner">
-        <div class="hero__content">
-          <h1>Hydraulics Board Exam Review (PH)</h1>
-          <p class="hero__subtitle">
-            A focused, organized archive of Civil Engineering Hydraulics board
-            exam questions, grouped by topic and year for structured review.
-          </p>
-        </div>
-        <div class="hero__controls" aria-label="Select review filters">
-          <div class="selection-field">
-            <label for="start-topic">Select Topic</label>
-            <select id="start-topic">
-              <option value="all">All Topics</option>
-            </select>
-          </div>
-          <div class="selection-field">
-            <label for="start-year">Select Year</label>
-            <select id="start-year">
-              <option value="all">All Years</option>
-            </select>
-          </div>
-          <button id="start-cta" class="btn btn--primary" disabled>
-            Start Review
-          </button>
+    <main class="landing-hero">
+      <div class="landing-card">
+        <p class="landing-eyebrow">PH Civil Engineering Review</p>
+        <h1>Hydraulics Board Exam Review</h1>
+        <p class="landing-subtitle">
+          Focused entry point for your study session. Choose where you want to begin.
+        </p>
+        <div class="landing-actions">
+          <a class="btn btn--primary" href="review.html#questions">Start Questions</a>
+          <a class="btn btn--secondary" href="review.html#formulas">Formula Sheet</a>
+          <a class="btn btn--ghost" href="quiz.html">Take a Quiz</a>
         </div>
       </div>
-    </header>
-
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar__brand">
-        <div>
-          <p class="title">Hydraulics QBank</p>
-          <p class="subtitle">Official Board Exams</p>
-        </div>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="search-input">Search</label>
-        <div class="search">
-          <input
-            id="search-input"
-            type="text"
-            placeholder="Search questions, topics, years..."
-          />
-          <span class="search-icon">⌕</span>
-        </div>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="year-select">Year</label>
-        <select id="year-select">
-          <option value="all">All Years</option>
-        </select>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="batch-select">Exam Batch</label>
-        <select id="batch-select">
-          <option value="all">All Batches</option>
-        </select>
-      </div>
-
-      <div class="filter-block">
-        <button class="filter-label filter-toggle" id="topic-toggle">
-          Topics
-          <span class="chevron">▾</span>
-        </button>
-        <div id="topic-list" class="topic-list"></div>
-      </div>
-
-      <div class="filter-block">
-        <p class="filter-label">Quick Navigation</p>
-        <nav class="sidebar__nav">
-          <a href="#questions">All Questions</a>
-          <a href="quiz.html">Interactive Quiz</a>
-          <a href="#formulas">Formula Sheet</a>
-          <a href="#results-info">Results Summary</a>
-        </nav>
-      </div>
-
-      <div class="filter-block sidebar__toggle">
-        <label class="toggle">
-          <input type="checkbox" id="pin-toggle" />
-          <span class="toggle__slider"></span>
-        </label>
-        <div>
-          <p class="toggle__title">Pin Sidebar</p>
-          <p class="toggle__subtitle">
-            When off, sidebar auto-hides after selection.
-          </p>
-        </div>
-      </div>
-
-      <button class="btn btn--ghost sidebar__hide" id="hide-sidebar">
-        Hide Sidebar
-      </button>
-    </aside>
-
-    <main class="content">
-      <section id="questions" class="questions-section">
-      <section class="active-filters">
-        <div id="active-chips" class="chips"></div>
-        <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
-      </section>
-
-      <section id="results-info" class="results-info"></section>
-
-      <section id="question-grid" class="grid"></section>
-      <section id="empty-state" class="empty hidden">
-        <div class="empty__bubble"></div>
-        <h3>No results found</h3>
-        <p>Try adjusting your filters or search keywords.</p>
-      </section>
-      </section>
-
-
-      <section id="formulas" class="formula-section">
-        <div class="section-header">
-          <p class="section-eyebrow">Formula Sheet</p>
-          <h2>Hydraulics Formula Library</h2>
-          <p class="section-subtitle">
-            Filter by topic and search formulas instantly.
-          </p>
-        </div>
-        <div class="formula-controls">
-          <input
-            id="formula-search"
-            type="text"
-            placeholder="Search formulas..."
-          />
-          <select id="formula-topic">
-            <option value="all">All Topics</option>
-          </select>
-        </div>
-        <div id="formula-groups" class="formula-groups"></div>
-        <div id="formula-empty" class="empty hidden">
-          <div class="empty__bubble"></div>
-          <h3>No formulas found</h3>
-          <p>Try a different topic or keyword.</p>
-        </div>
-      </section>
-
-      <section id="about" class="about-section">
-        <div class="section-header">
-          <p class="section-eyebrow">About</p>
-          <h2>Designed for Focused Review</h2>
-          <p class="section-subtitle">
-            Built to make board exam preparation organized, accessible, and
-            premium in quality.
-          </p>
-        </div>
-        <div class="about-grid">
-          <div class="about-card">
-            <h3>Official Question Archive</h3>
-            <p>
-              Consolidated hydraulics board exam questions from 2011-2025 with
-              clean organization by year, batch, and topic.
-            </p>
-          </div>
-          <div class="about-card">
-            <h3>Formula-first Recall</h3>
-            <p>
-              A dedicated formula sheet with instant filtering and math-ready
-              rendering for quick refreshers.
-            </p>
-          </div>
-          <div class="about-card">
-            <h3>Premium Review Experience</h3>
-            <p>
-              A calm, readable interface with purposeful animations to reduce
-              friction during study sessions.
-            </p>
-          </div>
-        </div>
-      </section>
+      <p class="landing-note">
+        Official board exam archive (2011-2025) organized by topic, year, and batch.
+      </p>
     </main>
-
-    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
-      ↑
-    </button>
-
-    <script src="assets/js/app.js"></script>
   </body>
 </html>

@@ -66,27 +66,6 @@ const addListener = (element, eventName, handler) => {
   }
 };
 
-const HOME_LOCK_CLASS = "home-locked";
-
-const hasActiveHomeSelection = () => state.topic !== "all" || state.year !== "all";
-
-const setHomeLock = (locked) => {
-  if (!document.body || document.body.classList.contains("quiz-page")) return;
-  document.body.classList.toggle(HOME_LOCK_CLASS, locked);
-  if (startCta) {
-    startCta.disabled = locked;
-  }
-  if (locked) {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};
-
-const syncHomeSelection = () => {
-  if (!startTopic || !startYear) return;
-  startTopic.value = state.topic;
-  startYear.value = state.year;
-};
-
 const randomBetween = (min, max, step = 1, decimals = 3) => {
   const steps = Math.floor((max - min) / step);
   const value = min + Math.floor(Math.random() * (steps + 1)) * step;
@@ -180,25 +159,6 @@ const buildHighlights = (text, query) => {
 const typesetMath = () => {
   if (window.MathJax && window.MathJax.typesetPromise) {
     window.MathJax.typesetPromise();
-  }
-};
-
-const applyHomeSelection = (shouldScroll = false) => {
-  if (!startTopic || !startYear) return;
-  state.topic = startTopic.value;
-  state.year = startYear.value;
-  if (yearSelect) yearSelect.value = state.year;
-  document
-    .querySelectorAll(".topic-pill")
-    .forEach((pill) =>
-      pill.classList.toggle("active", pill.dataset.topic === state.topic)
-    );
-  applyFilters();
-  if (shouldScroll && hasActiveHomeSelection()) {
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
-      questionsSection.scrollIntoView({ behavior: "smooth" });
-    }
   }
 };
 
@@ -434,8 +394,6 @@ const renderCards = () => {
 
 const applyFilters = () => {
   renderCards();
-  setHomeLock(!hasActiveHomeSelection());
-  syncHomeSelection();
 };
 
 const buildFormulaGroups = (formulas, query) => {
@@ -692,17 +650,21 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startTopic, "change", () => {
-    applyHomeSelection(false);
-  });
-
-  addListener(startYear, "change", () => {
-    applyHomeSelection(false);
-  });
-
   addListener(startCta, "click", () => {
-    if (!hasActiveHomeSelection()) return;
-    applyHomeSelection(true);
+    if (!startTopic || !startYear || !yearSelect) return;
+    state.topic = startTopic.value;
+    state.year = startYear.value;
+    yearSelect.value = state.year;
+    document
+      .querySelectorAll(".topic-pill")
+      .forEach((pill) =>
+        pill.classList.toggle("active", pill.dataset.topic === state.topic)
+      );
+    applyFilters();
+    const questionsSection = document.getElementById("questions");
+    if (questionsSection) {
+      questionsSection.scrollIntoView({ behavior: "smooth" });
+    }
   });
 
   addListener(formulaSearch, "input", filterFormulas);
@@ -1311,7 +1273,7 @@ const bindQuizEvents = () => {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = "index.html#questions";
+      window.location.href = "review.html#questions";
     }
   });
   addListener(quizElements.resumeBtn, "click", () => {
@@ -1367,8 +1329,6 @@ const init = async () => {
   setSidebarOpen(isPinned && isDesktop());
 
   bindEvents();
-
-  setHomeLock(!hasActiveHomeSelection());
 
   await initQuiz();
 };
