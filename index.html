@@ -34,6 +34,7 @@
       <div class="top-nav__right">
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
+          <a href="#questions" class="nav-link">Questions</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
           <a href="#formulas" class="nav-link">Formula Sheet</a>
           <a href="#about" class="nav-link">About</a>
@@ -78,18 +79,15 @@
           </p>
         </div>
         <div class="start-review__controls">
-          <div class="start-review__field">
-            <label class="start-review__label" for="start-topic">Select Topic</label>
-            <select id="start-topic">
-              <option value="all">All Topics</option>
-            </select>
-          </div>
-          <div class="start-review__field">
-            <label class="start-review__label" for="start-year">Select Year</label>
-            <select id="start-year">
-              <option value="all">All Years</option>
-            </select>
-          </div>
+          <select id="start-topic">
+            <option value="all">All Topics</option>
+          </select>
+          <select id="start-year">
+            <option value="all">All Years</option>
+          </select>
+          <button id="start-cta" class="btn btn--primary">
+            View Questions
+          </button>
         </div>
       </section>
     </section>
@@ -164,7 +162,7 @@
     </aside>
 
     <main class="content">
-      <section id="questions" class="questions-section hidden">
+      <section id="questions" class="questions-section">
       <section class="active-filters">
         <div id="active-chips" class="chips"></div>
         <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
