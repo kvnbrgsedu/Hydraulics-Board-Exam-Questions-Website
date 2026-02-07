@@ -484,6 +484,21 @@ const initHomeBackground = () => {
   }
 };
 
+const initPageBackground = () => {
+  if (document.body.classList.contains("home-page")) return;
+  
+  const bgContainer = document.getElementById("page-bg-animation");
+  if (bgContainer && window.lottie && !bgContainer.hasChildNodes()) {
+    lottie.loadAnimation({
+      container: bgContainer,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path: "assets/images/Background01.json",
+    });
+  }
+};
+
 const initHomeDropdowns = () => {
   if (!document.body.classList.contains("home-page")) return;
   const groups = document.querySelectorAll(".home-select-group");
