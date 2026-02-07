@@ -428,6 +428,12 @@ select {
 
 select option {
   color: var(--primary);
+  background: #f7fbfc;
+}
+
+.sidebar select option {
+  color: #0b5a6f;
+  background: #f7fbfc;
 }
 
 .start-review select,
