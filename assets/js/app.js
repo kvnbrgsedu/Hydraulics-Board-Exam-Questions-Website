@@ -359,6 +359,14 @@ const renderGrid = (items) => {
   grid.classList.remove("timeline");
   grid.classList.add("grid");
   grid.innerHTML = items.map((item) => buildCardHtml(item)).join("");
+  
+  // Add staggered animation delays for cards
+  requestAnimationFrame(() => {
+    const cards = grid.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.05}s`;
+    });
+  });
 };
 
 const renderCards = () => {
