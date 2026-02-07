@@ -794,7 +794,7 @@ select option {
 
 .content {
   margin-left: 0;
-  padding: 32px 32px 80px;
+  padding: 16px 32px 80px;
   transition: margin-left 0.35s ease;
 }
 
@@ -813,7 +813,7 @@ body.home-page:not(.home-show-all) #about {
 }
 
 body.quiz-page .content {
-  padding-top: 100px;
+  padding-top: 20px;
   animation: fadeInUp 0.6s ease;
 }
 
@@ -1144,7 +1144,7 @@ section {
 
 .formula-section,
 .about-section {
-  margin: 40px 0 60px;
+  margin: 0 0 60px;
 }
 
 .section-header {
