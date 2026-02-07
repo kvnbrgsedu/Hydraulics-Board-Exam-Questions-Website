@@ -26,7 +26,7 @@ const quizState = {
 const grid = document.getElementById("question-grid");
 const yearSelect = document.getElementById("year-select");
 const batchSelect = document.getElementById("batch-select");
-const topicList = document.getElementById("topic-list");
+const topicSelect = document.getElementById("topic-select");
 const searchInput = document.getElementById("search-input");
 const resultsInfo = document.getElementById("results-info");
 const emptyState = document.getElementById("empty-state");
@@ -37,7 +37,6 @@ const progressBar = document.getElementById("progress-bar");
 const sidebar = document.getElementById("sidebar");
 const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
-const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
 const startTopic = document.getElementById("start-topic");
 const startYear = document.getElementById("start-year");
@@ -189,7 +188,7 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!yearSelect || !batchSelect || !topicList || !startTopic || !startYear) return;
+  if (!yearSelect || !batchSelect || !topicSelect || !startTopic || !startYear) return;
   yearRange.forEach((year) => {
     const option = document.createElement("option");
     option.value = String(year);
@@ -207,15 +206,10 @@ const renderFilters = () => {
     batchSelect.appendChild(option);
   });
 
-  const topics = Array.from(
-    new Set(state.data.map((item) => item.topic))
-  ).sort();
-  topicList.innerHTML = topics
-    .map(
-      (topic) =>
-        `<button class="topic-pill" data-topic="${topic}">${topic}</button>`
-    )
-    .join("");
+  const topics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
+  topicSelect.innerHTML =
+    `<option value="all">All Topics</option>` +
+    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
   startTopic.innerHTML =
     `<option value="all">All Topics</option>` +
@@ -402,26 +396,9 @@ const clearGlobalSearchResults = () => {
   globalSearchResults.innerHTML = "";
 };
 
-const syncSearchInputs = (value) => {
-  const nextValue = value ?? "";
-  if (searchInput && searchInput.value !== nextValue) {
-    searchInput.value = nextValue;
-  }
-  if (globalSearchInput && globalSearchInput.value !== nextValue) {
-    globalSearchInput.value = nextValue;
-  }
-};
-
-const updateSearchQuery = (value, { renderGlobal = false } = {}) => {
-  const nextValue = value ?? "";
-  state.search = nextValue;
-  syncSearchInputs(nextValue);
+const updateSidebarSearch = (value) => {
+  state.search = value ?? "";
   applyFilters();
-  if (renderGlobal) {
-    renderGlobalResults(nextValue);
-  } else {
-    clearGlobalSearchResults();
-  }
 };
 
 const buildFormulaGroups = (formulas, query) => {
@@ -568,26 +545,14 @@ const bindEvents = () => {
     closeSidebarIfAutoHide();
   });
 
-  addListener(topicList, "click", (event) => {
-    const button = event.target.closest(".topic-pill");
-    if (!button) return;
-    state.topic = button.dataset.topic;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
+  addListener(topicSelect, "change", (event) => {
+    state.topic = event.target.value;
     applyFilters();
     closeSidebarIfAutoHide();
   });
 
-  addListener(topicToggle, "click", () => {
-    topicToggle.classList.toggle("collapsed");
-    if (topicList) topicList.classList.toggle("collapsed");
-  });
-
   addListener(searchInput, "input", (event) => {
-    updateSearchQuery(event.target.value);
+    updateSidebarSearch(event.target.value);
   });
 
   addListener(clearFilters, "click", () => {
@@ -597,12 +562,8 @@ const bindEvents = () => {
     state.search = "";
     if (yearSelect) yearSelect.value = "all";
     if (batchSelect) batchSelect.value = "all";
+    if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
-    if (globalSearchInput) globalSearchInput.value = "";
-    clearGlobalSearchResults();
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) => pill.classList.remove("active"));
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -625,11 +586,7 @@ const bindEvents = () => {
       }
       if (topic) {
         state.topic = topic;
-        document
-          .querySelectorAll(".topic-pill")
-          .forEach((pill) =>
-            pill.classList.toggle("active", pill.dataset.topic === topic)
-          );
+        if (topicSelect) topicSelect.value = topic;
       }
       applyFilters();
       closeSidebarIfAutoHide();
@@ -696,11 +653,7 @@ const bindEvents = () => {
     state.topic = startTopic.value;
     state.year = startYear.value;
     yearSelect.value = state.year;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
+    if (topicSelect) topicSelect.value = state.topic;
     applyFilters();
     const questionsSection = document.getElementById("questions");
     if (questionsSection) {
@@ -736,7 +689,7 @@ const bindEvents = () => {
   });
 
   addListener(globalSearchInput, "input", (event) => {
-    updateSearchQuery(event.target.value, { renderGlobal: true });
+    renderGlobalResults(event.target.value);
   });
 
   addListener(globalSearchResults, "click", (event) => {
