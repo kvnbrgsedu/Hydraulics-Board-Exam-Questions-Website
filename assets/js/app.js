@@ -461,6 +461,98 @@ const initHomeBackground = () => {
   }
 };
 
+const initHomeDropdowns = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const groups = document.querySelectorAll(".home-select-group");
+  if (!groups.length) return;
+
+  const closeAll = () => {
+    groups.forEach((group) => group.classList.remove("open"));
+    document.body.classList.remove("home-select-open");
+  };
+
+  groups.forEach((group) => {
+    if (group.querySelector(".home-select__trigger")) return;
+    const select = group.querySelector("select");
+    if (!select) return;
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "home-select__trigger";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.innerHTML = `
+      <span class="home-select__value">${select.options[select.selectedIndex].text}</span>
+      <span class="home-select__chevron">⌄</span>
+    `;
+
+    const menu = document.createElement("div");
+    menu.className = "home-select__menu";
+    menu.setAttribute("role", "listbox");
+
+    Array.from(select.options).forEach((option, index) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "home-select__option";
+      item.setAttribute("role", "option");
+      item.dataset.value = option.value;
+      item.style.setProperty("--delay", `${index * 40}ms`);
+      item.innerHTML = `
+        <span class="home-select__icon"></span>
+        <span class="home-select__label-text">${option.text}</span>
+        <span class="home-select__check"></span>
+      `;
+      if (option.selected) {
+        item.classList.add("selected");
+        item.setAttribute("aria-selected", "true");
+      }
+      menu.appendChild(item);
+    });
+
+    const updateSelection = (value) => {
+      select.value = value;
+      trigger.querySelector(".home-select__value").textContent =
+        select.options[select.selectedIndex].text;
+      menu.querySelectorAll(".home-select__option").forEach((item) => {
+        const isSelected = item.dataset.value === value;
+        item.classList.toggle("selected", isSelected);
+        item.setAttribute("aria-selected", isSelected ? "true" : "false");
+      });
+      group.classList.toggle("has-selection", value !== "all");
+    };
+
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const isOpen = group.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      document.body.classList.toggle("home-select-open", isOpen);
+      if (!isOpen) return;
+      groups.forEach((other) => {
+        if (other !== group) other.classList.remove("open");
+      });
+    });
+
+    menu.addEventListener("click", (event) => {
+      const item = event.target.closest(".home-select__option");
+      if (!item) return;
+      updateSelection(item.dataset.value);
+      group.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("home-select-open");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    group.appendChild(trigger);
+    group.appendChild(menu);
+    updateSelection(select.value);
+  });
+
+  document.addEventListener("click", closeAll);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAll();
+  });
+};
+
 const updateHomeViewFromHash = () => {
   if (!document.body.classList.contains("home-page")) return;
   const hash = window.location.hash;
@@ -1452,6 +1544,7 @@ const init = async () => {
   updateHomeViewFromHash();
   addListener(window, "hashchange", updateHomeViewFromHash);
   initHomeBackground();
+  initHomeDropdowns();
 
   await initQuiz();
 };
