@@ -39,6 +39,9 @@ const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
 const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
+const startTopic = document.getElementById("start-topic");
+const startYear = document.getElementById("start-year");
+const startCta = document.getElementById("start-cta");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -48,10 +51,14 @@ const globalSearchToggle = document.getElementById("global-search-toggle");
 const globalSearch = document.getElementById("global-search");
 const globalSearchInput = document.getElementById("global-search-input");
 const globalSearchResults = document.getElementById("global-search-results");
+
+// Home screen selectors
 const homeTopicSelect = document.getElementById("home-topic-select");
 const homeYearSelect = document.getElementById("home-year-select");
-const homeScreen = document.querySelector(".home-screen");
-const questionsSection = document.getElementById("questions-section");
+const dynamicQuestions = document.getElementById("dynamic-questions");
+const backToHome = document.getElementById("back-to-home");
+const selectionInfo = document.getElementById("selection-info");
+const heroSection = document.querySelector(".hero");
 
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
@@ -190,7 +197,7 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!yearSelect || !batchSelect || !topicList) return;
+  if (!yearSelect || !batchSelect || !topicList || !startTopic || !startYear) return;
   yearRange.forEach((year) => {
     const option = document.createElement("option");
     option.value = String(year);
@@ -218,18 +225,13 @@ const renderFilters = () => {
     )
     .join("");
 
-  // Populate home screen dropdowns
-  if (homeTopicSelect) {
-    homeTopicSelect.innerHTML =
-      `<option value="all">All Topics</option>` +
-      topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
-  }
+  startTopic.innerHTML =
+    `<option value="all">All Topics</option>` +
+    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
-  if (homeYearSelect) {
-    homeYearSelect.innerHTML =
-      `<option value="all">All Years</option>` +
-      yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
-  }
+  startYear.innerHTML =
+    `<option value="all">All Years</option>` +
+    yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
 };
 
 const updateActiveChips = () => {
@@ -521,17 +523,86 @@ const renderGlobalResults = (query) => {
   globalSearchResults.classList.toggle("show", true);
 };
 
+// Home Screen Dynamic Question Display
+const populateHomeSelectors = () => {
+  if (!homeTopicSelect || !homeYearSelect) return;
+  
+  const topics = Array.from(
+    new Set(state.data.map((item) => item.topic))
+  ).sort();
+  
+  homeTopicSelect.innerHTML = 
+    `<option value="">Choose a topic...</option>` +
+    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  
+  homeYearSelect.innerHTML = 
+    `<option value="">Choose a year...</option>` +
+    yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
+};
+
+const showQuestionsSection = (selectionType, selectionValue) => {
+  if (!heroSection || !dynamicQuestions || !selectionInfo) return;
+  
+  // Hide home screen, show questions
+  heroSection.classList.add("hidden");
+  dynamicQuestions.classList.remove("hidden");
+  
+  // Update selection info
+  const label = selectionType === "topic" ? "Topic" : "Year";
+  selectionInfo.innerHTML = `
+    <span class="selection-badge">${label}: ${selectionValue}</span>
+  `;
+  
+  // Apply filters and render
+  if (selectionType === "topic") {
+    state.topic = selectionValue;
+    state.year = "all";
+    state.batch = "all";
+    if (yearSelect) yearSelect.value = "all";
+    if (batchSelect) batchSelect.value = "all";
+  } else if (selectionType === "year") {
+    state.year = selectionValue;
+    state.topic = "all";
+    state.batch = "all";
+    if (topicList) {
+      document.querySelectorAll(".topic-pill").forEach((pill) => 
+        pill.classList.remove("active")
+      );
+    }
+  }
+  
+  renderCards();
+  
+  // Smooth scroll to top of questions
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+};
+
+const hideQuestionsSection = () => {
+  if (!heroSection || !dynamicQuestions) return;
+  
+  // Show home screen, hide questions
+  heroSection.classList.remove("hidden");
+  dynamicQuestions.classList.add("hidden");
+  
+  // Reset selectors
+  if (homeTopicSelect) homeTopicSelect.value = "";
+  if (homeYearSelect) homeYearSelect.value = "";
+  
+  // Reset filters
+  state.topic = "all";
+  state.year = "all";
+  state.batch = "all";
+  state.search = "";
+  
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
 const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
-    // Sync with home year selector
-    if (homeYearSelect) homeYearSelect.value = state.year;
-    
-    // Show questions section if any filter is active
-    if (questionsSection && (state.year !== "all" || state.topic !== "all")) {
-      questionsSection.classList.remove("hidden");
-    }
-    
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -546,19 +617,11 @@ const bindEvents = () => {
     const button = event.target.closest(".topic-pill");
     if (!button) return;
     state.topic = button.dataset.topic;
-    // Sync with home topic selector
-    if (homeTopicSelect) homeTopicSelect.value = state.topic;
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) =>
         pill.classList.toggle("active", pill.dataset.topic === state.topic)
       );
-    
-    // Show questions section if any filter is active
-    if (questionsSection && (state.year !== "all" || state.topic !== "all")) {
-      questionsSection.classList.remove("hidden");
-    }
-    
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -581,18 +644,9 @@ const bindEvents = () => {
     if (yearSelect) yearSelect.value = "all";
     if (batchSelect) batchSelect.value = "all";
     if (searchInput) searchInput.value = "";
-    if (homeTopicSelect) homeTopicSelect.value = "all";
-    if (homeYearSelect) homeYearSelect.value = "all";
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) => pill.classList.remove("active"));
-    
-    // Hide questions section and scroll to home
-    if (questionsSection) {
-      questionsSection.classList.add("hidden");
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -681,50 +735,20 @@ const bindEvents = () => {
     }
   });
 
-  // Home screen dropdown handlers - show questions inline below
-  const showQuestionsInline = () => {
-    if (questionsSection) {
-      questionsSection.classList.remove("hidden");
-      applyFilters();
-      // Smooth scroll to questions section
-      setTimeout(() => {
-        questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    }
-  };
-
-  const hideQuestionsSection = () => {
-    if (questionsSection) {
-      questionsSection.classList.add("hidden");
-    }
-  };
-
-  addListener(homeTopicSelect, "change", (event) => {
-    state.topic = event.target.value;
-    // Sync sidebar topic pills
+  addListener(startCta, "click", () => {
+    if (!startTopic || !startYear || !yearSelect) return;
+    state.topic = startTopic.value;
+    state.year = startYear.value;
+    yearSelect.value = state.year;
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) =>
         pill.classList.toggle("active", pill.dataset.topic === state.topic)
       );
-    
-    // Show/hide questions based on selection
-    if (state.topic !== "all" || state.year !== "all") {
-      showQuestionsInline();
-    } else {
-      hideQuestionsSection();
-    }
-  });
-
-  addListener(homeYearSelect, "change", (event) => {
-    state.year = event.target.value;
-    if (yearSelect) yearSelect.value = state.year;
-    
-    // Show/hide questions based on selection
-    if (state.topic !== "all" || state.year !== "all") {
-      showQuestionsInline();
-    } else {
-      hideQuestionsSection();
+    applyFilters();
+    const questionsSection = document.getElementById("questions");
+    if (questionsSection) {
+      questionsSection.scrollIntoView({ behavior: "smooth" });
     }
   });
 
@@ -765,15 +789,7 @@ const bindEvents = () => {
   });
 
   document.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      const href = link.getAttribute("href");
-      
-      // Handle home navigation - just scroll to top
-      if (href === "#home") {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      
+    link.addEventListener("click", () => {
       document
         .querySelectorAll(".nav-link")
         .forEach((item) => item.classList.remove("active"));
@@ -816,6 +832,29 @@ const bindEvents = () => {
       }
     }
     syncPinToggle();
+  });
+  
+  // Home screen selectors
+  addListener(homeTopicSelect, "change", (event) => {
+    const topic = event.target.value;
+    if (topic) {
+      // Clear the other selector
+      if (homeYearSelect) homeYearSelect.value = "";
+      showQuestionsSection("topic", topic);
+    }
+  });
+  
+  addListener(homeYearSelect, "change", (event) => {
+    const year = event.target.value;
+    if (year) {
+      // Clear the other selector
+      if (homeTopicSelect) homeTopicSelect.value = "";
+      showQuestionsSection("year", year);
+    }
+  });
+  
+  addListener(backToHome, "click", () => {
+    hideQuestionsSection();
   });
 };
 
@@ -1379,6 +1418,7 @@ const init = async () => {
     const data = await response.json();
     state.data = data;
     renderFilters();
+    populateHomeSelectors();
     renderCards();
   }
 
