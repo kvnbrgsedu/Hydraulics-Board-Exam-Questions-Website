@@ -31,6 +31,15 @@ body.home-locked {
   height: 100vh;
 }
 
+body.home-locked .content {
+  display: none;
+}
+
+body.home-locked .home {
+  height: 100vh;
+  overflow: hidden;
+}
+
 body::before {
   content: "";
   position: fixed;
