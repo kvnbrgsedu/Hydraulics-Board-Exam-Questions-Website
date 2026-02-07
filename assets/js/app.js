@@ -27,6 +27,7 @@ const pinToggle = document.getElementById("pin-toggle");
 const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
 const startTopic = document.getElementById("start-topic");
+const startYear = document.getElementById("start-year");
 const startCta = document.getElementById("start-cta");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
@@ -175,8 +176,12 @@ const renderFilters = () => {
     .join("");
 
   startTopic.innerHTML =
-    `<option value="all">All Questions</option>` +
+    `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+
+  startYear.innerHTML =
+    `<option value="all">All Years</option>` +
+    yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
 };
 
 const updateActiveChips = () => {
@@ -598,6 +603,8 @@ const bindEvents = () => {
 
   startCta.addEventListener("click", () => {
     state.topic = startTopic.value;
+    state.year = startYear.value;
+    yearSelect.value = state.year;
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) =>
