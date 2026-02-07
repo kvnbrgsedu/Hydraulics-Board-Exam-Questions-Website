@@ -34,8 +34,6 @@ body.home-page .content,
 body.home-page .hero {
   position: relative;
   z-index: 2;
-  transform: translateX(0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.home-page .home-bg {
@@ -887,17 +885,10 @@ body.sidebar-open .hero {
   transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Home page: all content moves together as one unit */
+/* Home page: content remains still, sidebar overlays */
 body.home-page.sidebar-open .hero,
 body.home-page.sidebar-open .content {
-  transform: translateX(150px);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body.home-page .hero,
-body.home-page .content {
-  transform: translateX(0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: none;
 }
 
 .active-filters {
@@ -1833,15 +1824,15 @@ mark {
     padding-left: 32px;
   }
 
-  /* Home page: reset transform on mobile/tablet */
+  /* Home page: content remains still on all screen sizes */
   body.home-page .hero,
   body.home-page .content {
-    transform: translateX(0) !important;
+    transform: none !important;
   }
 
   body.home-page.sidebar-open .hero,
   body.home-page.sidebar-open .content {
-    transform: translateX(0) !important;
+    transform: none !important;
   }
 
   .sidebar {
