@@ -325,6 +325,31 @@ body.home-page .top-nav.scrolled {
   border-bottom-color: transparent;
 }
 
+body.home-page .top-nav__brand,
+body.home-page .top-nav__links a,
+body.home-page .icon-btn {
+  color: #f7fdff;
+  text-shadow: 0 6px 18px rgba(6, 39, 48, 0.35);
+}
+
+body.home-page .hamburger span {
+  background: #f7fdff;
+}
+
+body.home-page .sidebar {
+  box-shadow: 14px 0 30px rgba(9, 99, 126, 0.12);
+}
+
+body.home-page .sidebar .title,
+body.home-page .sidebar .subtitle,
+body.home-page .filter-label,
+body.home-page .sidebar__nav a,
+body.home-page .toggle__title,
+body.home-page .toggle__subtitle {
+  color: #f7fdff;
+  text-shadow: 0 6px 18px rgba(6, 39, 48, 0.35);
+}
+
 .top-nav .hamburger {
   display: flex;
 }
