@@ -467,10 +467,14 @@ body.home-page .hero__inner {
   color: #e6f2f5;
   max-width: 540px;
   margin: 0 auto;
+  display: block;
+  text-align: center;
 }
 
 body.home-page .hero__subtitle {
   margin: 0 auto;
+  display: block;
+  text-align: center;
 }
 
 .hero__content {
@@ -481,10 +485,9 @@ body.home-page .hero__subtitle {
 body.home-page .hero__content {
   text-align: center;
   max-width: 720px;
-}
-
-body.home-page .hero__content {
+  width: 100%;
   position: relative;
+  margin: 0 auto;
 }
 
 body.home-page .hero__content::before {
