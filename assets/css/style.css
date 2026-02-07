@@ -34,6 +34,8 @@ body.home-page .content,
 body.home-page .hero {
   position: relative;
   z-index: 2;
+  transform: translateX(0);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.home-page .home-bg {
@@ -875,18 +877,25 @@ body.sidebar-open .content {
   transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Home page content doesn't use margin-left, uses transform instead */
+body.home-page.sidebar-open .content {
+  margin-left: 0;
+}
+
 body.sidebar-open .hero {
   padding-left: 360px;
   transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body.home-page.sidebar-open .hero {
-  padding-left: 0;
-  transform: translateX(-150px);
+/* Home page: all content moves together as one unit */
+body.home-page.sidebar-open .hero,
+body.home-page.sidebar-open .content {
+  transform: translateX(150px);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body.home-page .hero {
+body.home-page .hero,
+body.home-page .content {
   transform: translateX(0);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -924,13 +933,6 @@ body.home-page .start-review {
   margin-right: auto;
   padding: 0;
   position: relative;
-  transform: translateX(0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body.home-page.sidebar-open .start-review {
-  transform: translateX(-150px);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .start-review__controls {
@@ -1829,6 +1831,17 @@ mark {
 
   body.sidebar-open .hero {
     padding-left: 32px;
+  }
+
+  /* Home page: reset transform on mobile/tablet */
+  body.home-page .hero,
+  body.home-page .content {
+    transform: translateX(0) !important;
+  }
+
+  body.home-page.sidebar-open .hero,
+  body.home-page.sidebar-open .content {
+    transform: translateX(0) !important;
   }
 
   .sidebar {
