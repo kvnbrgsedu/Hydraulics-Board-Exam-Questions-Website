@@ -396,6 +396,34 @@ const applyFilters = () => {
   renderCards();
 };
 
+const clearGlobalSearchResults = () => {
+  if (!globalSearchResults) return;
+  globalSearchResults.classList.remove("show");
+  globalSearchResults.innerHTML = "";
+};
+
+const syncSearchInputs = (value) => {
+  const nextValue = value ?? "";
+  if (searchInput && searchInput.value !== nextValue) {
+    searchInput.value = nextValue;
+  }
+  if (globalSearchInput && globalSearchInput.value !== nextValue) {
+    globalSearchInput.value = nextValue;
+  }
+};
+
+const updateSearchQuery = (value, { renderGlobal = false } = {}) => {
+  const nextValue = value ?? "";
+  state.search = nextValue;
+  syncSearchInputs(nextValue);
+  applyFilters();
+  if (renderGlobal) {
+    renderGlobalResults(nextValue);
+  } else {
+    clearGlobalSearchResults();
+  }
+};
+
 const buildFormulaGroups = (formulas, query) => {
   if (!formulaGroups) return;
   const grouped = formulas.reduce((acc, formula) => {
@@ -515,6 +543,18 @@ const renderGlobalResults = (query) => {
   globalSearchResults.classList.toggle("show", true);
 };
 
+const loadQuestionsData = async () => {
+  if (state.data.length) return;
+  const response = await fetch(DATA_URL);
+  state.data = await response.json();
+};
+
+const loadFormulaData = async () => {
+  if (state.formulas.length) return;
+  const response = await fetch(FORMULA_URL);
+  state.formulas = await response.json();
+};
+
 const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
@@ -547,8 +587,7 @@ const bindEvents = () => {
   });
 
   addListener(searchInput, "input", (event) => {
-    state.search = event.target.value;
-    applyFilters();
+    updateSearchQuery(event.target.value);
   });
 
   addListener(clearFilters, "click", () => {
@@ -559,6 +598,8 @@ const bindEvents = () => {
     if (yearSelect) yearSelect.value = "all";
     if (batchSelect) batchSelect.value = "all";
     if (searchInput) searchInput.value = "";
+    if (globalSearchInput) globalSearchInput.value = "";
+    clearGlobalSearchResults();
     document
       .querySelectorAll(".topic-pill")
       .forEach((pill) => pill.classList.remove("active"));
@@ -686,11 +727,16 @@ const bindEvents = () => {
     topNav.classList.toggle("search-open");
     if (topNav.classList.contains("search-open") && globalSearchInput) {
       globalSearchInput.focus();
+      if (globalSearchInput.value.trim()) {
+        renderGlobalResults(globalSearchInput.value);
+      }
+    } else {
+      clearGlobalSearchResults();
     }
   });
 
   addListener(globalSearchInput, "input", (event) => {
-    renderGlobalResults(event.target.value);
+    updateSearchQuery(event.target.value, { renderGlobal: true });
   });
 
   addListener(globalSearchResults, "click", (event) => {
@@ -700,7 +746,7 @@ const bindEvents = () => {
     const targetElement = document.querySelector(target);
     if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
     if (topNav) topNav.classList.remove("search-open");
-    if (globalSearchResults) globalSearchResults.classList.remove("show");
+    clearGlobalSearchResults();
   });
 
   document.querySelectorAll(".nav-link").forEach((link) => {
@@ -732,7 +778,7 @@ const bindEvents = () => {
     if (!globalSearch || !globalSearchToggle || !topNav || !globalSearchResults) return;
     if (!globalSearch.contains(event.target) && event.target !== globalSearchToggle) {
       topNav.classList.remove("search-open");
-      globalSearchResults.classList.remove("show");
+      clearGlobalSearchResults();
     }
   });
 
@@ -1306,19 +1352,19 @@ const init = async () => {
 
   if (hasQuestionUI) {
     renderSkeletons();
-    const response = await fetch(DATA_URL);
-    const data = await response.json();
-    state.data = data;
+    await loadQuestionsData();
     renderFilters();
     renderCards();
   }
 
   if (hasFormulaUI) {
-    const formulaResponse = await fetch(FORMULA_URL);
-    const formulaData = await formulaResponse.json();
-    state.formulas = formulaData;
+    await loadFormulaData();
     renderFormulaFilters();
     filterFormulas();
+  }
+
+  if (globalSearchInput && (!state.data.length || !state.formulas.length)) {
+    await Promise.all([loadQuestionsData(), loadFormulaData()]);
   }
 
   isPinned = loadPinnedPreference();
