@@ -40,11 +40,6 @@ body.home-locked .home {
   overflow: hidden;
 }
 
-body.questions-only .formula-section,
-body.questions-only .about-section {
-  display: none;
-}
-
 body::before {
   content: "";
   position: fixed;
