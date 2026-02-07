@@ -433,6 +433,47 @@ const updateHomeViewFromHash = () => {
   }
 };
 
+const initHomeBackground = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const particleContainer = document.querySelector(".home-particles");
+  if (particleContainer && !particleContainer.children.length) {
+    for (let i = 0; i < 24; i += 1) {
+      const particle = document.createElement("span");
+      const size = 2 + Math.random() * 3;
+      const duration = 14 + Math.random() * 12;
+      const delay = Math.random() * 6;
+      const left = Math.random() * 100;
+      particle.className = "home-particle";
+      particle.style.setProperty("--size", `${size}px`);
+      particle.style.setProperty("--duration", `${duration}s`);
+      particle.style.setProperty("--delay", `${delay}s`);
+      particle.style.left = `${left}%`;
+      particleContainer.appendChild(particle);
+    }
+  }
+
+  const handleMove = (event) => {
+    const x = (event.clientX / window.innerWidth - 0.5) * 12;
+    const y = (event.clientY / window.innerHeight - 0.5) * 12;
+    document.documentElement.style.setProperty("--flow-x", `${x}px`);
+    document.documentElement.style.setProperty("--flow-y", `${y}px`);
+  };
+
+  window.addEventListener("mousemove", handleMove);
+
+  const pauseTargets = document.querySelectorAll(
+    ".content, .top-nav, .sidebar"
+  );
+  pauseTargets.forEach((target) => {
+    target.addEventListener("mouseenter", () => {
+      document.body.classList.add("home-pause");
+    });
+    target.addEventListener("mouseleave", () => {
+      document.body.classList.remove("home-pause");
+    });
+  });
+};
+
 const clearGlobalSearchResults = () => {
   if (!globalSearchResults) return;
   globalSearchResults.classList.remove("show");
@@ -1411,6 +1452,7 @@ const init = async () => {
   updateHomeLock();
   updateHomeViewFromHash();
   addListener(window, "hashchange", updateHomeViewFromHash);
+  initHomeBackground();
 
   await initQuiz();
 };
