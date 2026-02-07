@@ -214,10 +214,12 @@ const renderFilters = () => {
   startTopic.innerHTML =
     `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  startTopic.value = state.topic;
 
   startYear.innerHTML =
     `<option value="all">All Years</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
+  startYear.value = state.year;
 };
 
 const updateActiveChips = () => {

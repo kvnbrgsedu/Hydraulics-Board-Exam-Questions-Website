@@ -243,6 +243,10 @@ body.home-locked {
   transition: padding 0.35s ease;
 }
 
+body.home-page.home-locked .hero {
+  padding: 110px 32px 40px 32px;
+}
+
 .hero::before {
   content: "";
   position: absolute;
