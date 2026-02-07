@@ -40,7 +40,6 @@ const pinToggle = document.getElementById("pin-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
 const startTopic = document.getElementById("start-topic");
 const startYear = document.getElementById("start-year");
-const startCta = document.getElementById("start-cta");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -662,7 +661,7 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startCta, "click", () => {
+  const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
     state.topic = startTopic.value;
     state.year = startYear.value;
@@ -673,7 +672,10 @@ const bindEvents = () => {
     if (canScroll && questionsSection) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
     }
-  });
+  };
+
+  addListener(startTopic, "change", handleStartSelection);
+  addListener(startYear, "change", handleStartSelection);
 
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);

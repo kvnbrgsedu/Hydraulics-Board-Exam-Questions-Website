@@ -22,11 +22,29 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 body.home-locked {
   overflow: hidden;
   height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(9, 99, 126, 0.18) 0%,
+    rgba(8, 131, 149, 0.16) 35%,
+    rgba(122, 178, 178, 0.18) 65%,
+    rgba(235, 244, 246, 0.9) 100%
+  );
+  background-size: 220% 220%;
+  animation: gradientSoft 32s ease-in-out infinite;
+  z-index: -1;
 }
 
 #progress-bar {
@@ -669,11 +687,17 @@ body.sidebar-open .hero {
 }
 
 .home .start-review select {
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  border-radius: 16px;
+  border: 1px solid rgba(9, 99, 126, 0.18);
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(9, 99, 126, 0.12);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
 .home .start-review select:focus {
   transform: translateY(-1px);
+  border-color: rgba(9, 99, 126, 0.32);
+  box-shadow: 0 14px 32px rgba(9, 99, 126, 0.16);
 }
 
 .start-review__controls {
@@ -1473,6 +1497,18 @@ mark {
 @keyframes gradientShift {
   0%, 100% { background: linear-gradient(135deg, #EBF4F6 0%, #F0F8FA 50%, #E6F3F5 100%); }
   50% { background: linear-gradient(135deg, #E6F3F5 0%, #EBF4F6 50%, #F0F8FA 100%); }
+}
+
+@keyframes gradientSoft {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .quiz-main__left {
