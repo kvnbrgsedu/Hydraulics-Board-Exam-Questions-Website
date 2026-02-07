@@ -860,8 +860,15 @@ body.home-page .start-review__controls {
 }
 
 body.home-page .home-selects {
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  body.home-page .home-selects {
+    flex-direction: column;
+  }
 }
 
 .home-select-group {
