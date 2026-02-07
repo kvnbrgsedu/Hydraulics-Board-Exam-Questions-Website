@@ -423,6 +423,18 @@ const updateHomeLock = () => {
 
 const initHomeBackground = () => {
   if (!document.body.classList.contains("home-page")) return;
+  
+  const fogContainer = document.getElementById("fog-animation");
+  if (fogContainer && window.lottie && !fogContainer.hasChildNodes()) {
+    lottie.loadAnimation({
+      container: fogContainer,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path: "assets/images/Fog Background Decoration.json",
+    });
+  }
+  
   const particlesContainer = document.querySelector(".home-particles");
   if (particlesContainer && !particlesContainer.childElementCount) {
     const count = 18;
@@ -456,8 +468,18 @@ const initHomeBackground = () => {
 
   const content = document.querySelector(".content");
   if (content) {
-    content.addEventListener("mouseenter", () => document.body.classList.add("home-pause"));
-    content.addEventListener("mouseleave", () => document.body.classList.remove("home-pause"));
+    content.addEventListener("mouseenter", () => {
+      document.body.classList.add("home-pause");
+      if (fogContainer && fogContainer.lottie) {
+        fogContainer.lottie.pause();
+      }
+    });
+    content.addEventListener("mouseleave", () => {
+      document.body.classList.remove("home-pause");
+      if (fogContainer && fogContainer.lottie) {
+        fogContainer.lottie.play();
+      }
+    });
   }
 };
 

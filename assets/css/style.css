@@ -44,6 +44,23 @@ body.home-page .home-bg {
   overflow: hidden;
 }
 
+body.home-page .fog-animation {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
+
+body.home-page .fog-animation svg,
+body.home-page .fog-animation canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 body.home-page .flow-lines {
   position: absolute;
   inset: -6% -6%;
@@ -82,6 +99,10 @@ body.home-page .home-particle {
 body.home-page.home-pause .flow-lines,
 body.home-page.home-pause .flow-lines path,
 body.home-page.home-pause .home-particle {
+  animation-play-state: paused;
+}
+
+body.home-page.home-pause .fog-animation {
   animation-play-state: paused;
 }
 
