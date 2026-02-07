@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydraulics Formula Sheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body id="top">
+    <div id="progress-bar"></div>
+
+    <header class="top-nav" id="top-nav">
+      <div class="top-nav__brand">
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Toggle sidebar"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <span>Hydraulics Review (PH)</span>
+      </div>
+      <div class="top-nav__right">
+        <nav class="top-nav__links">
+          <a href="index.html#home" class="nav-link">Home</a>
+          <a href="index.html#questions" class="nav-link">Questions</a>
+          <a href="quiz.html" class="nav-link">Quiz</a>
+          <a href="formula.html" class="nav-link active">Formula Sheet</a>
+          <a href="about.html" class="nav-link">About</a>
+        </nav>
+        <div class="top-nav__actions">
+          <button id="global-search-toggle" class="icon-btn" aria-label="Search">
+            ⌕
+          </button>
+          <div class="global-search" id="global-search">
+            <input
+              id="global-search-input"
+              type="text"
+              placeholder="Search questions, formulas, topics, years..."
+            />
+            <div id="global-search-results" class="global-search__results"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__brand">
+        <div>
+          <p class="title">Hydraulics QBank</p>
+          <p class="subtitle">Formula Sheet</p>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <p class="filter-label">Quick Navigation</p>
+        <nav class="sidebar__nav">
+          <a href="index.html#questions">All Questions</a>
+          <a href="quiz.html">Interactive Quiz</a>
+          <a href="formula.html">Formula Sheet</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+
+      <div class="filter-block sidebar__toggle">
+        <label class="toggle">
+          <input type="checkbox" id="pin-toggle" />
+          <span class="toggle__slider"></span>
+        </label>
+        <div>
+          <p class="toggle__title">Pin Sidebar</p>
+          <p class="toggle__subtitle">
+            When off, sidebar auto-hides after selection.
+          </p>
+        </div>
+      </div>
+
+      <button class="btn btn--ghost sidebar__hide" id="hide-sidebar">
+        Hide Sidebar
+      </button>
+    </aside>
+
+    <main class="content">
+      <section id="formulas" class="formula-section">
+        <div class="section-header">
+          <p class="section-eyebrow">Formula Sheet</p>
+          <h2>Hydraulics Formula Library</h2>
+          <p class="section-subtitle">
+            Filter by topic and search formulas instantly.
+          </p>
+        </div>
+        <div class="formula-controls">
+          <input
+            id="formula-search"
+            type="text"
+            placeholder="Search formulas..."
+          />
+          <select id="formula-topic">
+            <option value="all">All Topics</option>
+          </select>
+        </div>
+        <div id="formula-groups" class="formula-groups"></div>
+        <div id="formula-empty" class="empty hidden">
+          <div class="empty__bubble"></div>
+          <h3>No formulas found</h3>
+          <p>Try a different topic or keyword.</p>
+        </div>
+      </section>
+    </main>
+
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+      ↑
+    </button>
+
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
