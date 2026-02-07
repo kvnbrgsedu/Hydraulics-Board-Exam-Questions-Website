@@ -27,7 +27,7 @@ body {
 body.home-page {
   background: linear-gradient(135deg, #063848, #09637e, #088395, #7ab2b2);
   background-size: 400% 400%;
-  animation: homeGradient 22s ease infinite;
+  animation: homeGradient 8s ease infinite;
 }
 
 body.home-page .content,
