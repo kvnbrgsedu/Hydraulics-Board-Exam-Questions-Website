@@ -386,6 +386,14 @@ const renderCards = () => {
   });
 };
 
+const getLoadErrorMessage = (label) => {
+  const base = `Unable to load ${label}.`;
+  if (window.location.protocol === "file:") {
+    return `${base} Open the site with a local server (not file://).`;
+  }
+  return `${base} Please check your network and refresh.`;
+};
+
 const applyFilters = () => {
   renderCards();
 };
@@ -1304,20 +1312,47 @@ const init = async () => {
   const hasFormulaUI = Boolean(formulaGroups && formulaTopic);
 
   if (hasQuestionUI) {
-    renderSkeletons();
-    await loadQuestionsData();
-    renderFilters();
-    renderCards();
+    try {
+      renderSkeletons();
+      await loadQuestionsData();
+      renderFilters();
+      renderCards();
+    } catch (error) {
+      console.error("Failed to load questions:", error);
+      if (resultsInfo) {
+        resultsInfo.textContent = getLoadErrorMessage("questions");
+      }
+      if (emptyState) {
+        emptyState.querySelector("h3").textContent = "Questions unavailable";
+        emptyState.querySelector("p").textContent = getLoadErrorMessage("questions");
+        emptyState.classList.remove("hidden");
+      }
+      if (grid) grid.innerHTML = "";
+    }
   }
 
   if (hasFormulaUI) {
-    await loadFormulaData();
-    renderFormulaFilters();
-    filterFormulas();
+    try {
+      await loadFormulaData();
+      renderFormulaFilters();
+      filterFormulas();
+    } catch (error) {
+      console.error("Failed to load formulas:", error);
+      if (formulaEmpty) {
+        formulaEmpty.querySelector("h3").textContent = "Formulas unavailable";
+        formulaEmpty.querySelector("p").textContent = getLoadErrorMessage("formulas");
+        formulaEmpty.classList.remove("hidden");
+      }
+      if (formulaGroups) formulaGroups.innerHTML = "";
+    }
   }
 
   if (globalSearchInput && (!state.data.length || !state.formulas.length)) {
-    await Promise.all([loadQuestionsData(), loadFormulaData()]);
+    try {
+      await Promise.all([loadQuestionsData(), loadFormulaData()]);
+    } catch (error) {
+      console.error("Failed to load global search data:", error);
+    }
   }
 
   isPinned = loadPinnedPreference();
