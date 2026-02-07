@@ -1535,10 +1535,10 @@ const init = async () => {
 
   if (hasQuestionUI) {
     try {
-      renderSkeletons();
+    renderSkeletons();
       await loadQuestionsData();
-      renderFilters();
-      renderCards();
+    renderFilters();
+    renderCards();
     } catch (error) {
       console.error("Failed to load questions:", error);
       if (resultsInfo) {
@@ -1556,8 +1556,8 @@ const init = async () => {
   if (hasFormulaUI) {
     try {
       await loadFormulaData();
-      renderFormulaFilters();
-      filterFormulas();
+    renderFormulaFilters();
+    filterFormulas();
     } catch (error) {
       console.error("Failed to load formulas:", error);
       if (formulaEmpty) {
