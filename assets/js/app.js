@@ -212,12 +212,12 @@ const renderFilters = () => {
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
   startTopic.innerHTML =
-    `<option value="all">All Topics</option>` +
+    `<option value="all">Choose Topic</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
   startTopic.value = state.topic;
 
   startYear.innerHTML =
-    `<option value="all">All Years</option>` +
+    `<option value="all">Choose Year</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
   startYear.value = state.year;
 };
@@ -840,7 +840,9 @@ const bindEvents = () => {
     state.year = startYear.value;
     yearSelect.value = state.year;
     if (topicSelect) topicSelect.value = state.topic;
+    syncStartSelectCards();
     applyFilters();
+    updateHomeLock();
     const questionsSection = document.getElementById("questions");
     if (questionsSection && !document.body.classList.contains("home-locked")) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
