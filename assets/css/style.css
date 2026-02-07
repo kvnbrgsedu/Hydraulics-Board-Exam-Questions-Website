@@ -124,6 +124,13 @@ body.home-page.home-pause .fog-animation {
   object-fit: cover;
 }
 
+body:not(.home-page) .content,
+body:not(.home-page) .top-nav,
+body:not(.home-page) .sidebar {
+  position: relative;
+  z-index: 1;
+}
+
 body.home-page .hero::before,
 body.home-page .hero::after,
 body.home-page .hero__overlay {

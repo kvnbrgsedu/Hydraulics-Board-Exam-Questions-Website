@@ -1589,6 +1589,7 @@ const init = async () => {
   updateHomeViewFromHash();
   addListener(window, "hashchange", updateHomeViewFromHash);
   initHomeBackground();
+  initPageBackground();
   initHomeDropdowns();
 
   await initQuiz();
