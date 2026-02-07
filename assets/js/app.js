@@ -743,7 +743,12 @@ const bindEvents = () => {
     if (searchInput) searchInput.value = "";
     if (startTopic) startTopic.value = "all";
     if (startYear) startYear.value = "all";
+    syncStartSelectCards();
     applyFilters();
+    updateHomeLock();
+    if (document.body.classList.contains("home-page")) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
     closeSidebarIfAutoHide();
   });
 
