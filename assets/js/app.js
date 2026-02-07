@@ -1,5 +1,6 @@
 const DATA_URL = "assets/data/questions.json";
 const FORMULA_URL = "assets/data/formulas.json";
+const QUIZ_URL = "assets/data/quiz.json";
 
 const state = {
   year: "all",
@@ -8,6 +9,16 @@ const state = {
   search: "",
   data: [],
   formulas: [],
+};
+
+const quizState = {
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answered: false,
+  selectedTopic: "all",
+  selectedDifficulty: "all",
+  currentQuestions: [],
 };
 
 const grid = document.getElementById("question-grid");
@@ -655,7 +666,7 @@ const bindEvents = () => {
     });
   });
 
-  const sections = ["home", "questions", "formulas", "about"];
+  const sections = ["home", "questions", "quiz", "formulas", "about"];
   window.addEventListener("scroll", () => {
     const scrollPos = window.scrollY + 140;
     let current = "home";
@@ -691,6 +702,283 @@ const bindEvents = () => {
   });
 };
 
+// ========== QUIZ FUNCTIONALITY ==========
+
+const quizElements = {
+  start: document.getElementById("quiz-start"),
+  card: document.getElementById("quiz-card"),
+  complete: document.getElementById("quiz-complete"),
+  topicSelect: document.getElementById("quiz-topic-select"),
+  difficultySelect: document.getElementById("quiz-difficulty-select"),
+  startBtn: document.getElementById("quiz-start-btn"),
+  question: document.getElementById("quiz-question"),
+  topic: document.getElementById("quiz-topic"),
+  hintBtn: document.getElementById("quiz-hint-btn"),
+  hint: document.getElementById("quiz-hint"),
+  hintText: document.getElementById("quiz-hint-text"),
+  answerInput: document.getElementById("quiz-answer-input"),
+  unit: document.getElementById("quiz-unit"),
+  submitBtn: document.getElementById("quiz-submit-btn"),
+  feedback: document.getElementById("quiz-feedback"),
+  feedbackIcon: document.getElementById("quiz-feedback-icon"),
+  feedbackMessage: document.getElementById("quiz-feedback-message"),
+  solution: document.getElementById("quiz-solution"),
+  solutionContent: document.getElementById("quiz-solution-content"),
+  solutionToggle: document.getElementById("quiz-solution-toggle"),
+  correctAnswer: document.getElementById("quiz-correct-answer"),
+  finalAnswer: document.getElementById("quiz-final-answer"),
+  nextBtn: document.getElementById("quiz-next-btn"),
+  restartBtn: document.getElementById("quiz-restart-btn"),
+  retryBtn: document.getElementById("quiz-retry-btn"),
+  newTopicBtn: document.getElementById("quiz-new-topic-btn"),
+  current: document.getElementById("quiz-current"),
+  count: document.getElementById("quiz-count"),
+  score: document.getElementById("quiz-score"),
+  total: document.getElementById("quiz-total"),
+  progressFill: document.getElementById("quiz-progress-fill"),
+  finalScore: document.getElementById("final-score"),
+  finalTotal: document.getElementById("final-total"),
+  scorePercentage: document.getElementById("score-percentage"),
+  imageContainer: document.getElementById("quiz-image-container"),
+  image: document.getElementById("quiz-image"),
+  imageCaption: document.getElementById("quiz-image-caption"),
+  solutionImageContainer: document.getElementById("quiz-solution-image-container"),
+  solutionImage: document.getElementById("quiz-solution-image"),
+  solutionImageCaption: document.getElementById("quiz-solution-image-caption"),
+};
+
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+const populateQuizTopics = () => {
+  if (!quizState.questions.length) return;
+  const topics = [...new Set(quizState.questions.map(q => q.topic))].sort();
+  quizElements.topicSelect.innerHTML = 
+    `<option value="all">All Topics (Random)</option>` +
+    topics.map(topic => `<option value="${topic}">${topic}</option>`).join("");
+};
+
+const startQuiz = () => {
+  quizState.selectedTopic = quizElements.topicSelect.value;
+  quizState.selectedDifficulty = quizElements.difficultySelect.value;
+  
+  let filtered = quizState.questions.filter(q => {
+    const topicMatch = quizState.selectedTopic === "all" || q.topic === quizState.selectedTopic;
+    const difficultyMatch = quizState.selectedDifficulty === "all" || q.difficulty === quizState.selectedDifficulty;
+    return topicMatch && difficultyMatch;
+  });
+  
+  if (filtered.length === 0) {
+    alert("No questions available for this combination. Please select different options.");
+    return;
+  }
+  
+  quizState.currentQuestions = shuffleArray(filtered).slice(0, 10);
+  quizState.currentIndex = 0;
+  quizState.score = 0;
+  
+  quizElements.start.classList.add("hidden");
+  quizElements.card.classList.remove("hidden");
+  quizElements.complete.classList.add("hidden");
+  
+  loadQuestion();
+};
+
+const loadQuestion = () => {
+  if (quizState.currentIndex >= quizState.currentQuestions.length) {
+    showComplete();
+    return;
+  }
+  
+  const q = quizState.currentQuestions[quizState.currentIndex];
+  quizState.answered = false;
+  
+  // Reset UI
+  quizElements.question.innerHTML = allowBasicTags(escapeHtml(q.question));
+  quizElements.topic.textContent = q.topic;
+  quizElements.hintText.textContent = q.hint;
+  quizElements.unit.textContent = q.unit;
+  quizElements.answerInput.value = "";
+  quizElements.answerInput.disabled = false;
+  quizElements.submitBtn.disabled = false;
+  quizElements.nextBtn.disabled = true;
+  
+  // Hide elements
+  quizElements.hint.classList.add("hidden");
+  quizElements.feedback.classList.add("hidden");
+  quizElements.solution.classList.add("hidden");
+  quizElements.imageContainer.classList.add("hidden");
+  quizElements.solutionImageContainer.classList.add("hidden");
+  
+  // Handle images
+  if (q.image) {
+    quizElements.image.src = q.image;
+    quizElements.imageCaption.textContent = q.imageCaption || "";
+    quizElements.imageContainer.classList.remove("hidden");
+  }
+  
+  // Update progress
+  quizElements.current.textContent = quizState.currentIndex + 1;
+  quizElements.count.textContent = quizState.currentQuestions.length;
+  quizElements.score.textContent = quizState.score;
+  quizElements.total.textContent = quizState.currentQuestions.length;
+  
+  const progress = ((quizState.currentIndex) / quizState.currentQuestions.length) * 100;
+  quizElements.progressFill.style.width = `${progress}%`;
+  
+  // Animate card
+  quizElements.card.classList.remove("quiz-card--show");
+  setTimeout(() => quizElements.card.classList.add("quiz-card--show"), 10);
+  
+  // Typeset math
+  typesetMath();
+  
+  // Focus input
+  setTimeout(() => quizElements.answerInput.focus(), 300);
+};
+
+const checkAnswer = () => {
+  if (quizState.answered) return;
+  
+  const q = quizState.currentQuestions[quizState.currentIndex];
+  const userAnswer = parseFloat(quizElements.answerInput.value);
+  
+  if (isNaN(userAnswer)) {
+    alert("Please enter a valid numerical answer.");
+    return;
+  }
+  
+  const correct = Math.abs(userAnswer - q.answer) <= q.tolerance;
+  quizState.answered = true;
+  
+  if (correct) {
+    quizState.score++;
+    showFeedback(true, "Correct! Well done! 🎉");
+  } else {
+    showFeedback(false, "Not quite right. Check the solution below.");
+  }
+  
+  // Update score display
+  quizElements.score.textContent = quizState.score;
+  
+  // Show solution
+  showSolution(q);
+  
+  // Disable input and submit
+  quizElements.answerInput.disabled = true;
+  quizElements.submitBtn.disabled = true;
+  quizElements.nextBtn.disabled = false;
+  
+  // Update progress
+  const progress = ((quizState.currentIndex + 1) / quizState.currentQuestions.length) * 100;
+  quizElements.progressFill.style.width = `${progress}%`;
+};
+
+const showFeedback = (correct, message) => {
+  quizElements.feedback.classList.remove("hidden", "correct", "incorrect");
+  quizElements.feedback.classList.add(correct ? "correct" : "incorrect");
+  
+  quizElements.feedbackIcon.textContent = correct ? "✓" : "✗";
+  quizElements.feedbackMessage.textContent = message;
+  
+  // Animate
+  quizElements.feedback.classList.add("feedback-animate");
+  setTimeout(() => quizElements.feedback.classList.remove("feedback-animate"), 600);
+};
+
+const showSolution = (q) => {
+  quizElements.solutionContent.innerHTML = allowBasicTags(escapeHtml(q.solution))
+    .replace(/\\n/g, '<br>');
+  
+  quizElements.correctAnswer.innerHTML = `${q.answer} ${q.unit}`;
+  quizElements.finalAnswer.classList.remove("hidden");
+  
+  if (q.solutionImage) {
+    quizElements.solutionImage.src = q.solutionImage;
+    quizElements.solutionImageCaption.textContent = q.solutionImageCaption || "";
+    quizElements.solutionImageContainer.classList.remove("hidden");
+  }
+  
+  quizElements.solution.classList.remove("hidden");
+  quizElements.solution.classList.add("open");
+  
+  // Typeset math in solution
+  typesetMath();
+};
+
+const showComplete = () => {
+  quizElements.card.classList.add("hidden");
+  quizElements.complete.classList.remove("hidden");
+  
+  quizElements.finalScore.textContent = quizState.score;
+  quizElements.finalTotal.textContent = quizState.currentQuestions.length;
+  
+  const percentage = Math.round((quizState.score / quizState.currentQuestions.length) * 100);
+  quizElements.scorePercentage.textContent = `${percentage}%`;
+  
+  // Animate
+  quizElements.complete.classList.add("complete-animate");
+  setTimeout(() => quizElements.complete.classList.remove("complete-animate"), 600);
+};
+
+const bindQuizEvents = () => {
+  quizElements.startBtn.addEventListener("click", startQuiz);
+  
+  quizElements.submitBtn.addEventListener("click", checkAnswer);
+  
+  quizElements.answerInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && !quizState.answered) {
+      checkAnswer();
+    }
+  });
+  
+  quizElements.hintBtn.addEventListener("click", () => {
+    quizElements.hint.classList.toggle("hidden");
+  });
+  
+  quizElements.solutionToggle.addEventListener("click", () => {
+    quizElements.solution.classList.toggle("open");
+    quizElements.solutionToggle.textContent = 
+      quizElements.solution.classList.contains("open") ? "Hide" : "Show";
+  });
+  
+  quizElements.nextBtn.addEventListener("click", () => {
+    quizState.currentIndex++;
+    loadQuestion();
+  });
+  
+  quizElements.restartBtn.addEventListener("click", () => {
+    quizElements.card.classList.add("hidden");
+    quizElements.start.classList.remove("hidden");
+  });
+  
+  quizElements.retryBtn.addEventListener("click", () => {
+    startQuiz();
+  });
+  
+  quizElements.newTopicBtn.addEventListener("click", () => {
+    quizElements.complete.classList.add("hidden");
+    quizElements.start.classList.remove("hidden");
+  });
+};
+
+const initQuiz = async () => {
+  try {
+    const response = await fetch(QUIZ_URL);
+    quizState.questions = await response.json();
+    populateQuizTopics();
+    bindQuizEvents();
+  } catch (error) {
+    console.error("Failed to load quiz questions:", error);
+  }
+};
+
 const init = async () => {
   renderSkeletons();
   const response = await fetch(DATA_URL);
@@ -710,6 +998,7 @@ const init = async () => {
   syncPinToggle();
   setSidebarOpen(isPinned && isDesktop());
   bindEvents();
+  await initQuiz();
 };
 
 init();

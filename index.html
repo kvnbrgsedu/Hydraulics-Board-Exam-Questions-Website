@@ -35,6 +35,7 @@
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
           <a href="#questions" class="nav-link">Questions</a>
+          <a href="#quiz" class="nav-link">Quiz</a>
           <a href="#formulas" class="nav-link">Formula Sheet</a>
           <a href="#about" class="nav-link">About</a>
         </nav>
@@ -114,6 +115,7 @@
         <p class="filter-label">Quick Navigation</p>
         <nav class="sidebar__nav">
           <a href="#questions">All Questions</a>
+          <a href="#quiz">Interactive Quiz</a>
           <a href="#formulas">Formula Sheet</a>
           <a href="#results-info">Results Summary</a>
         </nav>
@@ -173,6 +175,147 @@
         <h3>No results found</h3>
         <p>Try adjusting your filters or search keywords.</p>
       </section>
+      </section>
+
+      <section id="quiz" class="quiz-section">
+        <div class="section-header">
+          <p class="section-eyebrow">Interactive Practice</p>
+          <h2>Hydraulics Quiz Challenge</h2>
+          <p class="section-subtitle">
+            Test your hydraulics knowledge with dynamic practice problems and instant feedback.
+          </p>
+        </div>
+
+        <div class="quiz-container">
+          <!-- Quiz Progress -->
+          <div class="quiz-progress">
+            <div class="quiz-score">
+              <span class="score-label">Score:</span>
+              <span id="quiz-score">0</span> / <span id="quiz-total">0</span>
+            </div>
+            <div class="quiz-counter">
+              <span>Question </span><span id="quiz-current">1</span> of <span id="quiz-count">10</span>
+            </div>
+          </div>
+          <div class="quiz-progress-bar">
+            <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+          </div>
+
+          <!-- Quiz Card -->
+          <div id="quiz-card" class="quiz-card">
+            <div class="quiz-card__header">
+              <span id="quiz-topic" class="quiz-topic">Loading...</span>
+              <button id="quiz-hint-btn" class="btn btn--hint">💡 Hint</button>
+            </div>
+
+            <div id="quiz-question" class="quiz-question">
+              <!-- Question text will be inserted here -->
+            </div>
+
+            <div id="quiz-image-container" class="quiz-image-container hidden">
+              <img id="quiz-image" src="" alt="Question figure" />
+              <span id="quiz-image-caption" class="image-caption"></span>
+            </div>
+
+            <div id="quiz-hint" class="quiz-hint hidden">
+              <div class="quiz-hint__content">
+                <strong>💡 Hint:</strong>
+                <p id="quiz-hint-text"></p>
+              </div>
+            </div>
+
+            <div class="quiz-answer-section">
+              <label for="quiz-answer-input" class="quiz-label">Your Answer:</label>
+              <div class="quiz-input-group">
+                <input
+                  type="text"
+                  id="quiz-answer-input"
+                  class="quiz-input"
+                  placeholder="Enter your numerical answer..."
+                  autocomplete="off"
+                />
+                <span id="quiz-unit" class="quiz-unit"></span>
+              </div>
+              <button id="quiz-submit-btn" class="btn btn--primary btn--quiz-submit">
+                Submit Answer
+              </button>
+            </div>
+
+            <div id="quiz-feedback" class="quiz-feedback hidden">
+              <div id="quiz-feedback-icon" class="quiz-feedback__icon"></div>
+              <div id="quiz-feedback-message" class="quiz-feedback__message"></div>
+            </div>
+
+            <div id="quiz-solution" class="quiz-solution hidden">
+              <div class="quiz-solution__header">
+                <h3>Solution</h3>
+                <button id="quiz-solution-toggle" class="btn btn--ghost btn--small">Hide</button>
+              </div>
+              <div id="quiz-solution-content" class="quiz-solution__content">
+                <!-- Solution steps will be inserted here -->
+              </div>
+              <div id="quiz-solution-image-container" class="quiz-image-container hidden">
+                <img id="quiz-solution-image" src="" alt="Solution figure" />
+                <span id="quiz-solution-image-caption" class="image-caption"></span>
+              </div>
+              <div id="quiz-final-answer" class="quiz-final-answer hidden">
+                <span>Correct Answer:</span>
+                <p id="quiz-correct-answer"></p>
+              </div>
+            </div>
+
+            <div class="quiz-actions">
+              <button id="quiz-restart-btn" class="btn btn--ghost">Restart Quiz</button>
+              <button id="quiz-next-btn" class="btn btn--primary" disabled>
+                Next Question →
+              </button>
+            </div>
+          </div>
+
+          <!-- Quiz Start Screen -->
+          <div id="quiz-start" class="quiz-start">
+            <div class="quiz-start__content">
+              <div class="quiz-start__icon">🎯</div>
+              <h3>Ready to Test Your Knowledge?</h3>
+              <p>Practice Hydraulics computations with instant feedback and step-by-step solutions.</p>
+              <div class="quiz-start__options">
+                <label for="quiz-topic-select">Choose Topic:</label>
+                <select id="quiz-topic-select" class="quiz-select">
+                  <option value="all">All Topics (Random)</option>
+                </select>
+                <label for="quiz-difficulty-select">Difficulty:</label>
+                <select id="quiz-difficulty-select" class="quiz-select">
+                  <option value="all">All Levels</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <button id="quiz-start-btn" class="btn btn--primary btn--large">
+                Start Quiz
+              </button>
+            </div>
+          </div>
+
+          <!-- Quiz Complete Screen -->
+          <div id="quiz-complete" class="quiz-complete hidden">
+            <div class="quiz-complete__content">
+              <div class="quiz-complete__icon">🎉</div>
+              <h3>Quiz Complete!</h3>
+              <div class="quiz-complete__score">
+                <p>Your Score:</p>
+                <div class="score-display">
+                  <span id="final-score">0</span> / <span id="final-total">10</span>
+                </div>
+                <div class="score-percentage" id="score-percentage">0%</div>
+              </div>
+              <div class="quiz-complete__actions">
+                <button id="quiz-retry-btn" class="btn btn--primary">Try Again</button>
+                <button id="quiz-new-topic-btn" class="btn btn--ghost">Change Topic</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="formulas" class="formula-section">

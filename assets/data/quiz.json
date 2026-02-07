@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "topic": "Pipe Flow",
+    "difficulty": "medium",
+    "question": "A 300-mm diameter pipe carries water at a velocity of 2.5 m/s. Calculate the flow rate in liters per second.",
+    "hint": "Use the formula Q = A × V, where A is the cross-sectional area and V is the velocity. Don't forget to convert units!",
+    "solution": "Given:\\n- Diameter, D = 300 mm = 0.3 m\\n- Velocity, V = 2.5 m/s\\n\\nStep 1: Calculate the cross-sectional area\\n$$A = \\frac{\\pi D^2}{4} = \\frac{\\pi (0.3)^2}{4} = 0.0707 \\text{ m}^2$$\\n\\nStep 2: Calculate flow rate\\n$$Q = A \\times V = 0.0707 \\times 2.5 = 0.177 \\text{ m}^3/\\text{s}$$\\n\\nStep 3: Convert to liters per second\\n$$Q = 0.177 \\times 1000 = 177 \\text{ L/s}$$",
+    "answer": 177,
+    "tolerance": 1,
+    "unit": "L/s"
+  },
+  {
+    "id": 2,
+    "topic": "Open Channel Flow",
+    "difficulty": "hard",
+    "question": "A rectangular channel 4 m wide carries water at a depth of 1.5 m with a velocity of 3 m/s. Calculate the Froude number.",
+    "hint": "Froude number is Fr = V / √(g × y), where g = 9.81 m/s², y is the flow depth.",
+    "solution": "Given:\\n- Width, b = 4 m\\n- Depth, y = 1.5 m\\n- Velocity, V = 3 m/s\\n- g = 9.81 m/s²\\n\\nStep 1: Calculate the Froude number\\n$$Fr = \\frac{V}{\\sqrt{g \\times y}}$$\\n\\nStep 2: Substitute values\\n$$Fr = \\frac{3}{\\sqrt{9.81 \\times 1.5}} = \\frac{3}{\\sqrt{14.715}} = \\frac{3}{3.836}$$\\n\\nStep 3: Calculate final answer\\n$$Fr = 0.782$$\\n\\nSince Fr < 1, the flow is subcritical.",
+    "answer": 0.782,
+    "tolerance": 0.01,
+    "unit": ""
+  },
+  {
+    "id": 3,
+    "topic": "Pump Calculations",
+    "difficulty": "medium",
+    "question": "A pump delivers 50 L/s of water against a total head of 25 m. If the pump efficiency is 75%, calculate the power input required in kW.",
+    "hint": "Power = (ρ × g × Q × H) / η, where ρ = 1000 kg/m³, g = 9.81 m/s²",
+    "solution": "Given:\\n- Flow rate, Q = 50 L/s = 0.05 m³/s\\n- Total head, H = 25 m\\n- Efficiency, η = 75% = 0.75\\n- ρ = 1000 kg/m³\\n- g = 9.81 m/s²\\n\\nStep 1: Calculate water power\\n$$P_w = \\rho \\times g \\times Q \\times H$$\\n$$P_w = 1000 \\times 9.81 \\times 0.05 \\times 25 = 12,262.5 \\text{ W}$$\\n\\nStep 2: Calculate power input\\n$$P_{input} = \\frac{P_w}{\\eta} = \\frac{12,262.5}{0.75} = 16,350 \\text{ W}$$\\n\\nStep 3: Convert to kW\\n$$P_{input} = 16.35 \\text{ kW}$$",
+    "answer": 16.35,
+    "tolerance": 0.1,
+    "unit": "kW"
+  },
+  {
+    "id": 4,
+    "topic": "Fluid Properties",
+    "difficulty": "easy",
+    "question": "Calculate the specific weight of a fluid that has a density of 850 kg/m³. Use g = 9.81 m/s².",
+    "hint": "Specific weight γ = ρ × g",
+    "solution": "Given:\\n- Density, ρ = 850 kg/m³\\n- g = 9.81 m/s²\\n\\nStep 1: Apply the formula\\n$$\\gamma = \\rho \\times g$$\\n\\nStep 2: Substitute values\\n$$\\gamma = 850 \\times 9.81 = 8,338.5 \\text{ N/m}^3$$\\n\\nStep 3: Round to appropriate precision\\n$$\\gamma = 8,339 \\text{ N/m}^3$$ or $$8.34 \\text{ kN/m}^3$$",
+    "answer": 8339,
+    "tolerance": 1,
+    "unit": "N/m³"
+  },
+  {
+    "id": 5,
+    "topic": "Hydrostatics",
+    "difficulty": "medium",
+    "question": "A rectangular gate 2 m wide and 3 m high is submerged vertically in water. The top edge is 4 m below the water surface. Calculate the total hydrostatic force on the gate in kN.",
+    "hint": "F = γ × h_c × A, where h_c is the depth to the centroid and γ = 9.81 kN/m³",
+    "solution": "Given:\\n- Width, b = 2 m\\n- Height, h = 3 m\\n- Top edge depth = 4 m\\n- γ = 9.81 kN/m³\\n\\nStep 1: Calculate the area\\n$$A = b \\times h = 2 \\times 3 = 6 \\text{ m}^2$$\\n\\nStep 2: Calculate depth to centroid\\n$$h_c = 4 + \\frac{3}{2} = 4 + 1.5 = 5.5 \\text{ m}$$\\n\\nStep 3: Calculate hydrostatic force\\n$$F = \\gamma \\times h_c \\times A$$\\n$$F = 9.81 \\times 5.5 \\times 6 = 323.73 \\text{ kN}$$",
+    "answer": 323.73,
+    "tolerance": 0.5,
+    "unit": "kN"
+  },
+  {
+    "id": 6,
+    "topic": "Pipe Flow",
+    "difficulty": "hard",
+    "question": "Water flows through a 150-mm diameter pipe at 1.8 m/s. The pipe expands to 250 mm diameter. Calculate the velocity in the larger pipe in m/s.",
+    "hint": "Use continuity equation: A₁V₁ = A₂V₂",
+    "solution": "Given:\\n- D₁ = 150 mm = 0.15 m\\n- V₁ = 1.8 m/s\\n- D₂ = 250 mm = 0.25 m\\n\\nStep 1: Calculate areas\\n$$A_1 = \\frac{\\pi D_1^2}{4} = \\frac{\\pi (0.15)^2}{4} = 0.0177 \\text{ m}^2$$\\n$$A_2 = \\frac{\\pi D_2^2}{4} = \\frac{\\pi (0.25)^2}{4} = 0.0491 \\text{ m}^2$$\\n\\nStep 2: Apply continuity equation\\n$$A_1 V_1 = A_2 V_2$$\\n$$V_2 = \\frac{A_1 V_1}{A_2} = \\frac{0.0177 \\times 1.8}{0.0491}$$\\n\\nStep 3: Calculate V₂\\n$$V_2 = 0.649 \\text{ m/s}$$",
+    "answer": 0.649,
+    "tolerance": 0.01,
+    "unit": "m/s"
+  },
+  {
+    "id": 7,
+    "topic": "Open Channel Flow",
+    "difficulty": "easy",
+    "question": "A trapezoidal channel has a bottom width of 3 m, side slopes of 1:1, and a flow depth of 2 m. Calculate the cross-sectional area in m².",
+    "hint": "For trapezoidal channel: A = (b + zy)y, where z is the side slope ratio",
+    "solution": "Given:\\n- Bottom width, b = 3 m\\n- Side slope, z = 1 (1:1 means 1H:1V)\\n- Depth, y = 2 m\\n\\nStep 1: Apply trapezoidal area formula\\n$$A = (b + zy)y$$\\n\\nStep 2: Substitute values\\n$$A = (3 + 1 \\times 2) \\times 2$$\\n$$A = (3 + 2) \\times 2$$\\n$$A = 5 \\times 2$$\\n\\nStep 3: Calculate final answer\\n$$A = 10 \\text{ m}^2$$",
+    "answer": 10,
+    "tolerance": 0.1,
+    "unit": "m²"
+  },
+  {
+    "id": 8,
+    "topic": "Pump Calculations",
+    "difficulty": "hard",
+    "question": "A centrifugal pump operating at 1200 rpm has an impeller diameter of 300 mm. Calculate the peripheral velocity in m/s.",
+    "hint": "Peripheral velocity u = π × D × N / 60, where N is in rpm and D is in meters",
+    "solution": "Given:\\n- Speed, N = 1200 rpm\\n- Diameter, D = 300 mm = 0.3 m\\n\\nStep 1: Apply peripheral velocity formula\\n$$u = \\frac{\\pi \\times D \\times N}{60}$$\\n\\nStep 2: Substitute values\\n$$u = \\frac{\\pi \\times 0.3 \\times 1200}{60}$$\\n$$u = \\frac{1130.97}{60}$$\\n\\nStep 3: Calculate final answer\\n$$u = 18.85 \\text{ m/s}$$",
+    "answer": 18.85,
+    "tolerance": 0.1,
+    "unit": "m/s"
+  },
+  {
+    "id": 9,
+    "topic": "Fluid Properties",
+    "difficulty": "medium",
+    "question": "A fluid has a dynamic viscosity of 0.0012 Pa·s and a density of 900 kg/m³. Calculate the kinematic viscosity in m²/s (scientific notation: use format 1.33e-6).",
+    "hint": "Kinematic viscosity ν = μ / ρ",
+    "solution": "Given:\\n- Dynamic viscosity, μ = 0.0012 Pa·s = 0.0012 N·s/m²\\n- Density, ρ = 900 kg/m³\\n\\nStep 1: Apply the formula\\n$$\\nu = \\frac{\\mu}{\\rho}$$\\n\\nStep 2: Substitute values\\n$$\\nu = \\frac{0.0012}{900}$$\\n\\nStep 3: Calculate final answer\\n$$\\nu = 1.333 \\times 10^{-6} \\text{ m}^2/\\text{s}$$\\n\\nor\\n$$\\nu = 0.000001333 \\text{ m}^2/\\text{s}$$",
+    "answer": 1.33e-6,
+    "tolerance": 0.01e-6,
+    "unit": "m²/s"
+  },
+  {
+    "id": 10,
+    "topic": "Hydrostatics",
+    "difficulty": "easy",
+    "question": "Calculate the pressure at a depth of 15 m below the water surface. Use γ = 9.81 kN/m³. Give answer in kPa.",
+    "hint": "Pressure p = γ × h. Remember 1 kN/m² = 1 kPa",
+    "solution": "Given:\\n- Depth, h = 15 m\\n- Specific weight of water, γ = 9.81 kN/m³\\n\\nStep 1: Apply hydrostatic pressure formula\\n$$p = \\gamma \\times h$$\\n\\nStep 2: Substitute values\\n$$p = 9.81 \\times 15$$\\n\\nStep 3: Calculate final answer\\n$$p = 147.15 \\text{ kN/m}^2 = 147.15 \\text{ kPa}$$",
+    "answer": 147.15,
+    "tolerance": 0.5,
+    "unit": "kPa"
+  }
+]
