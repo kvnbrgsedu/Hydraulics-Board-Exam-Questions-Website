@@ -338,6 +338,36 @@ const filterData = () => {
   return filtered;
 };
 
+const buildHierarchy = (items) => {
+  const map = {};
+  (items || []).forEach((item) => {
+    if (!item) return;
+    const year = String(item.year || "Unknown").trim() || "Unknown";
+    const topic = String(item.topic || "Uncategorized").trim() || "Uncategorized";
+    if (!map[year]) {
+      map[year] = { year, topics: {} };
+    }
+    if (!map[year].topics[topic]) {
+      map[year].topics[topic] = { topic, questions: [] };
+    }
+    map[year].topics[topic].questions.push(item);
+  });
+
+  return Object.values(map)
+    .sort((a, b) => {
+      const yearA = parseInt(a.year, 10);
+      const yearB = parseInt(b.year, 10);
+      if (isNaN(yearA) || isNaN(yearB)) return a.year.localeCompare(b.year);
+      return yearA - yearB;
+    })
+    .map((yearEntry) => ({
+      year: yearEntry.year,
+      topics: Object.values(yearEntry.topics).sort((a, b) =>
+        a.topic.localeCompare(b.topic)
+      ),
+    }));
+};
+
 const buildCardHtml = (item, index = 0) => {
   const question = buildHighlights(item.question, state.search);
   const solution = buildHighlights(item.solution, state.search);
@@ -644,95 +674,63 @@ const renderFullHierarchyView = (items) => {
   }
   
   console.log("renderFullHierarchyView: Processing", items.length, "items");
-  
-  // Group by year, then by topic - ensure ALL questions are included
-  const grouped = items.reduce((acc, item) => {
-    // Skip invalid items - but be more lenient with validation
-    if (!item) return acc;
-    const year = String(item.year || "").trim();
-    const topic = String(item.topic || "").trim();
-    if (!year || !topic) {
-      return acc; // Only skip if both are missing
-    }
-    if (!acc[year]) acc[year] = {};
-    if (!acc[year][topic]) acc[year][topic] = [];
-    acc[year][topic].push(item);
-    return acc;
-  }, {});
+  const hierarchy = buildHierarchy(items);
 
-  const years = Object.keys(grouped).sort((a, b) => {
-    const yearA = parseInt(a);
-    const yearB = parseInt(b);
-    if (isNaN(yearA) || isNaN(yearB)) return a.localeCompare(b);
-    return yearA - yearB;
-  });
-  
-  // If no years after grouping, show empty
-  if (years.length === 0) {
+  if (!hierarchy.length) {
     console.warn("renderFullHierarchyView: No years found after grouping", items.length, "items");
-    console.warn("renderFullHierarchyView: Sample items:", items.slice(0, 3));
     grid.innerHTML = "";
     return;
   }
-  
-  console.log("renderFullHierarchyView: Found", years.length, "years:", years);
   
   let questionIndex = 0;
   let totalQuestions = 0;
 
   // Build the HTML structure: Year (Primary) → Topic (Secondary) → Questions
-  grid.innerHTML = years
-    .map((year, yearIndex) => {
-      const topics = Object.keys(grouped[year]).sort();
-      
-      // Count total questions in this year
-      const yearQuestionCount = topics.reduce((sum, topic) => sum + grouped[year][topic].length, 0);
+  grid.innerHTML = hierarchy
+    .map((yearEntry, yearIndex) => {
+      const topics = yearEntry.topics || [];
+      const yearQuestionCount = topics.reduce(
+        (sum, t) => sum + (t.questions ? t.questions.length : 0),
+        0
+      );
       totalQuestions += yearQuestionCount;
-      
-      // Build topic sections for this year
+
       const topicSections = topics
-        .map((topic, topicIndex) => {
-          const questions = grouped[year][topic];
-          if (!questions || questions.length === 0) return "";
-          
+        .map((topicEntry, topicIndex) => {
+          const questions = topicEntry.questions || [];
+          if (!questions.length) return "";
           const count = questions.length;
           const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
-          
           return `
             <section class="topic-section secondary-section" style="--delay: ${topicDelay}ms">
               <div class="topic-header secondary-header">
-                <span class="topic-label">${escapeHtml(topic)}</span>
+                <span class="topic-label">${escapeHtml(topicEntry.topic)}</span>
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
               </div>
               <div class="topic-content">
                 <div class="questions-grid">
                   ${questions
                     .map((item, qIndex) => {
-                      if (!item) return "";
                       const cardHtml = buildCardHtml(item, questionIndex++);
                       const questionDelay = topicDelay + qIndex * 30;
                       return addCardAnimation(cardHtml, questionDelay, qIndex);
                     })
-                    .filter(html => html) // Remove empty strings
                     .join("")}
                 </div>
               </div>
             </section>
           `;
         })
-        .filter(html => html) // Remove empty topic sections
+        .filter(Boolean)
         .join("");
 
-      // If no topic sections, skip this year
-      if (!topicSections.trim()) {
-        return "";
-      }
+      if (!topicSections.trim()) return "";
 
       return `
-        <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
+        <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(yearEntry.year)}" style="--year-index: ${yearIndex}">
           <div class="year-header hierarchical-year-header primary-header reveal">
-            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-              <span class="year-badge">${escapeHtml(year)}</span>
+            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(yearEntry.year)} questions">
+              <span class="year-badge">${escapeHtml(yearEntry.year)}</span>
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
@@ -743,7 +741,7 @@ const renderFullHierarchyView = (items) => {
         </section>
       `;
     })
-    .filter(html => html) // Remove empty year sections
+    .filter(Boolean)
     .join("");
 
   // Verify we rendered something
