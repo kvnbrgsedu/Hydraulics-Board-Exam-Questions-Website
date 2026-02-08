@@ -706,37 +706,49 @@ const renderHierarchicalView = (items) => {
   const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
   const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
 
-  // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy
+  // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
     renderFullHierarchyView(items);
     return;
   } 
   
-  // Case 2: BOTH specific topic AND specific year selected → Year + Topic view
+  // Case 2: "All Topics" selected with a specific year → Show topics within that year
+  if (isAllTopics && isSpecificYear) {
+    renderTopicsInYearView(items);
+    return;
+  }
+  
+  // Case 3: "All Years" selected with a specific topic → Show years with that topic
+  if (isAllYears && isSpecificTopic) {
+    renderYearsWithTopicView(items);
+    return;
+  }
+  
+  // Case 4: BOTH specific topic AND specific year selected → Year + Topic view
   if (isSpecificTopic && isSpecificYear) {
     renderTopicAndYearView(items);
     return;
   }
   
-  // Case 3: "All Topics" selected → Topic-only view
+  // Case 5: "All Topics" selected (no year filter) → Topic-only view
   if (isAllTopics) {
     renderTopicOnlyView(items);
     return;
   } 
   
-  // Case 4: "All Years" selected → Year-only view
+  // Case 6: "All Years" selected (no topic filter) → Year-only view
   if (isAllYears) {
     renderYearOnlyView(items);
     return;
   } 
   
-  // Case 5: Specific topic selected → Single topic view
+  // Case 7: Specific topic selected → Single topic view
   if (isSpecificTopic) {
     renderSingleTopicView(items);
     return;
   } 
   
-  // Case 6: Specific year selected → Single year view
+  // Case 8: Specific year selected → Single year view
   if (isSpecificYear) {
     renderSingleYearView(items);
     return;
