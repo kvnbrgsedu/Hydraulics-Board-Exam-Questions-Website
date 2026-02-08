@@ -1682,10 +1682,23 @@ body.home-page .results-info {
 /* Smooth transitions for grid container */
 #questions-grid {
   transition: opacity 0.25s ease;
+  width: 100%;
 }
 
 #questions-grid.hierarchical-view {
   transition: opacity 0.25s ease;
+  width: 100%;
+}
+
+/* Ensure hierarchical view content is properly centered */
+.hierarchical-view {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#questions {
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Responsive adjustments for hierarchical view */

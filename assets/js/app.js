@@ -412,14 +412,17 @@ const renderHierarchicalView = (items) => {
                   ${questions
                     .map((item, qIndex) => {
                       const cardHtml = buildCardHtml(item, questionIndex++);
-                      // Add animation delay to the card - replace existing style or add new one
+                      // Add animation delay to the card
                       const questionDelay = topicDelay + qIndex * 30;
+                      // Replace or add style attribute with animation delay
                       if (cardHtml.includes('style="')) {
+                        // Replace existing style, preserving other properties
                         return cardHtml.replace(
-                          'style="',
-                          `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms; `
+                          /style="[^"]*"/,
+                          `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms;"`
                         );
                       } else {
+                        // Add new style attribute before class
                         return cardHtml.replace(
                           'class="card',
                           `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms;" class="card`
