@@ -426,8 +426,16 @@ const addCardAnimation = (cardHtml, delay, qIndex) => {
   }
 };
 
-// 1. Topic-Only View: "All Topics" selected (no year headers) - Show topic header then ALL questions from that topic
+// RULE 5: All Topics + No Year
+// Group by Topic, show Topic headers (no year headers)
 const renderTopicOnlyView = (items) => {
+  // Filtering Logic: No topic filtering
+  // Display Rules:
+  // - Group questions by Topic
+  // - Show Topic header for each topic
+  // - Do NOT show Year headers
+  // - Optional: Year info in card metadata
+  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "topic-only-view");
   
@@ -454,6 +462,9 @@ const renderTopicOnlyView = (items) => {
       const count = questions.length;
       const topicDelay = topicIndex * 80 + 150;
       
+      // Only render if questions exist
+      if (count === 0) return "";
+      
       return `
         <section class="topic-section primary-section" style="--delay: ${topicDelay}ms">
           <div class="topic-header primary-header">
@@ -474,14 +485,23 @@ const renderTopicOnlyView = (items) => {
         </section>
       `;
     })
+    .filter(html => html) // Remove empty sections
     .join("");
 
   animateSections();
   restoreScrollPosition(scrollPosition);
 };
 
-// 2. Year-Only View: "All Years" selected (no topic headers) - Show year header then ALL questions from that year
+// RULE 6: No Topic + All Years
+// Group by Year (2011 → 2025), show Year headers (no topic headers)
 const renderYearOnlyView = (items) => {
+  // Filtering Logic: No year filtering
+  // Display Rules:
+  // - Group questions by Year
+  // - Show Year header for each year (2011 → 2025)
+  // - Do NOT show Topic headers
+  // - Optional: Topic info in card metadata
+  
   if (!grid) return;
   
   grid.classList.remove("grid");
@@ -509,7 +529,7 @@ const renderYearOnlyView = (items) => {
     const yearA = parseInt(a);
     const yearB = parseInt(b);
     if (isNaN(yearA) || isNaN(yearB)) return a.localeCompare(b);
-    return yearA - yearB;
+    return yearA - yearB; // Sort chronologically: 2011 → 2025
   });
   
   // If no years after grouping, show empty
@@ -519,15 +539,13 @@ const renderYearOnlyView = (items) => {
   }
   
   let questionIndex = 0;
-  let totalQuestions = 0;
 
   grid.innerHTML = years
     .map((year, yearIndex) => {
       const questions = grouped[year];
-      if (!questions || questions.length === 0) return "";
+      if (!questions || questions.length === 0) return ""; // Header only if questions exist
       
       const count = questions.length;
-      totalQuestions += count;
       const yearDelay = yearIndex * 120 + 150;
       
       return `
@@ -538,6 +556,7 @@ const renderYearOnlyView = (items) => {
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
+            <span class="year-meta">${count} question${count === 1 ? "" : "s"}</span>
           </div>
           <div class="year-content open">
             <div class="questions-grid">
@@ -564,14 +583,33 @@ const renderYearOnlyView = (items) => {
     return;
   }
 
+  initYearToggles();
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
+  // Verify we rendered something
+  if (!grid.innerHTML.trim()) {
+    grid.innerHTML = "";
+    return;
+  }
+
 
   initYearToggles();
   animateSections();
   restoreScrollPosition(scrollPosition);
 };
 
-// 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected - Show BOTH year and topic headers
+// RULE 7: All Topics + All Years
+// Full Hierarchy View: Year (Primary, 2011 → 2025) → Topic (Secondary) → Questions
 const renderFullHierarchyView = (items) => {
+  // Filtering Logic: No filtering
+  // Display Hierarchy:
+  // - Year header (primary, ordered 2011 → 2025)
+  // - → Topic header (secondary)
+  // - → Question cards
+  // Rendering Rules: Headers render only if they contain questions
+  
   if (!grid) {
     console.error("renderFullHierarchyView: grid element not found");
     return;
@@ -595,12 +633,11 @@ const renderFullHierarchyView = (items) => {
   
   // Group by year, then by topic - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
-    // Skip invalid items - but be more lenient with validation
     if (!item) return acc;
     const year = String(item.year || "").trim();
     const topic = String(item.topic || "").trim();
     if (!year || !topic) {
-      return acc; // Only skip if both are missing
+      return acc; // Skip items without year or topic
     }
     if (!acc[year]) acc[year] = {};
     if (!acc[year][topic]) acc[year][topic] = [];
@@ -608,6 +645,7 @@ const renderFullHierarchyView = (items) => {
     return acc;
   }, {});
 
+  // Sort years chronologically: 2011 → 2025
   const years = Object.keys(grouped).sort((a, b) => {
     const yearA = parseInt(a);
     const yearB = parseInt(b);
@@ -618,7 +656,6 @@ const renderFullHierarchyView = (items) => {
   // If no years after grouping, show empty
   if (years.length === 0) {
     console.warn("renderFullHierarchyView: No years found after grouping", items.length, "items");
-    console.warn("renderFullHierarchyView: Sample items:", items.slice(0, 3));
     grid.innerHTML = "";
     return;
   }
@@ -626,22 +663,17 @@ const renderFullHierarchyView = (items) => {
   console.log("renderFullHierarchyView: Found", years.length, "years:", years);
   
   let questionIndex = 0;
-  let totalQuestions = 0;
 
   // Build the HTML structure: Year (Primary) → Topic (Secondary) → Questions
   grid.innerHTML = years
     .map((year, yearIndex) => {
       const topics = Object.keys(grouped[year]).sort();
       
-      // Count total questions in this year
-      const yearQuestionCount = topics.reduce((sum, topic) => sum + grouped[year][topic].length, 0);
-      totalQuestions += yearQuestionCount;
-      
       // Build topic sections for this year
       const topicSections = topics
         .map((topic, topicIndex) => {
           const questions = grouped[year][topic];
-          if (!questions || questions.length === 0) return "";
+          if (!questions || questions.length === 0) return ""; // Header only if questions exist
           
           const count = questions.length;
           const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
@@ -671,7 +703,7 @@ const renderFullHierarchyView = (items) => {
         .filter(html => html) // Remove empty topic sections
         .join("");
 
-      // If no topic sections, skip this year
+      // If no topic sections, skip this year (no questions = no header)
       if (!topicSections.trim()) {
         return "";
       }
@@ -792,8 +824,15 @@ const renderSingleTopicView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
-// 5. Single Year View: Specific year selected
+// RULE 3: No Topic + Specific Year
+// Single Year View: Show Year header (once) + Questions (no topic headers)
 const renderSingleYearView = (items) => {
+  // Filtering Logic: question.year === selectedYear
+  // Display Rules:
+  // - Show: Year header (once, at the top), All matching question cards
+  // - Do NOT show: Topic headers
+  // - Optional: Each question may include a small topic tag (already in card metadata)
+  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "single-year-view");
   
@@ -816,6 +855,7 @@ const renderSingleYearView = (items) => {
           <span class="year-toggle-icon">⌄</span>
         </button>
         <div class="year-line"></div>
+        <span class="year-meta">${items.length} question${items.length === 1 ? "" : "s"}</span>
       </div>
       <div class="year-content open">
         <div class="questions-grid">
@@ -974,8 +1014,15 @@ const renderYearsWithTopicView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
-// Main render function that detects state and calls appropriate renderer
+// RULE 4: Specific Topic + Specific Year
+// Show hierarchy: Year header → Topic header → Question cards
 const renderTopicAndYearView = (items) => {
+  // Filtering Logic: question.topic === selectedTopic AND question.year === selectedYear
+  // Display Hierarchy:
+  // - Year header (primary)
+  // - → Topic header (secondary)
+  // - → Question cards
+  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "topic-year-view");
   
