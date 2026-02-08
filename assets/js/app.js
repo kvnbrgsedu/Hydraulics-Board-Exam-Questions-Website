@@ -259,49 +259,78 @@ const filterData = () => {
     return [];
   }
   
-  // CRITICAL: Always check dropdowns as fallback to ensure we have the latest values
-  // This is important when user selects "All Topics" then "All Years" (or vice versa)
+  // CRITICAL: Always check dropdowns first to get the most current values
   const topicValue = startTopic ? startTopic.value : state.topic;
   const yearValue = startYear ? startYear.value : state.year;
   
-  // Sync state from dropdowns if they differ (defensive)
-  if (topicValue === "all" && state.topic !== "all") {
+  // Sync state from dropdowns (dropdowns are source of truth)
+  if (topicValue === "all") {
     state.topic = "all";
-  } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
+  } else if (topicValue === "choose" || topicValue === "none") {
+    state.topic = topicValue;
+  } else if (topicValue) {
     state.topic = topicValue;
   }
   
-  if (yearValue === "all" && state.year !== "all") {
+  if (yearValue === "all") {
     state.year = "all";
-  } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
+  } else if (yearValue === "choose" || yearValue === "none") {
+    state.year = yearValue;
+  } else if (yearValue) {
     state.year = yearValue;
   }
   
-  // If both topic and year are "all", and batch is "all", and no search query,
-  // we can return all items directly (optimization)
+  // If no valid selection, return empty array (show nothing)
+  if ((state.topic === "choose" || state.topic === "none") && 
+      (state.year === "choose" || state.year === "none")) {
+    console.log("filterData: No selection made, returning empty array");
+    return [];
+  }
+  
+  // If both topic and year are "all", return all items
   if (state.topic === "all" && state.year === "all" && state.batch === "all" && !state.search.trim()) {
     console.log("filterData: Returning all", state.data.length, "items (both filters are 'all')");
     return state.data;
   }
   
+  // Filter based on selections
   const filtered = state.data.filter((item) => {
     if (!item) return false;
     
-    // "choose" means no specific selection, so treat it as "all" (match everything for that filter)
-    // "all" means match everything for that filter
-    // Specific values mean match only that value
-    const matchesYear = (state.year === "choose" || state.year === "none") ? true : (state.year === "all" ? true : String(item.year) === String(state.year));
+    // Year matching
+    let matchesYear = false;
+    if (state.year === "all") {
+      matchesYear = true;
+    } else if (state.year === "choose" || state.year === "none") {
+      matchesYear = true; // No year filter applied
+    } else {
+      matchesYear = String(item.year) === String(state.year);
+    }
+    
+    // Topic matching
+    let matchesTopic = false;
+    if (state.topic === "all") {
+      matchesTopic = true;
+    } else if (state.topic === "choose" || state.topic === "none") {
+      matchesTopic = true; // No topic filter applied
+    } else {
+      matchesTopic = String(item.topic) === String(state.topic);
+    }
+    
+    // Batch matching
     const matchesBatch = state.batch === "all" ? true : String(item.batch) === String(state.batch);
-    const matchesTopic = (state.topic === "choose" || state.topic === "none") ? true : (state.topic === "all" ? true : String(item.topic) === String(state.topic));
+    
+    // Search matching
     const query = state.search.trim().toLowerCase();
     const matchesSearch =
       !query ||
       (item.question && item.question.toLowerCase().includes(query)) ||
       (item.topic && item.topic.toLowerCase().includes(query)) ||
       `${item.year || ""} ${item.batch || ""}`.toLowerCase().includes(query);
-    return matchesYear && matchesBatch && matchesTopic && matchesSearch;
+    
+    return matchesYear && matchesTopic && matchesBatch && matchesSearch;
   });
-
+  
   console.log("filterData: Filtered", filtered.length, "items from", state.data.length, "total (topic:", state.topic, "year:", state.year, ")");
   return filtered;
 };
@@ -426,16 +455,8 @@ const addCardAnimation = (cardHtml, delay, qIndex) => {
   }
 };
 
-// RULE 5: All Topics + No Year
-// Group by Topic, show Topic headers (no year headers)
+// 1. Topic-Only View: "All Topics" selected (no year headers) - Show topic header then ALL questions from that topic
 const renderTopicOnlyView = (items) => {
-  // Filtering Logic: No topic filtering
-  // Display Rules:
-  // - Group questions by Topic
-  // - Show Topic header for each topic
-  // - Do NOT show Year headers
-  // - Optional: Year info in card metadata
-  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "topic-only-view");
   
@@ -462,9 +483,6 @@ const renderTopicOnlyView = (items) => {
       const count = questions.length;
       const topicDelay = topicIndex * 80 + 150;
       
-      // Only render if questions exist
-      if (count === 0) return "";
-      
       return `
         <section class="topic-section primary-section" style="--delay: ${topicDelay}ms">
           <div class="topic-header primary-header">
@@ -485,23 +503,14 @@ const renderTopicOnlyView = (items) => {
         </section>
       `;
     })
-    .filter(html => html) // Remove empty sections
     .join("");
 
   animateSections();
   restoreScrollPosition(scrollPosition);
 };
 
-// RULE 6: No Topic + All Years
-// Group by Year (2011 → 2025), show Year headers (no topic headers)
+// 2. Year-Only View: "All Years" selected (no topic headers) - Show year header then ALL questions from that year
 const renderYearOnlyView = (items) => {
-  // Filtering Logic: No year filtering
-  // Display Rules:
-  // - Group questions by Year
-  // - Show Year header for each year (2011 → 2025)
-  // - Do NOT show Topic headers
-  // - Optional: Topic info in card metadata
-  
   if (!grid) return;
   
   grid.classList.remove("grid");
@@ -529,7 +538,7 @@ const renderYearOnlyView = (items) => {
     const yearA = parseInt(a);
     const yearB = parseInt(b);
     if (isNaN(yearA) || isNaN(yearB)) return a.localeCompare(b);
-    return yearA - yearB; // Sort chronologically: 2011 → 2025
+    return yearA - yearB;
   });
   
   // If no years after grouping, show empty
@@ -539,13 +548,15 @@ const renderYearOnlyView = (items) => {
   }
   
   let questionIndex = 0;
+  let totalQuestions = 0;
 
   grid.innerHTML = years
     .map((year, yearIndex) => {
       const questions = grouped[year];
-      if (!questions || questions.length === 0) return ""; // Header only if questions exist
+      if (!questions || questions.length === 0) return "";
       
       const count = questions.length;
+      totalQuestions += count;
       const yearDelay = yearIndex * 120 + 150;
       
       return `
@@ -556,7 +567,6 @@ const renderYearOnlyView = (items) => {
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
-            <span class="year-meta">${count} question${count === 1 ? "" : "s"}</span>
           </div>
           <div class="year-content open">
             <div class="questions-grid">
@@ -583,33 +593,14 @@ const renderYearOnlyView = (items) => {
     return;
   }
 
-  initYearToggles();
-  animateSections();
-  restoreScrollPosition(scrollPosition);
-};
-
-  // Verify we rendered something
-  if (!grid.innerHTML.trim()) {
-    grid.innerHTML = "";
-    return;
-  }
-
 
   initYearToggles();
   animateSections();
   restoreScrollPosition(scrollPosition);
 };
 
-// RULE 7: All Topics + All Years
-// Full Hierarchy View: Year (Primary, 2011 → 2025) → Topic (Secondary) → Questions
+// 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected - Show BOTH year and topic headers
 const renderFullHierarchyView = (items) => {
-  // Filtering Logic: No filtering
-  // Display Hierarchy:
-  // - Year header (primary, ordered 2011 → 2025)
-  // - → Topic header (secondary)
-  // - → Question cards
-  // Rendering Rules: Headers render only if they contain questions
-  
   if (!grid) {
     console.error("renderFullHierarchyView: grid element not found");
     return;
@@ -633,11 +624,12 @@ const renderFullHierarchyView = (items) => {
   
   // Group by year, then by topic - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
+    // Skip invalid items - but be more lenient with validation
     if (!item) return acc;
     const year = String(item.year || "").trim();
     const topic = String(item.topic || "").trim();
     if (!year || !topic) {
-      return acc; // Skip items without year or topic
+      return acc; // Only skip if both are missing
     }
     if (!acc[year]) acc[year] = {};
     if (!acc[year][topic]) acc[year][topic] = [];
@@ -645,7 +637,6 @@ const renderFullHierarchyView = (items) => {
     return acc;
   }, {});
 
-  // Sort years chronologically: 2011 → 2025
   const years = Object.keys(grouped).sort((a, b) => {
     const yearA = parseInt(a);
     const yearB = parseInt(b);
@@ -656,6 +647,7 @@ const renderFullHierarchyView = (items) => {
   // If no years after grouping, show empty
   if (years.length === 0) {
     console.warn("renderFullHierarchyView: No years found after grouping", items.length, "items");
+    console.warn("renderFullHierarchyView: Sample items:", items.slice(0, 3));
     grid.innerHTML = "";
     return;
   }
@@ -663,17 +655,22 @@ const renderFullHierarchyView = (items) => {
   console.log("renderFullHierarchyView: Found", years.length, "years:", years);
   
   let questionIndex = 0;
+  let totalQuestions = 0;
 
   // Build the HTML structure: Year (Primary) → Topic (Secondary) → Questions
   grid.innerHTML = years
     .map((year, yearIndex) => {
       const topics = Object.keys(grouped[year]).sort();
       
+      // Count total questions in this year
+      const yearQuestionCount = topics.reduce((sum, topic) => sum + grouped[year][topic].length, 0);
+      totalQuestions += yearQuestionCount;
+      
       // Build topic sections for this year
       const topicSections = topics
         .map((topic, topicIndex) => {
           const questions = grouped[year][topic];
-          if (!questions || questions.length === 0) return ""; // Header only if questions exist
+          if (!questions || questions.length === 0) return "";
           
           const count = questions.length;
           const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
@@ -703,7 +700,7 @@ const renderFullHierarchyView = (items) => {
         .filter(html => html) // Remove empty topic sections
         .join("");
 
-      // If no topic sections, skip this year (no questions = no header)
+      // If no topic sections, skip this year
       if (!topicSections.trim()) {
         return "";
       }
@@ -779,13 +776,6 @@ const renderFullHierarchyView = (items) => {
 
 // 4. Single Topic View: Specific topic selected
 const renderSingleTopicView = (items) => {
-  // RULE 2: Specific Topic Selected + No Year Selected
-  // Filtering Logic: Filter all questions where question.topic === selectedTopic
-  // Display Rules:
-  // - Show: Topic header (once, at the top), All matching question cards
-  // - Do NOT show: Year headers
-  // - Optional: Each question may include a small year tag (already in card metadata)
-  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "single-topic-view");
   
@@ -824,15 +814,8 @@ const renderSingleTopicView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
-// RULE 3: No Topic + Specific Year
-// Single Year View: Show Year header (once) + Questions (no topic headers)
+// 5. Single Year View: Specific year selected
 const renderSingleYearView = (items) => {
-  // Filtering Logic: question.year === selectedYear
-  // Display Rules:
-  // - Show: Year header (once, at the top), All matching question cards
-  // - Do NOT show: Topic headers
-  // - Optional: Each question may include a small topic tag (already in card metadata)
-  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "single-year-view");
   
@@ -855,7 +838,6 @@ const renderSingleYearView = (items) => {
           <span class="year-toggle-icon">⌄</span>
         </button>
         <div class="year-line"></div>
-        <span class="year-meta">${items.length} question${items.length === 1 ? "" : "s"}</span>
       </div>
       <div class="year-content open">
         <div class="questions-grid">
@@ -1014,15 +996,8 @@ const renderYearsWithTopicView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
-// RULE 4: Specific Topic + Specific Year
-// Show hierarchy: Year header → Topic header → Question cards
+// Main render function that detects state and calls appropriate renderer
 const renderTopicAndYearView = (items) => {
-  // Filtering Logic: question.topic === selectedTopic AND question.year === selectedYear
-  // Display Hierarchy:
-  // - Year header (primary)
-  // - → Topic header (secondary)
-  // - → Question cards
-  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "topic-year-view");
   
@@ -1094,75 +1069,80 @@ const renderHierarchicalView = (items) => {
     state.year = yearValue;
   }
   
-  // Determine selection types based on state (source of truth)
-  const isAllTopics = state.topic === "all";
-  const isAllYears = state.year === "all";
-  const isNoTopic = !state.topic || state.topic === "choose" || state.topic === "none";
-  const isNoYear = !state.year || state.year === "choose" || state.year === "none";
-  const isSpecificTopic = state.topic && !isAllTopics && !isNoTopic;
-  const isSpecificYear = state.year && !isAllYears && !isNoYear;
+  // Determine selection types - check both state and dropdown values
+  // This ensures we catch all cases, even if state hasn't synced yet
+  const isAllTopics = state.topic === "all" || topicValue === "all";
+  const isAllYears = state.year === "all" || yearValue === "all";
+  const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+  const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
 
-  console.log(`🔍 Selection State: Topic=${state.topic}, Year=${state.year}`);
-  console.log(`   isAllTopics=${isAllTopics}, isAllYears=${isAllYears}`);
-  console.log(`   isSpecificTopic=${isSpecificTopic}, isSpecificYear=${isSpecificYear}`);
-  console.log(`   isNoTopic=${isNoTopic}, isNoYear=${isNoYear}`);
-
-  // RULE 1: No Topic + No Year
-  // Already handled in renderCards() - should never reach here
-  
-  // RULE 7: All Topics + All Years → Full hierarchy (Year → Topic → Questions)
+  // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
-    console.log("🎯 RULE 7: All Topics + All Years → Full Hierarchy");
-    renderFullHierarchyView(items);
+    // Force state to "all" if not already set (defensive)
+    if (state.topic !== "all") {
+      state.topic = "all";
+      if (startTopic) startTopic.value = "all";
+    }
+    if (state.year !== "all") {
+      state.year = "all";
+      if (startYear) startYear.value = "all";
+    }
+    // Ensure we have items to render
+    const itemsToRender = items && Array.isArray(items) ? items : [];
+    console.log("renderHierarchicalView: Rendering full hierarchy with", itemsToRender.length, "items");
+    console.log("renderHierarchicalView: State - topic:", state.topic, "year:", state.year);
+    console.log("renderHierarchicalView: Dropdown - topic:", topicValue, "year:", yearValue);
+    // Always render full hierarchy view, even if items is empty (will show empty state)
+    renderFullHierarchyView(itemsToRender);
     return;
-  }
+  } 
   
-  // RULE 4: Specific Topic + Specific Year → Year → Topic → Questions
-  if (isSpecificTopic && isSpecificYear) {
-    console.log(`🎯 RULE 4: ${state.topic} + ${state.year} → Year → Topic → Questions`);
-    renderTopicAndYearView(items);
-    return;
-  }
-  
-  // RULE 2: Specific Topic + No Year → Topic header + Questions (no year headers)
-  if (isSpecificTopic && isNoYear) {
-    console.log(`🎯 RULE 2: ${state.topic} + No Year → Topic header only`);
-    renderSingleTopicView(items);
-    return;
-  }
-  
-  // RULE 3: No Topic + Specific Year → Year header + Questions (no topic headers)
-  if (isNoTopic && isSpecificYear) {
-    console.log(`🎯 RULE 3: No Topic + ${state.year} → Year header only`);
-    renderSingleYearView(items);
-    return;
-  }
-  
-  // RULE 5: All Topics + No Year → Group by Topic (no year headers)
-  if (isAllTopics && isNoYear) {
-    console.log("🎯 RULE 5: All Topics + No Year → Group by Topic");
-    renderTopicOnlyView(items);
-    return;
-  }
-  
-  // RULE 6: No Topic + All Years → Group by Year (no topic headers)
-  if (isNoTopic && isAllYears) {
-    console.log("🎯 RULE 6: No Topic + All Years → Group by Year");
-    renderYearOnlyView(items);
-    return;
-  }
-  
-  // Additional Cases: All Topics + Specific Year
+  // Case 2: "All Topics" selected with a specific year → Show topics within that year
   if (isAllTopics && isSpecificYear) {
-    console.log(`🎯 Additional: All Topics + ${state.year} → Topics in Year`);
     renderTopicsInYearView(items);
     return;
   }
   
-  // Additional Cases: Specific Topic + All Years
-  if (isSpecificTopic && isAllYears) {
-    console.log(`🎯 Additional: ${state.topic} + All Years → Years with Topic`);
+  // Case 3: "All Years" selected with a specific topic → Show years with that topic
+  if (isAllYears && isSpecificTopic) {
     renderYearsWithTopicView(items);
+    return;
+  }
+  
+  // Case 4: BOTH specific topic AND specific year selected → Year + Topic view
+  if (isSpecificTopic && isSpecificYear) {
+    renderTopicAndYearView(items);
+    return;
+  }
+  
+  // Case 5: "All Topics" selected (no year filter) → Topic-only view
+  if (isAllTopics) {
+    renderTopicOnlyView(items);
+    return;
+  } 
+  
+  // Case 6: "All Years" selected (no topic filter) → Year-only view
+  if (isAllYears) {
+    // Force state to "all" if not already set (defensive)
+    if (state.year !== "all") {
+      state.year = "all";
+      if (startYear) startYear.value = "all";
+    }
+    // Ensure we have items to render
+    const itemsToRender = items && Array.isArray(items) ? items : [];
+    renderYearOnlyView(itemsToRender);
+    return;
+  } 
+  
+  // Case 7: Specific topic selected → Single topic view
+  if (isSpecificTopic) {
+    renderSingleTopicView(items);
+    return;
+  } 
+  
+  // Case 8: Specific year selected → Single year view
+  if (isSpecificYear) {
+    renderSingleYearView(items);
     return;
   } 
   
@@ -1227,32 +1207,7 @@ const restoreScrollPosition = (scrollPosition) => {
 
 const renderCards = () => {
   if (!grid || !resultsInfo || !emptyState || !activeChips) return;
-  
-  // Check dropdowns directly (source of truth)
-  const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
-  const yearValue = startYear ? startYear.value : (state.year || "choose");
-  
-  // RULE 1: No Topic + No Year
-  // Do NOT display: Questions, Topic headers, Year headers
-  // Hide the Question Viewing Section entirely, Page remains non-scrollable
-  const noTopicSelected = (topicValue === "choose" || topicValue === "none" || !topicValue);
-  const noYearSelected = (yearValue === "choose" || yearValue === "none" || !yearValue);
-  
-  if (noTopicSelected && noYearSelected) {
-    console.log("🎯 RULE 1: No Topic + No Year → Show nothing");
-    // Clear all content
-    grid.innerHTML = "";
-    resultsInfo.textContent = "";
-    emptyState.classList.add("hidden");
-    updateActiveChips();
-    // updateHomeLock() will handle hiding the Question Viewing Section
-    return;
-  }
-  
-  // Apply filters
   const filtered = filterData();
-  console.log(`📊 Filtered ${filtered.length} questions (Topic: ${state.topic}, Year: ${state.year})`);
-  
   const isAllView =
     (state.year === "all" || state.topic === "all") &&
     state.batch === "all" &&
@@ -1265,7 +1220,6 @@ const renderCards = () => {
 
   updateActiveChips();
   
-  // Update results info
   if (isFullHierarchicalView) {
     resultsInfo.textContent = `${filtered.length} questions grouped by year and topic.`;
   } else if (isAllView) {
@@ -1324,7 +1278,7 @@ const renderCards = () => {
       if (state.topic === "choose" || state.topic === "none" || !state.topic) {
         state.topic = topicValue;
       }
-  } else {
+    } else {
       state.topic = topicValue;
     }
     
@@ -2292,86 +2246,45 @@ const bindEvents = () => {
   const handleStartSelection = (event) => {
     if (!startTopic || !startYear) return;
     
-    // Get the dropdown that triggered this event
-    const changedSelect = event ? event.target : null;
-    const isTopicChange = changedSelect && changedSelect.id === "start-topic";
-    const isYearChange = changedSelect && changedSelect.id === "start-year";
+    // Read current values from both dropdowns (source of truth)
+    const topicValue = startTopic.value;
+    const yearValue = startYear.value;
     
-    // Read current values from both dropdowns
-    let topicValue = startTopic.value;
-    let yearValue = startYear.value;
-    
-    // If "none" is selected, reset to "choose" (default state)
+    // Handle "none" selection - convert to "choose"
     if (topicValue === "none") {
-      topicValue = "choose";
       startTopic.value = "choose";
-    }
-    if (yearValue === "none") {
-      yearValue = "choose";
-      startYear.value = "choose";
-    }
-    
-    // CRITICAL: Update state based on current dropdown values
-    // Always preserve "all" values - they should never be overwritten
-    if (topicValue === "all") {
-      state.topic = "all";
-      if (startTopic.value !== "all") startTopic.value = "all";
-    } else if (topicValue !== "choose" && topicValue !== "none") {
+      state.topic = "choose";
+    } else {
       state.topic = topicValue;
-    } else {
-      // Keep current state if dropdown is "choose" or "none", unless we're explicitly changing it
-      if (isTopicChange) {
-        state.topic = topicValue;
-      }
     }
     
-    if (yearValue === "all") {
-      state.year = "all";
-      if (startYear.value !== "all") startYear.value = "all";
-    } else if (yearValue !== "choose" && yearValue !== "none") {
+    if (yearValue === "none") {
+      startYear.value = "choose";
+      state.year = "choose";
+    } else {
       state.year = yearValue;
-    } else {
-      // Keep current state if dropdown is "choose" or "none", unless we're explicitly changing it
-      if (isYearChange) {
-        state.year = yearValue;
-      }
     }
     
-    // Always sync dropdowns based on current state selections
-    // This updates available options based on current selections
+    console.log("handleStartSelection: State updated - topic:", state.topic, "year:", state.year);
+    
+    // Sync dropdowns to update available options
     syncTopicDropdown();
     syncYearDropdown();
     
-    // CRITICAL: After syncing, re-read dropdowns and ensure "all" values are preserved
-    const finalTopicValue = startTopic ? startTopic.value : state.topic;
-    const finalYearValue = startYear ? startYear.value : state.year;
+    // After syncing, preserve the user's selection
+    // Re-read dropdown values to ensure they weren't changed by sync
+    const finalTopicValue = startTopic.value;
+    const finalYearValue = startYear.value;
     
-    // Force "all" values to be preserved if they were selected
-    // This ensures that when user selects "All Topics" then "All Years" (or vice versa),
-    // both values remain "all" and questions are displayed correctly
-    if (topicValue === "all" || finalTopicValue === "all") {
-      state.topic = "all";
-      if (startTopic && startTopic.value !== "all") {
-        startTopic.value = "all";
-      }
-    } else if (finalTopicValue !== "choose" && finalTopicValue !== "none" && finalTopicValue) {
-      state.topic = finalTopicValue;
-    } else if (isTopicChange && (finalTopicValue === "choose" || finalTopicValue === "none")) {
-      // Only update if this dropdown was changed
+    // Update state to match final dropdown values
+    if (finalTopicValue !== state.topic) {
       state.topic = finalTopicValue;
     }
-    
-    if (yearValue === "all" || finalYearValue === "all") {
-      state.year = "all";
-      if (startYear && startYear.value !== "all") {
-        startYear.value = "all";
-      }
-    } else if (finalYearValue !== "choose" && finalYearValue !== "none" && finalYearValue) {
-      state.year = finalYearValue;
-    } else if (isYearChange && (finalYearValue === "choose" || finalYearValue === "none")) {
-      // Only update if this dropdown was changed
+    if (finalYearValue !== state.year) {
       state.year = finalYearValue;
     }
+    
+    console.log("handleStartSelection: Final state - topic:", state.topic, "year:", state.year);
     
     
     
