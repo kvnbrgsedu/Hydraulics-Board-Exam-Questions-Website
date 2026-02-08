@@ -3001,6 +3001,10 @@ const init = async () => {
         syncYearDropdown();
       }
       
+      // CRITICAL: Initialize home dropdowns AFTER renderFilters populates the select options
+      // This ensures the custom dropdown menu is properly populated on first load
+      initHomeDropdowns();
+      
       // CRITICAL: Sync state from dropdowns before initial render
       // This ensures that if dropdowns are set to "all", state is also "all"
       if (startTopic) {
@@ -3089,7 +3093,9 @@ const init = async () => {
   addListener(window, "hashchange", updateHomeViewFromHash);
   initHomeBackground();
   initPageBackground();
-  initHomeDropdowns();
+  // IMPORTANT: initHomeDropdowns MUST run AFTER renderFilters populates the select elements
+  // Otherwise the custom dropdown menu will be empty on first load
+  // It will be called after renderFilters() in the hasQuestionUI block
 
   await initQuiz();
 };
