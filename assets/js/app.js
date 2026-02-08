@@ -1098,8 +1098,11 @@ const renderHierarchicalView = (items) => {
       state.year = "all";
       if (startYear) startYear.value = "all";
     }
-    // Ensure we have items to render
-    const itemsToRender = items && Array.isArray(items) ? items : [];
+    // Ensure we have items to render; fall back to full dataset if filter returned empty
+    const itemsToRender =
+      items && Array.isArray(items) && items.length
+        ? items
+        : (state.data && Array.isArray(state.data) ? state.data : []);
     console.log("renderHierarchicalView: Rendering full hierarchy with", itemsToRender.length, "items");
     console.log("renderHierarchicalView: State - topic:", state.topic, "year:", state.year);
     console.log("renderHierarchicalView: Dropdown - topic:", topicValue, "year:", yearValue);
