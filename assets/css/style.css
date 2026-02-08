@@ -449,6 +449,11 @@ body.home-page .toggle__subtitle {
   transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* On home page, allow dropdowns to overflow hero container */
+body.home-page .hero {
+  overflow: visible;
+}
+
 body.home-page.home-locked .hero {
   padding: 110px 32px 40px 32px;
 }
@@ -1116,6 +1121,8 @@ body.home-page .start-review {
   margin-right: auto;
   padding: 0;
   position: relative;
+  /* Ensure dropdowns are not clipped */
+  overflow: visible;
 }
 
 .start-review__controls {
@@ -1136,6 +1143,8 @@ body.home-page .home-selects {
   gap: 20px;
   position: relative;
   z-index: 10;
+  /* Ensure dropdowns are not clipped */
+  overflow: visible;
 }
 
 @media (max-width: 768px) {
@@ -1170,6 +1179,8 @@ body.home-page .home-selects {
   transition: transform 0.2s ease;
   flex-shrink: 0;
   z-index: 10;
+  /* Ensure dropdown menu is not clipped by parent containers */
+  overflow: visible;
 }
 
 .home-select-group.open {
@@ -1273,6 +1284,10 @@ body.home-page .home-selects {
   padding: 4px 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(9, 99, 126, 0.4) rgba(9, 99, 126, 0.05);
+  /* Ensure menu is not clipped by any parent */
+  clip: auto;
+  clip-path: none;
+  visibility: visible;
 }
 
 .home-select-group.open .home-select__menu {
