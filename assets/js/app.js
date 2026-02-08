@@ -3011,9 +3011,8 @@ const init = async () => {
         syncYearDropdown();
       }
       
-      // CRITICAL: Initialize home dropdowns AFTER renderFilters populates the select options
-      // This ensures the custom dropdown menu is properly populated on first load
-      initHomeDropdowns();
+      // Home dropdowns now use the native select UI (same as sidebar list)
+      // so we no longer initialize the custom dropdown menu here.
       
       // CRITICAL: Sync state from dropdowns before initial render
       // This ensures that if dropdowns are set to "all", state is also "all"

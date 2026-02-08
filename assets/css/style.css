@@ -1222,12 +1222,17 @@ body.home-page .home-selects {
 }
 
 .home-select {
-  position: absolute;
-  inset: auto;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
+  position: static;
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Home dropdown now uses native select list (same as sidebar) */
+.home-select__trigger,
+.home-select__menu {
+  display: none;
 }
 
 .home-select__trigger {
