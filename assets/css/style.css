@@ -1318,9 +1318,6 @@ body.home-page .home-selects {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  /* Ensure scrollbar is always visible when content overflows */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(9, 99, 126, 0.3) rgba(9, 99, 126, 0.05);
 }
 
 .home-select__option {
