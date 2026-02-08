@@ -1372,30 +1372,15 @@ const getLoadErrorMessage = (label) => {
 };
 
 const applyFilters = () => {
-  // CRITICAL: Always sync state from dropdowns to ensure consistency
-  // This ensures that when "all" is selected in dropdowns, state is also "all"
+  // CRITICAL: Always sync state from dropdowns (source of truth)
   if (startTopic) {
     const dropdownValue = startTopic.value;
-    // Sync state to match dropdown, especially for "all" selections
-    if (dropdownValue === "all") {
-      state.topic = "all";
-    } else if (dropdownValue === "choose" || dropdownValue === "none") {
-      state.topic = dropdownValue;
-    } else if (dropdownValue && dropdownValue !== state.topic) {
-      state.topic = dropdownValue;
-    }
+    state.topic = dropdownValue === "none" ? "choose" : dropdownValue;
   }
   
   if (startYear) {
     const dropdownValue = startYear.value;
-    // Sync state to match dropdown, especially for "all" selections
-    if (dropdownValue === "all") {
-      state.year = "all";
-    } else if (dropdownValue === "choose" || dropdownValue === "none") {
-      state.year = dropdownValue;
-    } else if (dropdownValue && dropdownValue !== state.year) {
-      state.year = dropdownValue;
-    }
+    state.year = dropdownValue === "none" ? "choose" : dropdownValue;
   }
   
   console.log("applyFilters: State after sync - topic:", state.topic, "year:", state.year);
