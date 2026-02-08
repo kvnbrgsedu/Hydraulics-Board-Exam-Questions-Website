@@ -439,6 +439,13 @@ body.home-page.home-locked .hero {
 body.home-page .home-selects {
   margin-bottom: 24px;
   position: relative;
+  display: flex;
+  gap: 20px;
+}
+
+/* Ensure dropdowns are stacked correctly when multiple are open */
+.home-select-group {
+  position: relative;
 }
 
 /* When dropdown is open, ensure it doesn't overlap with other dropdowns or content */
@@ -447,16 +454,20 @@ body.home-page .home-selects {
   z-index: 1001;
 }
 
-/* Ensure dropdowns are stacked correctly when multiple are open */
-.home-select-group {
-  position: relative;
-}
-
-.home-select-group:first-child.open {
+/* Stack dropdowns so first one appears above second when both are open */
+.home-select-group[data-select-group="topic"].open {
   z-index: 1002;
 }
 
-.home-select-group:last-child.open {
+.home-select-group[data-select-group="year"].open {
+  z-index: 1001;
+}
+
+.home-select-group[data-select-group="topic"].open .home-select__menu {
+  z-index: 1002;
+}
+
+.home-select-group[data-select-group="year"].open .home-select__menu {
   z-index: 1001;
 }
 
