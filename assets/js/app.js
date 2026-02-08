@@ -457,37 +457,60 @@ const renderTopicOnlyView = (items) => {
 
 // 2. Year-Only View: "All Years" selected (no topic headers) - Show year header then ALL questions from that year
 const renderYearOnlyView = (items) => {
+  if (!grid) return;
+  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "year-only-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
-  if (items.length === 0) {
+  // If no items, show empty state
+  if (!items || items.length === 0) {
     grid.innerHTML = "";
     return;
   }
   
   // Group by year only - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
-    if (!acc[item.year]) acc[item.year] = [];
-    acc[item.year].push(item);
+    if (!item) return acc;
+    const year = String(item.year || "").trim();
+    if (!year) return acc; // Skip items without year
+    if (!acc[year]) acc[year] = [];
+    acc[year].push(item);
     return acc;
   }, {});
 
-  const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
+  const years = Object.keys(grouped).sort((a, b) => {
+    const yearA = parseInt(a);
+    const yearB = parseInt(b);
+    if (isNaN(yearA) || isNaN(yearB)) return a.localeCompare(b);
+    return yearA - yearB;
+  });
+  
+  // If no years after grouping, show empty
+  if (years.length === 0) {
+    console.warn("renderYearOnlyView: No years found after grouping items");
+    grid.innerHTML = "";
+    return;
+  }
+  
   let questionIndex = 0;
+  let totalQuestions = 0;
 
   grid.innerHTML = years
     .map((year, yearIndex) => {
       const questions = grouped[year];
+      if (!questions || questions.length === 0) return "";
+      
       const count = questions.length;
+      totalQuestions += count;
       const yearDelay = yearIndex * 120 + 150;
       
       return `
-        <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
+        <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(year)}" style="--year-index: ${yearIndex}">
           <div class="year-header hierarchical-year-header primary-header reveal">
-            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-              <span class="year-badge">${year}</span>
+            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(year)} questions">
+              <span class="year-badge">${escapeHtml(year)}</span>
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
@@ -496,17 +519,31 @@ const renderYearOnlyView = (items) => {
             <div class="questions-grid">
               ${questions
                 .map((item, qIndex) => {
+                  if (!item) return "";
                   const cardHtml = buildCardHtml(item, questionIndex++);
                   const questionDelay = yearDelay + qIndex * 30;
                   return addCardAnimation(cardHtml, questionDelay, qIndex);
                 })
+                .filter(html => html) // Remove empty strings
                 .join("")}
             </div>
           </div>
         </section>
       `;
     })
+    .filter(html => html) // Remove empty year sections
     .join("");
+
+  // Verify we rendered something
+  if (!grid.innerHTML.trim()) {
+    console.error("renderYearOnlyView: No content generated despite having", items.length, "items");
+    console.error("Years found:", years);
+    console.error("Grouped data:", grouped);
+    grid.innerHTML = "";
+    return;
+  }
+
+  console.log("renderYearOnlyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
 
   initYearToggles();
   animateSections();
