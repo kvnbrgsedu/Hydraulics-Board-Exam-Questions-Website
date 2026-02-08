@@ -1195,14 +1195,6 @@ const initYearToggles = () => {
       if (icon) {
         icon.style.transform = isOpen ? "rotate(0deg)" : "rotate(-90deg)";
       }
-      
-      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-      requestAnimationFrame(() => {
-        window.scrollTo({
-          top: currentScroll,
-          behavior: "auto"
-        });
-      });
     });
   });
 };
