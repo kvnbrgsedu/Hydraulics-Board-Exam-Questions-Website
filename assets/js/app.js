@@ -543,7 +543,6 @@ const renderYearOnlyView = (items) => {
     return;
   }
 
-  console.log("renderYearOnlyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
 
   initYearToggles();
   animateSections();
@@ -996,7 +995,6 @@ const renderHierarchicalView = (items) => {
     }
     // Ensure we have items to render
     const itemsToRender = items && Array.isArray(items) ? items : [];
-    console.log("renderHierarchicalView: Rendering full hierarchy with", itemsToRender.length, "items");
     // Always render full hierarchy view, even if items is empty (will show empty state)
     renderFullHierarchyView(itemsToRender);
     return;
@@ -1035,7 +1033,6 @@ const renderHierarchicalView = (items) => {
     }
     // Ensure we have items to render
     const itemsToRender = items && Array.isArray(items) ? items : [];
-    console.log("renderHierarchicalView: Rendering year-only view with", itemsToRender.length, "items");
     renderYearOnlyView(itemsToRender);
     return;
   } 
@@ -1177,12 +1174,6 @@ const renderCards = () => {
     const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
     const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
     
-    // Debug logging
-    console.log("renderCards: State check - topic:", state.topic, "year:", state.year);
-    console.log("renderCards: Dropdown check - topic:", topicValue, "year:", yearValue);
-    console.log("renderCards: isAllYears:", isAllYears, "isAllTopics:", isAllTopics);
-    console.log("renderCards: Filtered items count:", filtered.length);
-    
     const shouldUseHierarchical = 
       isAllTopics || 
       isAllYears || 
@@ -1192,10 +1183,8 @@ const renderCards = () => {
     // Always use hierarchical view when appropriate, even if filtered is empty
     // The hierarchical view functions handle empty states internally
     if (shouldUseHierarchical) {
-      console.log("renderCards: Using hierarchical view");
       renderHierarchicalView(filtered);
     } else {
-      console.log("renderCards: Using grid view");
       renderGrid(filtered);
     }
 
@@ -1888,30 +1877,30 @@ const bindEvents = () => {
         availableYears.map((year) => `<option value="${year}">${year}</option>`).join("");
       const previousValue = startYear.value;
       startYear.innerHTML = startYearOptions;
-      // Restore selection if still available
-      // Prioritize preserving the user's actual selection from the dropdown
-      if (previousValue === "all") {
+      
+      // CRITICAL: Always preserve "all" if it was selected, regardless of other conditions
+      // Check previousValue first, then state, then dropdown value
+      if (previousValue === "all" || state.year === "all" || currentYearFromDropdown === "all") {
         startYear.value = "all";
         // Preserve "all" in state
-        if (state.year !== "all") {
-          state.year = "all";
-        }
+        state.year = "all";
       } else if (previousValue !== "choose" && previousValue !== "none" && availableYears.includes(previousValue)) {
         startYear.value = previousValue;
         // Update state to match the preserved selection
         if (state.year !== previousValue) {
           state.year = previousValue;
         }
-      } else if (currentYear === "all") {
-        startYear.value = "all";
-        if (state.year !== "all") {
-          state.year = "all";
-        }
-      } else if (currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
+      } else if (currentYear !== "choose" && currentYear !== "none" && currentYear !== "all" && availableYears.includes(currentYear)) {
         startYear.value = currentYear;
+        if (state.year !== currentYear) {
+          state.year = currentYear;
+        }
       } else {
         // Preserve "choose" or "none" if that was the previous value
         startYear.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
+        if (previousValue === "choose" || previousValue === "none") {
+          state.year = previousValue;
+        }
       }
       
       // Rebuild custom dropdown menu if it exists
@@ -2187,7 +2176,6 @@ const bindEvents = () => {
       state.year = finalYearValue;
     }
     
-    console.log("handleStartSelection: Final state - topic:", state.topic, "year:", state.year);
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
     // Convert "choose" to "all" only for sidebar compatibility, but keep "choose" in state for filtering
