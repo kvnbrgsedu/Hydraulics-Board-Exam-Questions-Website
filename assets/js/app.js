@@ -253,22 +253,27 @@ const updateActiveChips = () => {
     .join("");
 };
 
-const filterData = () =>
-  state.data.filter((item) => {
+const filterData = () => {
+  if (!state.data || !Array.isArray(state.data)) return [];
+  
+  return state.data.filter((item) => {
+    if (!item) return false;
+    
     // "choose" means no specific selection, so treat it as "all" (match everything for that filter)
     // "all" means match everything for that filter
     // Specific values mean match only that value
-    const matchesYear = (state.year === "choose" || state.year === "none") ? true : (state.year === "all" ? true : item.year === state.year);
-    const matchesBatch = state.batch === "all" ? true : item.batch === state.batch;
-    const matchesTopic = (state.topic === "choose" || state.topic === "none") ? true : (state.topic === "all" ? true : item.topic === state.topic);
+    const matchesYear = (state.year === "choose" || state.year === "none") ? true : (state.year === "all" ? true : String(item.year) === String(state.year));
+    const matchesBatch = state.batch === "all" ? true : String(item.batch) === String(state.batch);
+    const matchesTopic = (state.topic === "choose" || state.topic === "none") ? true : (state.topic === "all" ? true : String(item.topic) === String(state.topic));
     const query = state.search.trim().toLowerCase();
     const matchesSearch =
       !query ||
-      item.question.toLowerCase().includes(query) ||
-      item.topic.toLowerCase().includes(query) ||
-      `${item.year} ${item.batch}`.toLowerCase().includes(query);
+      (item.question && item.question.toLowerCase().includes(query)) ||
+      (item.topic && item.topic.toLowerCase().includes(query)) ||
+      `${item.year || ""} ${item.batch || ""}`.toLowerCase().includes(query);
     return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
+};
 
 const buildCardHtml = (item, index = 0) => {
   const question = buildHighlights(item.question, state.search);
