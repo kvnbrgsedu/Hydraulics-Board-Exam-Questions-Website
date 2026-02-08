@@ -2039,29 +2039,18 @@ const bindEvents = () => {
       const previousValue = startYear.value;
       startYear.innerHTML = startYearOptions;
       
-      // CRITICAL: Always preserve "all" if it was selected, regardless of other conditions
-      // Check previousValue first, then state, then dropdown value
-      if (previousValue === "all" || state.year === "all" || currentYearFromDropdown === "all") {
+      const candidateYear = currentYearFromDropdown || previousValue || currentYearFromState;
+      const isCandidateAll = candidateYear === "all";
+      const isCandidateSpecific = candidateYear !== "choose" && candidateYear !== "none" && candidateYear !== "all" && availableYears.includes(candidateYear);
+
+      if (isCandidateAll) {
         startYear.value = "all";
-        // Preserve "all" in state
-        state.year = "all";
-      } else if (previousValue !== "choose" && previousValue !== "none" && availableYears.includes(previousValue)) {
+      } else if (isCandidateSpecific) {
+        startYear.value = candidateYear;
+      } else if (previousValue === "choose" || previousValue === "none") {
         startYear.value = previousValue;
-        // Update state to match the preserved selection
-        if (state.year !== previousValue) {
-          state.year = previousValue;
-        }
-      } else if (currentYear !== "choose" && currentYear !== "none" && currentYear !== "all" && availableYears.includes(currentYear)) {
-        startYear.value = currentYear;
-        if (state.year !== currentYear) {
-          state.year = currentYear;
-        }
       } else {
-        // Preserve "choose" or "none" if that was the previous value
-        startYear.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
-        if (previousValue === "choose" || previousValue === "none") {
-          state.year = previousValue;
-        }
+        startYear.value = "choose";
       }
       
       // Rebuild custom dropdown menu if it exists
