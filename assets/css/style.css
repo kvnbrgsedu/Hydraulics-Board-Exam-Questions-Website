@@ -1308,11 +1308,12 @@ body.home-page .home-selects {
   /* Ensure menu is not clipped by any parent */
   clip: auto;
   clip-path: none;
-  visibility: visible;
+  visibility: hidden;
 }
 
 .home-select-group.open .home-select__menu {
   pointer-events: auto;
+  visibility: visible;
 }
 
 /* Support for upward positioning */
@@ -1365,6 +1366,8 @@ body.home-page .home-selects {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   padding: 2px 0;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .home-select__option {
