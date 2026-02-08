@@ -943,9 +943,12 @@ const loadFormulaData = async () => {
   state.formulas = await response.json();
 };
 
+// Global sync functions for dropdown synchronization
+let syncTopicDropdown, syncYearDropdown;
+
 const bindEvents = () => {
   // Function to sync topic dropdown based on selected year
-  const syncTopicDropdown = () => {
+  syncTopicDropdown = () => {
     if (!state.data.length) return;
     
     let availableTopics;
@@ -1000,7 +1003,7 @@ const bindEvents = () => {
   };
 
   // Function to sync year dropdown based on selected topic
-  const syncYearDropdown = () => {
+  syncYearDropdown = () => {
     if (!state.data.length) return;
     
     let availableYears;
@@ -1942,6 +1945,11 @@ const init = async () => {
       renderSkeletons();
       await loadQuestionsData();
       renderFilters();
+      // Sync dropdowns after data loads
+      if (syncTopicDropdown && syncYearDropdown) {
+        syncTopicDropdown();
+        syncYearDropdown();
+      }
       renderCards();
     } catch (error) {
       console.error("Failed to load questions:", error);
