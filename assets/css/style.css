@@ -449,11 +449,6 @@ body.home-page .toggle__subtitle {
   transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* On home page, allow dropdowns to overflow hero container */
-body.home-page .hero {
-  overflow: visible;
-}
-
 body.home-page.home-locked .hero {
   padding: 110px 32px 40px 32px;
 }
@@ -886,8 +881,6 @@ body.home-page .start-review {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Ensure dropdowns are not clipped */
-  overflow: visible;
 }
 
 /* Question Viewing Zone (Content Zone) - Hidden by default */
@@ -1173,8 +1166,6 @@ body.home-page .home-selects {
   transition: transform 0.2s ease;
   flex-shrink: 0;
   z-index: 10;
-  /* Ensure dropdown menu is not clipped */
-  overflow: visible;
 }
 
 .home-select-group.open {
@@ -1266,6 +1257,7 @@ body.home-page .home-selects {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
+  overflow-y: auto;
   transform: translateY(-4px);
   transition: max-height 0.2s ease, opacity 0.2s ease,
     transform 0.2s ease;
@@ -1294,52 +1286,29 @@ body.home-page .home-selects {
 
 /* Scrollbar styling for dropdown menu */
 .home-select__menu::-webkit-scrollbar {
-  width: 8px;
-  -webkit-appearance: none;
+  width: 6px;
 }
 
 .home-select__menu::-webkit-scrollbar-track {
   background: rgba(9, 99, 126, 0.05);
   border-radius: 10px;
-  margin: 4px 0;
 }
 
 .home-select__menu::-webkit-scrollbar-thumb {
-  background: rgba(9, 99, 126, 0.4);
+  background: rgba(9, 99, 126, 0.3);
   border-radius: 10px;
-  transition: background 0.2s ease;
-  min-height: 30px; /* Ensure thumb is visible */
 }
 
 .home-select__menu::-webkit-scrollbar-thumb:hover {
-  background: rgba(9, 99, 126, 0.6);
-}
-
-.home-select__menu::-webkit-scrollbar-thumb:active {
-  background: rgba(9, 99, 126, 0.7);
-}
-
-/* Firefox scrollbar */
-.home-select__menu {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(9, 99, 126, 0.4) rgba(9, 99, 126, 0.05);
+  background: rgba(9, 99, 126, 0.5);
 }
 
 .home-select-group.open .home-select__menu {
-  max-height: min(500px, calc(100vh - 100px));
+  max-height: min(320px, calc(100vh - 200px));
   opacity: 1;
   transform: translateY(0);
-  overflow-y: scroll; /* Always show scrollbar when content overflows */
-  overflow-x: hidden;
+  overflow-y: auto;
   scroll-behavior: smooth;
-  /* Ensure dropdown is not clipped by parent containers */
-  position: absolute;
-  /* Ensure full visibility */
-  visibility: visible;
-  clip: auto;
-  clip-path: none;
-  /* Ensure scrolling works */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .home-select__option {
