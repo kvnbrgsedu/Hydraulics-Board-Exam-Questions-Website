@@ -999,16 +999,21 @@ body.home-page.content-zone-active .home-bg {
 /* Responsive adjustments for mobile */
 @media (max-width: 768px) {
   body.home-page .questions-section {
-    padding: 40px 16px 60px;
+    padding: 36px 14px 50px;
   }
   
   body.home-page .questions-section.is-active {
-    padding: 40px 16px 60px;
+    padding: 36px 14px 50px;
   }
   
   body.home-page .start-review {
-    padding: 20px 16px;
-    min-height: calc(100vh - 60px);
+    padding: 0 12px;
+    margin-top: 36px;
+  }
+
+  body.home-page .hero__content {
+    max-width: 100%;
+    padding: 0 8px;
   }
 }
 
@@ -1150,12 +1155,19 @@ body.home-page .home-selects {
 @media (max-width: 768px) {
   body.home-page .home-selects {
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
+    width: 100%;
+    max-width: 100%;
   }
   
   .home-select-group {
     width: 100%;
     min-width: auto;
+    max-width: 100%;
+  }
+
+  .home-select__trigger {
+    width: 100%;
   }
   
   .home-select__menu {
@@ -1164,7 +1176,7 @@ body.home-page .home-selects {
     right: 16px;
     width: auto;
     max-width: calc(100vw - 32px);
-    max-height: 320px !important;
+    max-height: min(320px, calc(100vh - 200px)) !important;
     z-index: 10000;
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -2142,69 +2154,7 @@ body.home-page .results-info {
   max-width: 100%;
 }
 
-/* Responsive adjustments for hierarchical view */
-@media (max-width: 768px) {
-  .hierarchical-view {
-    padding: 32px 20px;
-    gap: 36px;
-    max-width: 100%;
-  }
-
-  .hierarchical-year-header .year-badge {
-    font-size: 22px;
-    padding: 8px 20px;
-  }
-
-  .topic-section {
-    padding-left: 24px;
-    margin-bottom: 28px;
-  }
-
-  .topic-label {
-    font-size: 17px;
-  }
-
-  .questions-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .hierarchical-year-header .year-line {
-    max-width: 100px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hierarchical-view {
-    padding: 24px 16px;
-    gap: 28px;
-  }
-
-  .hierarchical-year-header .year-badge {
-    font-size: 20px;
-    padding: 8px 18px;
-  }
-
-  .topic-section {
-    padding-left: 20px;
-    margin-bottom: 24px;
-  }
-
-  .topic-header {
-    padding: 10px 14px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .topic-label {
-    font-size: 16px;
-  }
-
-  .questions-grid {
-    gap: 14px;
-  }
-}
+/* Responsive adjustments for hierarchical view - consolidated in main responsive section */
 
 .card {
   background: var(--card);
@@ -2594,11 +2544,14 @@ mark {
 
 @media (max-width: 1024px) {
   .hero {
-    padding-left: 32px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   .content {
     margin-left: 0;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   body.sidebar-open .content {
@@ -2606,7 +2559,7 @@ mark {
   }
 
   body.sidebar-open .hero {
-    padding-left: 32px;
+    padding-left: 24px;
   }
 
   /* Home page: content remains still on all screen sizes */
@@ -2639,33 +2592,456 @@ mark {
   .top-nav__right {
     gap: 10px;
   }
+
+  /* Grid adjustments for tablets */
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .questions-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
 }
 
+/* ========== COMPREHENSIVE MOBILE RESPONSIVE STYLES ========== */
+
 @media (max-width: 600px) {
-  .hero {
-    padding: 110px 20px 40px;
-  }
-
-  .content {
-    padding: 20px 20px 80px;
-  }
-
-  .card {
-    padding: 16px;
-  }
-
+  /* Navigation */
   .top-nav {
-    padding: 0 20px;
+    padding: 0 16px;
+    height: 64px;
   }
 
+  .top-nav__brand {
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .top-nav__brand .hamburger {
+    margin-right: 2px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .global-search {
+    width: 0;
+  }
+
+  .top-nav.search-open .global-search {
+    width: 240px;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 100px 16px 32px;
+  }
+
+  body.home-page .hero {
+    padding: 90px 16px 32px;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    margin: 4px 0 6px;
+  }
+
+  .hero__subtitle {
+    font-size: 14px;
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  body.home-page .hero__subtitle {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .hero__eyebrow {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  /* Start Review Section */
+  body.home-page .start-review {
+    margin-top: 28px;
+    padding: 0 8px;
+  }
+
+  body.home-page .home-selects {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+
+  .home-select-group {
+    width: 100%;
+    min-width: auto;
+    max-width: 100%;
+  }
+
+  .home-select__label {
+    font-size: 11px;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .home-select__trigger {
+    padding: 12px 44px 12px 16px;
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .home-select__chevron {
+    right: 14px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .home-select__value {
+    text-align: center;
+    width: 100%;
+  }
+
+  /* Content */
+  .content {
+    padding: 16px 16px 60px;
+  }
+
+  body.home-page .content {
+    padding: 0;
+  }
+
+  /* Questions Section */
+  body.home-page .questions-section {
+    padding: 32px 12px 50px;
+  }
+
+  body.home-page .questions-section.is-active {
+    padding: 32px 12px 50px;
+  }
+
+  /* Cards */
+  .card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .card__header {
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card__meta {
+    font-size: 11px;
+  }
+
+  .card__question {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Grid */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .questions-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 10px;
+    min-height: 44px; /* Touch-friendly */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn--primary,
+  .btn--ghost {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .active-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .active-filters .chips {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .chip {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .start-review__controls {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  /* Results Info */
+  .results-info {
+    font-size: 13px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+
+  /* Year Header */
   .year-header {
     position: sticky;
-    top: 70px;
+    top: 64px;
     z-index: 5;
   }
 
+  .year-badge {
+    font-size: 18px;
+    padding: 5px 12px;
+  }
+
+  /* Timeline */
   .timeline {
+    padding-left: 12px;
+  }
+
+  /* Hierarchical View */
+  .hierarchical-view {
+    padding: 24px 12px;
+    gap: 24px;
+  }
+
+  .hierarchical-year-header .year-badge {
+    font-size: 18px;
+    padding: 8px 16px;
+  }
+
+  .hierarchical-year-header .year-toggle {
+    min-width: 100px;
+    padding: 8px 0;
+  }
+
+  .topic-header {
+    padding: 10px 12px;
+    margin-bottom: 16px;
+  }
+
+  .topic-label {
+    font-size: 16px;
+  }
+
+  .primary-header .topic-label {
+    font-size: 22px;
+  }
+
+  .topic-meta {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .topic-section {
     padding-left: 16px;
+    margin-bottom: 20px;
+  }
+
+  .secondary-section {
+    padding-left: 20px;
+    margin-bottom: 24px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 280px;
+    padding: 80px 16px 24px;
+  }
+
+  .sidebar__brand {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .logo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .filter-block {
+    margin: 14px 0;
+  }
+
+  .search input {
+    padding: 10px 36px 10px 12px;
+    font-size: 14px;
+  }
+
+  select {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .sidebar__nav a {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  /* Back to Top */
+  .back-to-top {
+    width: 42px;
+    height: 42px;
+    right: 16px;
+    bottom: 16px;
+    font-size: 18px;
+  }
+
+  /* Empty State */
+  .empty {
+    padding: 32px 16px;
+  }
+
+  .empty__bubble {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 12px;
+  }
+
+  /* Formula Controls */
+  .formula-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .formula-controls input {
+    min-width: 100%;
+  }
+
+  /* About Grid */
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .about-card {
+    padding: 16px;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 400px) {
+  .hero h1 {
+    font-size: 24px;
+  }
+
+  .hero__subtitle {
+    font-size: 13px;
+  }
+
+  .home-select__trigger {
+    padding: 9px 38px 9px 10px;
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .hierarchical-view {
+    padding: 20px 10px;
+    gap: 20px;
+  }
+
+  .hierarchical-year-header .year-badge {
+    font-size: 16px;
+    padding: 6px 14px;
+  }
+
+  .topic-label {
+    font-size: 15px;
+  }
+
+  .primary-header .topic-label {
+    font-size: 20px;
+  }
+
+  .top-nav__brand {
+    font-size: 13px;
+  }
+}
+
+/* Tablet and Medium Devices */
+@media (min-width: 601px) and (max-width: 768px) {
+  .hero {
+    padding: 110px 24px 50px;
+  }
+
+  body.home-page .hero {
+    padding: 100px 24px 40px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .questions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  body.home-page .home-selects {
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .home-select-group {
+    min-width: 200px;
+    flex: 1 1 auto;
+    max-width: 280px;
+  }
+}
+
+/* Large Mobile / Small Tablet */
+@media (min-width: 481px) and (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .questions-grid {
+    grid-template-columns: 1fr;
   }
 }
 
