@@ -582,47 +582,60 @@ const initHomeDropdowns = () => {
       const isOpen = group.classList.toggle("open");
       trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
       document.body.classList.toggle("home-select-open", isOpen);
-      if (!isOpen) return;
+      if (!isOpen) {
+        menu.classList.remove("menu-upward");
+        return;
+      }
       groups.forEach((other) => {
         if (other !== group) other.classList.remove("open");
       });
       
-      // Position dropdown and scroll to selected option
-      if (isOpen) {
-        requestAnimationFrame(() => {
-          const triggerRect = trigger.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-          const spaceBelow = viewportHeight - triggerRect.bottom;
-          const spaceAbove = triggerRect.top;
-          const menuHeight = Math.min(320, menu.scrollHeight);
-          
-          // Check if we need to open upward
-          if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
-            menu.classList.add("menu-upward");
-          } else {
-            menu.classList.remove("menu-upward");
-          }
-          
-          // Scroll to selected option after menu is fully rendered
-          setTimeout(() => {
-            const selectedOption = menu.querySelector(".home-select__option.selected");
-            if (selectedOption) {
-              const menuHeight = menu.clientHeight;
-              const optionTop = selectedOption.offsetTop;
-              const optionHeight = selectedOption.offsetHeight;
-              
-              // Scroll to center the selected option if possible
-              const scrollTo = optionTop - (menuHeight / 2) + (optionHeight / 2);
-              menu.scrollTo({
-                top: Math.max(0, scrollTo),
-                behavior: "smooth"
-              });
-            }
-          }, 50);
-        });
-      } else {
-        menu.classList.remove("menu-upward");
-      }
+      // Auto-scroll and position logic
+      requestAnimationFrame(() => {
+        const triggerRect = trigger.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const spaceBelow = viewportHeight - triggerRect.bottom;
+        const spaceAbove = triggerRect.top;
+        const menuHeight = Math.min(320, menu.scrollHeight);
+        
+        // Check if menu should open upward
+        if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
+          menu.classList.add("menu-upward");
+        } else {
+          menu.classList.remove("menu-upward");
+        }
+        
+        // Scroll to ensure dropdown is visible
+        const finalMenuRect = menu.getBoundingClientRect();
+        const menuBottom = finalMenuRect.bottom;
+        const menuTop = finalMenuRect.top;
+        
+        // If menu extends below viewport, scroll down
+        if (menuBottom > viewportHeight) {
+          const scrollAmount = menuBottom - viewportHeight + 20; // 20px padding
+          window.scrollBy({
+            top: scrollAmount,
+            behavior: "smooth"
+          });
+        }
+        // If menu extends above viewport, scroll up
+        else if (menuTop < 0) {
+          const scrollAmount = menuTop - 20; // 20px padding
+          window.scrollBy({
+            top: scrollAmount,
+            behavior: "smooth"
+          });
+        }
+        // If trigger is not fully visible, scroll to show it
+        else if (triggerRect.top < 0 || triggerRect.bottom > viewportHeight) {
+          trigger.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest"
+          });
+        }
+      });
     });
 
     menu.addEventListener("click", (event) => {
