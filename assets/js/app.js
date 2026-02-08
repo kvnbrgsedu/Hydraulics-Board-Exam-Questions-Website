@@ -208,16 +208,19 @@ const renderFilters = () => {
     batchSelect.appendChild(option);
   });
 
-  const topics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
+  // Get available topics and years for synchronization
+  const allTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
+  const allYears = Array.from(new Set(state.data.map((item) => item.year))).sort((a, b) => parseInt(a) - parseInt(b));
+  
   topicSelect.innerHTML =
     `<option value="all">All Topics</option>` +
-    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+    allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
   startTopic.innerHTML =
     `<option value="choose">Choose Topic</option>` +
     `<option value="none">None</option>` +
     `<option value="all">All Topics</option>` +
-    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+    allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
   // Set to "choose" if no selection, otherwise use state value
   if (state.topic === "all" || state.topic === "choose" || !state.topic) {
     startTopic.value = state.topic === "all" ? "all" : "choose";
@@ -371,19 +374,102 @@ const renderGrid = (items) => {
   grid.innerHTML = items.map((item, index) => buildCardHtml(item, index)).join("");
 };
 
+const renderHierarchicalView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view");
+  
+  // Group by year, then by topic
+  const grouped = items.reduce((acc, item) => {
+    if (!acc[item.year]) acc[item.year] = {};
+    if (!acc[item.year][item.topic]) acc[item.year][item.topic] = [];
+    acc[item.year][item.topic].push(item);
+    return acc;
+  }, {});
+
+  // Sort years chronologically (2011-2025)
+  const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
+  let questionIndex = 0;
+
+  grid.innerHTML = years
+    .map((year, yearIndex) => {
+      const topics = Object.keys(grouped[year]).sort();
+      const topicSections = topics
+        .map((topic) => {
+          const questions = grouped[year][topic];
+          const count = questions.length;
+          return `
+            <div class="topic-section" style="--delay: ${yearIndex * 50 + 100}ms">
+              <div class="topic-header">
+                <span class="topic-label">${topic}</span>
+                <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
+              </div>
+              <div class="topic-content">
+                <div class="questions-grid">
+                  ${questions
+                    .map((item) => buildCardHtml(item, questionIndex++))
+                    .join("")}
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      return `
+        <section class="year-section hierarchical-year" data-year="${year}" style="--year-index: ${yearIndex}">
+          <div class="year-header hierarchical-year-header reveal">
+            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
+              <span class="year-badge">${year}</span>
+              <span class="year-toggle-icon">⌄</span>
+            </button>
+            <div class="year-line"></div>
+          </div>
+          <div class="year-content open">
+            ${topicSections}
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  // Add collapsible functionality
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".year-toggle").forEach((toggle) => {
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const section = toggle.closest(".year-section");
+        const content = section.querySelector(".year-content");
+        const isOpen = content.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", isOpen);
+        toggle.querySelector(".year-toggle-icon").style.transform = isOpen ? "rotate(0deg)" : "rotate(-90deg)";
+      });
+    });
+  });
+};
+
 const renderCards = () => {
   if (!grid || !resultsInfo || !emptyState || !activeChips) return;
   const filtered = filterData();
   const isAllView =
-    state.year === "all" &&
+    (state.year === "all" || state.topic === "all") &&
     state.batch === "all" &&
+    !state.search.trim();
+  const isFullHierarchicalView = 
+    state.year === "all" &&
     state.topic === "all" &&
+    state.batch === "all" &&
     !state.search.trim();
 
   updateActiveChips();
-  resultsInfo.textContent = isAllView
-    ? `${filtered.length} questions grouped by year.`
-    : `${filtered.length} question${filtered.length === 1 ? "" : "s"} found.`;
+  
+  if (isFullHierarchicalView) {
+    resultsInfo.textContent = `${filtered.length} questions grouped by year and topic.`;
+  } else if (isAllView) {
+    resultsInfo.textContent = `${filtered.length} question${filtered.length === 1 ? "" : "s"} found.`;
+  } else {
+    resultsInfo.textContent = `${filtered.length} question${filtered.length === 1 ? "" : "s"} found.`;
+  }
+  
   emptyState.classList.toggle("hidden", filtered.length > 0);
 
   if (filtered.length === 0) {
@@ -391,20 +477,35 @@ const renderCards = () => {
     return;
   }
 
-  if (isAllView) {
-    renderTimeline(filtered);
+  if (isFullHierarchicalView) {
+    renderHierarchicalView(filtered);
+  } else if (state.year === "all" && state.topic !== "all") {
+    // All years, specific topic - group by year
+    renderHierarchicalView(filtered);
+  } else if (state.topic === "all" && state.year !== "all") {
+    // Specific year, all topics - group by topic
+    renderHierarchicalView(filtered);
+  } else if (isAllView && (state.year === "all" || state.topic === "all")) {
+    renderHierarchicalView(filtered);
   } else {
     renderGrid(filtered);
   }
 
   typesetMath();
   requestAnimationFrame(() => {
-    document.querySelectorAll(".year-header.reveal").forEach((header) => {
+    document.querySelectorAll(".year-header.reveal, .hierarchical-year-header.reveal").forEach((header) => {
       if (!observer) {
         header.classList.add("is-visible");
         return;
       }
       observer.observe(header);
+    });
+    
+    // Animate topic sections
+    document.querySelectorAll(".topic-section").forEach((section, index) => {
+      setTimeout(() => {
+        section.classList.add("is-visible");
+      }, index * 30);
     });
   });
 };
@@ -843,12 +944,124 @@ const loadFormulaData = async () => {
 };
 
 const bindEvents = () => {
+  // Function to sync topic dropdown based on selected year
+  const syncTopicDropdown = () => {
+    if (!state.data.length) return;
+    
+    let availableTopics;
+    if (state.year === "all" || state.year === "choose") {
+      // Show all topics
+      availableTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
+    } else {
+      // Show only topics available in selected year
+      availableTopics = Array.from(
+        new Set(
+          state.data
+            .filter((item) => item.year === state.year)
+            .map((item) => item.topic)
+        )
+      ).sort();
+    }
+    
+    const currentTopic = state.topic;
+    const topicOptions = `<option value="all">All Topics</option>` +
+      availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+    
+    if (topicSelect) {
+      topicSelect.innerHTML = topicOptions;
+      // Restore selection if still available
+      if (currentTopic !== "all" && currentTopic !== "choose" && availableTopics.includes(currentTopic)) {
+        topicSelect.value = currentTopic;
+        state.topic = currentTopic;
+      } else if (currentTopic === "all") {
+        topicSelect.value = "all";
+      } else {
+        topicSelect.value = "all";
+        state.topic = "all";
+      }
+    }
+    
+    if (startTopic) {
+      const startTopicOptions = 
+        `<option value="choose">Choose Topic</option>` +
+        `<option value="none">None</option>` +
+        `<option value="all">All Topics</option>` +
+        availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+      startTopic.innerHTML = startTopicOptions;
+      // Restore selection if still available
+      if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
+        startTopic.value = currentTopic;
+      } else if (currentTopic === "all") {
+        startTopic.value = "all";
+      } else {
+        startTopic.value = currentTopic === "choose" ? "choose" : "choose";
+      }
+    }
+  };
+
+  // Function to sync year dropdown based on selected topic
+  const syncYearDropdown = () => {
+    if (!state.data.length) return;
+    
+    let availableYears;
+    if (state.topic === "all" || state.topic === "choose") {
+      // Show all years
+      availableYears = Array.from(new Set(state.data.map((item) => item.year))).sort((a, b) => parseInt(a) - parseInt(b));
+    } else {
+      // Show only years where selected topic exists
+      availableYears = Array.from(
+        new Set(
+          state.data
+            .filter((item) => item.topic === state.topic)
+            .map((item) => item.year)
+        )
+      ).sort((a, b) => parseInt(a) - parseInt(b));
+    }
+    
+    const currentYear = state.year;
+    const yearOptions = `<option value="all">All Years</option>` +
+      availableYears.map((year) => `<option value="${year}">${year}</option>`).join("");
+    
+    if (yearSelect) {
+      yearSelect.innerHTML = yearOptions;
+      // Restore selection if still available
+      if (currentYear !== "all" && currentYear !== "choose" && availableYears.includes(currentYear)) {
+        yearSelect.value = currentYear;
+        state.year = currentYear;
+      } else if (currentYear === "all") {
+        yearSelect.value = "all";
+      } else {
+        yearSelect.value = "all";
+        state.year = "all";
+      }
+    }
+    
+    if (startYear) {
+      const startYearOptions = 
+        `<option value="choose">Choose Year</option>` +
+        `<option value="none">None</option>` +
+        `<option value="all">All Years</option>` +
+        availableYears.map((year) => `<option value="${year}">${year}</option>`).join("");
+      startYear.innerHTML = startYearOptions;
+      // Restore selection if still available
+      if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
+        startYear.value = currentYear;
+      } else if (currentYear === "all") {
+        startYear.value = "all";
+      } else {
+        startYear.value = currentYear === "choose" ? "choose" : "choose";
+      }
+    }
+  };
+
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
     // Sync with home dropdown (including "all" values)
     if (startYear) {
       startYear.value = state.year === "all" ? "all" : state.year;
     }
+    // Sync topic dropdown based on selected year
+    syncTopicDropdown();
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -865,6 +1078,8 @@ const bindEvents = () => {
     if (startTopic) {
       startTopic.value = state.topic === "all" ? "all" : state.topic;
     }
+    // Sync year dropdown based on selected topic
+    syncYearDropdown();
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -1035,6 +1250,14 @@ const bindEvents = () => {
     // Set state - "all" means show all, "choose" means no selection
     state.topic = topicValue;
     state.year = yearValue;
+    
+    // Sync dropdowns based on selections
+    if (yearValue !== "choose" && yearValue !== "none") {
+      syncTopicDropdown();
+    }
+    if (topicValue !== "choose" && topicValue !== "none") {
+      syncYearDropdown();
+    }
     
     // Sync with sidebar filters
     if (yearValue === "all" || (yearValue !== "choose" && yearValue !== "none")) {
