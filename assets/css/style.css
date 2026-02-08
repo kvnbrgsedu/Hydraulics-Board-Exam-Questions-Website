@@ -1045,10 +1045,10 @@ body.home-page .home-selects {
 
 .home-select__menu {
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: 0;
   right: 0;
-  margin-bottom: 4px;
+  margin-top: 4px;
   border-radius: 8px;
   background: #f7fbfc;
   border: 1px solid rgba(9, 99, 126, 0.2);
@@ -1057,7 +1057,7 @@ body.home-page .home-selects {
   opacity: 0;
   overflow: hidden;
   overflow-y: auto;
-  transform: translateY(4px);
+  transform: translateY(-4px);
   transition: max-height 0.2s ease, opacity 0.2s ease,
     transform 0.2s ease;
   z-index: 1000;
