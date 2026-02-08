@@ -1460,6 +1460,57 @@ body.home-page .results-info {
   padding: 40px 32px;
   width: 100%;
   box-sizing: border-box;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* View mode classes for dynamic categorization */
+.topic-only-view .year-section,
+.year-only-view .topic-section:not(.primary-section),
+.single-topic-view .year-section,
+.single-year-view .topic-section {
+  display: none;
+}
+
+/* Primary headers (main category) - larger, bolder */
+.primary-header .year-badge,
+.primary-header .topic-label {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.primary-header .year-badge {
+  background: linear-gradient(135deg, #09637E, #088395);
+  padding: 12px 28px;
+}
+
+.primary-header .topic-label {
+  color: #09637E;
+}
+
+/* Secondary headers (sub-category) - smaller, lighter) */
+.secondary-header .topic-label {
+  font-size: 19px;
+  font-weight: 600;
+  color: #7AB2B2;
+}
+
+.secondary-header {
+  background: rgba(122, 178, 178, 0.08);
+  border-left: 3px solid #7AB2B2;
+}
+
+/* Year metadata badge in cards (when year not shown as header) */
+.year-metadata-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #088395;
+  background: rgba(8, 131, 149, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-right: 4px;
+  letter-spacing: 0.3px;
 }
 
 .hierarchical-year {
@@ -1571,7 +1622,7 @@ body.home-page .results-info {
   padding-left: 32px;
   opacity: 0;
   transform: translateX(-8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, margin-bottom 0.3s ease, padding-left 0.3s ease;
   transition-delay: var(--delay, 0ms);
   position: relative;
 }
@@ -1579,6 +1630,12 @@ body.home-page .results-info {
 .topic-section.is-visible {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Topic section as primary (no year headers) */
+.topic-section.primary-section {
+  padding-left: 0;
+  margin-bottom: 48px;
 }
 
 .topic-section::before {
@@ -1642,6 +1699,14 @@ body.home-page .results-info {
   color: #7AB2B2;
   letter-spacing: 0.2px;
   text-align: left;
+  transition: font-size 0.3s ease, font-weight 0.3s ease, color 0.3s ease;
+}
+
+/* Primary topic label (when topic is main category) */
+.primary-header .topic-label {
+  font-size: 28px;
+  font-weight: 700;
+  color: #09637E;
 }
 
 .topic-meta {
