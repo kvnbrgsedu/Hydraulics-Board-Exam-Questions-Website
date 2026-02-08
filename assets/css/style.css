@@ -27,7 +27,7 @@ body {
 body.home-page {
   background: linear-gradient(135deg, #063848, #09637e, #088395, #7ab2b2);
   background-size: 400% 400%;
-  animation: homeGradient 22s ease infinite;
+  animation: homeGradient 8s ease infinite;
 }
 
 body.home-page .content,
@@ -42,6 +42,23 @@ body.home-page .home-bg {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+}
+
+body.home-page .fog-animation {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
+
+body.home-page .fog-animation svg,
+body.home-page .fog-animation canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 body.home-page .flow-lines {
@@ -83,6 +100,41 @@ body.home-page.home-pause .flow-lines,
 body.home-page.home-pause .flow-lines path,
 body.home-page.home-pause .home-particle {
   animation-play-state: paused;
+}
+
+body.home-page.home-pause .fog-animation {
+  animation-play-state: paused;
+}
+
+.page-bg-animation {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page-bg-animation svg,
+.page-bg-animation canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body:not(.home-page) .content {
+  position: relative;
+  z-index: 1;
+}
+
+body:not(.home-page) .top-nav {
+  z-index: 60;
+}
+
+body:not(.home-page) .sidebar {
+  z-index: 50;
 }
 
 body.home-page .hero::before,
@@ -376,7 +428,7 @@ body.home-page .toggle__subtitle {
   position: relative;
   color: #f8feff;
   overflow: hidden;
-  transition: padding 0.35s ease;
+  transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.home-page.home-locked .hero {
@@ -445,6 +497,15 @@ body.home-page .hero__inner {
 .hero__subtitle {
   color: #e6f2f5;
   max-width: 540px;
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+}
+
+body.home-page .hero__subtitle {
+  margin: 0 auto;
+  display: block;
+  text-align: center;
 }
 
 .hero__content {
@@ -455,10 +516,9 @@ body.home-page .hero__inner {
 body.home-page .hero__content {
   text-align: center;
   max-width: 720px;
-}
-
-body.home-page .hero__content {
+  width: 100%;
   position: relative;
+  margin: 0 auto;
 }
 
 body.home-page .hero__content::before {
@@ -523,7 +583,7 @@ body.home-page .hero__content::before {
   padding: 88px 22px 28px;
   overflow-y: auto;
   z-index: 50;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 14px 0 30px rgba(9, 99, 126, 0.08);
   transform: translateX(-100%);
 }
@@ -740,8 +800,12 @@ select option {
 
 .content {
   margin-left: 0;
-  padding: 32px 32px 80px;
-  transition: margin-left 0.35s ease;
+  padding: 16px 32px 80px;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body:not(.home-page) .content {
+  padding-top: 72px;
 }
 
 body.home-page.home-locked .content {
@@ -759,7 +823,7 @@ body.home-page:not(.home-show-all) #about {
 }
 
 body.quiz-page .content {
-  padding-top: 100px;
+  padding-top: 72px;
   animation: fadeInUp 0.6s ease;
 }
 
@@ -808,10 +872,23 @@ body.quiz-page .content {
 
 body.sidebar-open .content {
   margin-left: 300px;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Home page content doesn't use margin-left, uses transform instead */
+body.home-page.sidebar-open .content {
+  margin-left: 0;
 }
 
 body.sidebar-open .hero {
   padding-left: 360px;
+  transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Home page: content remains still, sidebar overlays */
+body.home-page.sidebar-open .hero,
+body.home-page.sidebar-open .content {
+  transform: none;
 }
 
 .active-filters {
@@ -846,6 +923,7 @@ body.home-page .start-review {
   margin-left: auto;
   margin-right: auto;
   padding: 0;
+  position: relative;
 }
 
 .start-review__controls {
@@ -860,8 +938,15 @@ body.home-page .start-review__controls {
 }
 
 body.home-page .home-selects {
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  body.home-page .home-selects {
+    flex-direction: column;
+  }
 }
 
 .home-select-group {
@@ -869,6 +954,7 @@ body.home-page .home-selects {
   min-width: 240px;
   text-align: left;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .home-select-group:focus-within {
@@ -944,6 +1030,10 @@ body.home-page .home-selects {
 }
 
 .home-select__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   margin-top: 10px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.14);
@@ -957,6 +1047,7 @@ body.home-page .home-selects {
   transform: translateY(-6px);
   transition: max-height 0.25s ease, opacity 0.25s ease,
     transform 0.25s ease;
+  z-index: 1000;
 }
 
 .home-select-group.open .home-select__menu {
@@ -1059,7 +1150,8 @@ section {
 
 .formula-section,
 .about-section {
-  margin: 40px 0 60px;
+  margin: 0;
+  padding-top: 0;
 }
 
 .section-header {
@@ -1162,10 +1254,18 @@ section {
 .chip {
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(8, 131, 149, 0.12);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(9, 99, 126, 0.25);
   color: var(--primary);
   font-size: 12px;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.1);
+}
+
+body.home-page .chip {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(9, 99, 126, 0.35);
+  box-shadow: 0 4px 12px rgba(9, 99, 126, 0.2);
 }
 
 .btn {
@@ -1210,8 +1310,19 @@ section {
 
 .results-info {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text);
   margin-bottom: 16px;
+  font-weight: 500;
+}
+
+body.home-page .results-info {
+  color: #1f2a2e;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: inline-block;
+  border: 1px solid rgba(9, 99, 126, 0.2);
+  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.15);
 }
 
 .grid {
@@ -1711,6 +1822,17 @@ mark {
 
   body.sidebar-open .hero {
     padding-left: 32px;
+  }
+
+  /* Home page: content remains still on all screen sizes */
+  body.home-page .hero,
+  body.home-page .content {
+    transform: none !important;
+  }
+
+  body.home-page.sidebar-open .hero,
+  body.home-page.sidebar-open .content {
+    transform: none !important;
   }
 
   .sidebar {
