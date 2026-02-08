@@ -678,29 +678,35 @@ const renderHierarchicalView = (items) => {
   const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
 
   // Determine which view to render based on selection priority
-  // Priority: Full hierarchy > Topic-only > Year-only > Single topic > Single year
+  // Priority: Full hierarchy > "All Topics" > "All Years" > Specific selections
   
+  // Case 1: Both "All Topics" AND "All Years" selected
+  // Full hierarchy: Year (Primary) → Topic (Secondary) → Questions
   if (isAllTopics && isAllYears) {
-    // Both "All Topics" and "All Years" - Full hierarchy (Year → Topic → Questions)
     renderFullHierarchyView(items);
-  } else if (isAllTopics) {
-    // "All Topics" selected (regardless of year selection) - Topic headers only
-    // Year appears as metadata in cards
+  } 
+  // Case 2: "All Topics" selected (regardless of year: "all", specific, or "choose")
+  // Topic headers only - Year appears as metadata in cards
+  else if (isAllTopics) {
     renderTopicOnlyView(items);
-  } else if (isAllYears && !isAllTopics) {
-    // "All Years" selected, but NOT "All Topics" - Year headers only
-    // Topic appears in card headers
+  } 
+  // Case 3: "All Years" selected (regardless of topic: "all", specific, or "choose")
+  // Year headers only - Topic appears in card headers
+  else if (isAllYears) {
     renderYearOnlyView(items);
-  } else if (isSpecificTopic) {
-    // Specific topic selected (any year) - Single topic view
-    // Show topic header once, year as metadata
+  } 
+  // Case 4: Specific topic selected (year can be "all", specific, or "choose")
+  // Single topic view - Show topic header once, year as metadata
+  else if (isSpecificTopic) {
     renderSingleTopicView(items);
-  } else if (isSpecificYear && !isSpecificTopic) {
-    // Specific year selected, but NOT specific topic - Single year view
-    // Show year header once, topic in cards
+  } 
+  // Case 5: Specific year selected (topic can be "all", specific, or "choose")
+  // Single year view - Show year header once, topic in cards
+  else if (isSpecificYear) {
     renderSingleYearView(items);
-  } else {
-    // Fallback to grid view (no clear categorization)
+  } 
+  // Case 6: Both are "choose" or "none" - Fallback to grid view
+  else {
     renderGrid(items);
   }
 };
