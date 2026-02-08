@@ -2978,6 +2978,14 @@ mark {
   .questions-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+    justify-items: center;
+  }
+
+  .questions-grid .card,
+  .grid .card {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
   }
 
   /* Buttons */
