@@ -2271,6 +2271,8 @@ const bindEvents = () => {
     const yearValue = startYear.value;
     const requestedTopic = topicValue;
     const requestedYear = yearValue;
+    const previousTopic = topicValue;
+    const previousYear = yearValue;
     
     // Handle "none" selection - convert to "choose"
     if (topicValue === "none") {
@@ -2305,10 +2307,19 @@ const bindEvents = () => {
     if (requestedTopic === "all" || (requestedTopic && requestedTopic !== "choose" && requestedTopic !== "none" && topicExists)) {
       startTopic.value = requestedTopic;
       finalTopicValue = requestedTopic;
+    } else if (previousTopic === "all") {
+      // Preserve existing "all" selection when the other dropdown changes
+      startTopic.value = "all";
+      finalTopicValue = "all";
     }
+
     if (requestedYear === "all" || (requestedYear && requestedYear !== "choose" && requestedYear !== "none" && yearExists)) {
       startYear.value = requestedYear;
       finalYearValue = requestedYear;
+    } else if (previousYear === "all") {
+      // Preserve existing "all" selection when the other dropdown changes
+      startYear.value = "all";
+      finalYearValue = "all";
     }
     
     // Update state to match final dropdown values (after forced all)
