@@ -1232,7 +1232,11 @@ let renderToken = 0;
 const renderCards = () => {
   if (!grid || !resultsInfo || !emptyState || !activeChips) return;
   const currentToken = ++renderToken;
-  const filtered = filterData();
+  let filtered = filterData();
+  const dropdownAllSelected = startTopic?.value === "all" && startYear?.value === "all";
+  if (dropdownAllSelected && state.data && state.data.length) {
+    filtered = state.data;
+  }
   const isAllView =
     (state.year === "all" || state.topic === "all") &&
     state.batch === "all" &&
@@ -1334,6 +1338,13 @@ const renderCards = () => {
       isSpecificTopic || 
       isSpecificYear;
     
+    if (topicValue === "all" && yearValue === "all") {
+      state.topic = "all";
+      state.year = "all";
+      renderFullHierarchyView(state.data && state.data.length ? state.data : filtered);
+      return;
+    }
+
     // Always use hierarchical view when appropriate, even if filtered is empty
     // The hierarchical view functions handle empty states internally
     if (shouldUseHierarchical) {
