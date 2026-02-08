@@ -1465,11 +1465,18 @@ body.home-page .results-info {
 }
 
 /* View mode classes for dynamic categorization */
+/* When "All Topics" is selected: Hide all year sections, show only topic sections */
 .topic-only-view .year-section,
-.year-only-view .topic-section:not(.primary-section),
+.topic-only-view .hierarchical-year,
 .single-topic-view .year-section,
+.single-topic-view .hierarchical-year {
+  display: none !important;
+}
+
+/* When "All Years" is selected: Hide topic sections (unless they're primary) */
+.year-only-view .topic-section:not(.primary-section),
 .single-year-view .topic-section {
-  display: none;
+  display: none !important;
 }
 
 /* Primary headers (main category) - larger, bolder */

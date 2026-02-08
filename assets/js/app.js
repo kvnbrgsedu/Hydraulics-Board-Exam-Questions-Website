@@ -390,13 +390,19 @@ const addCardAnimation = (cardHtml, delay, qIndex) => {
 };
 
 // Helper function to add year metadata to card (when year is not shown as header)
-const addYearMetadata = (cardHtml, year) => {
-  // Add year badge before the card meta
+const addYearMetadata = (cardHtml, year, batch) => {
+  // Add year badge as a subtle label
+  // The year badge appears before the batch info
   const yearBadge = `<span class="year-metadata-badge">${year}</span>`;
-  return cardHtml.replace(
-    '<div class="card__meta">',
-    `<div class="card__meta">${yearBadge} • `
-  );
+  // Replace the card__meta content to include the year badge, keeping batch info
+  // Pattern: <div class="card__meta">YEAR • BATCH</div>
+  const metaPattern = /<div class="card__meta">([^<]*)<\/div>/;
+  return cardHtml.replace(metaPattern, (match, content) => {
+    // Extract batch from existing content (format: "YEAR • BATCH")
+    const parts = content.split(' • ');
+    const existingBatch = parts.length > 1 ? parts[1] : batch;
+    return `<div class="card__meta">${yearBadge} • ${existingBatch}</div>`;
+  });
 };
 
 // Helper function to add topic metadata to card (when topic is not shown as header)
@@ -439,7 +445,8 @@ const renderTopicOnlyView = (items) => {
               ${questions
                 .map((item, qIndex) => {
                   let cardHtml = buildCardHtml(item, questionIndex++);
-                  cardHtml = addYearMetadata(cardHtml, item.year);
+                  // Add year as subtle metadata badge (year headers are not shown in topic-only view)
+                  cardHtml = addYearMetadata(cardHtml, item.year, item.batch);
                   const questionDelay = topicDelay + qIndex * 30;
                   return addCardAnimation(cardHtml, questionDelay, qIndex);
                 })
@@ -603,14 +610,15 @@ const renderSingleTopicView = (items) => {
       </div>
       <div class="topic-content">
         <div class="questions-grid">
-          ${items
-            .map((item, qIndex) => {
-              let cardHtml = buildCardHtml(item, questionIndex++);
-              cardHtml = addYearMetadata(cardHtml, item.year);
-              const questionDelay = topicDelay + qIndex * 30;
-              return addCardAnimation(cardHtml, questionDelay, qIndex);
-            })
-            .join("")}
+            ${items
+              .map((item, qIndex) => {
+                let cardHtml = buildCardHtml(item, questionIndex++);
+                // Add year as subtle metadata badge (year headers are not shown in single topic view)
+                cardHtml = addYearMetadata(cardHtml, item.year, item.batch);
+                const questionDelay = topicDelay + qIndex * 30;
+                return addCardAnimation(cardHtml, questionDelay, qIndex);
+              })
+              .join("")}
         </div>
       </div>
     </section>
