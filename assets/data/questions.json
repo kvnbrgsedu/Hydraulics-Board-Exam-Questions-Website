@@ -139,8 +139,8 @@
     "topic": "Fluid Kinematics",
     "question": "Situation 5 – The water tank in the figure is being filled through section 1 at 7 m/s and through section 3 at 17 L/s. If water level h is constant, determine the exit velocity.<br><br>Given:<br>Section 1 velocity (v_1) = 7 m/s<br>Section 3 flow rate (Q_3) = 17 L/s<br><br>Required:<br>Section 2 velocity (v_2)",
     "solution": "Solution:<br><br>\\(Q_1+Q_3=Q_2\\)<br>\\(A_1v_1+Q_3=A_2v_2\\)<br>\\(\\frac{\\pi}{4}(0.04\\,m)^2(7\\,m/s) + 17\\,L/s = \\frac{\\pi}{4}(0.06\\,m)^2(v_2)\\)<br>\\(v_2=9.124\\,m/s\\)",
-    "image": "assets/images/placeholder.svg",
-    "solutionImage": ""
+      "image": "assets/images/situation-5.png",
+      "solutionImage": ""
   },
   {
     "id": "2024-apr-s06",
@@ -150,8 +150,8 @@
     "topic": "Fluid Dynamics",
     "question": "Situation 6 – A diverging tube discharges water from a reservoir at a depth of h = 12 m below the water surface. The diameter of the tube gradually increases from 150 mm at the throat to 225 mm at the outlet. Neglecting friction, determine the ff:<br><br>Maximum possible rate of discharge through this tube<br>Corresponding possible pressure at the throat<br><br>Given:<br>Depth (h) = 12 m<br>Diameter of throat (D_2) = 150 mm<br>Diameter of outlet (D_3) = 225 mm<br><br>Required:<br>Discharge through the tube (Q)<br>Pressure at the throat (P_2)",
     "solution": "Solution:<br><br>\\(\\frac{v^2}{2g}\\rightarrow\\frac{8Q^2}{\\pi^2 g D^4}\\)<br>\\(E_1=E_3\\)<br>\\((\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_1=(\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_3\\)<br>\\(0+0+12=\\frac{8Q^2}{\\pi^2(9.81\\,m/s^2){(0.225\\,m)}^4}+0+0\\)<br>\\(Q=0.61\\,m^3/s\\)<br><br>\\(E_2=E_3\\)<br>\\((\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_2=(\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_3\\)<br>\\(\\frac{8{(0.61\\,m^3/s)}^2}{\\pi^2(9.81\\,m/s^2){(0.15\\,m)}^4}+\\frac{P}{9.81\\,kN/m^3}+0=\\frac{[\\frac{0.61\\,m^3/s}{\\frac{\\pi}{4}(0.225\\,m)^2}]^2}{2(9.81\\,m/s^2)}+0+0\\)<br>\\(P_2=478.09\\,kPa\\)",
-    "image": "",
-    "solutionImage": ""
+    "image": "assets/images/situation-6.png",
+    "solutionImage": "assets/images/situation-6-sol.png"
   },
   {
     "id": "2024-apr-s07",
@@ -161,7 +161,7 @@
     "topic": "Pipe Flow",
     "question": "Situation 7 – A horizontal pipe gradually changes from 350 mm diameter section to 125 mm diameter section. The pressure at the 350 mm section is 120 kPa and at the 125 mm section is 80 kPa. If the flow rate is 18 L/s of water, compute for the head lost between the two sections.<br><br>Diameter 1 (D1) = 350 mm<br>Pressure 1 (P1) = 120 kPa<br>Diameter 2 (D2) = 125 mm<br>Pressure 2 (P2) = 80 kPa<br>Flow rate (Q) = 18 L/s<br><br>Required:<br>Head loss (HL)",
     "solution": "Solution:<br><br>\\(\\frac{v^2}{2g}\\rightarrow\\frac{8Q^2}{\\pi^2 g D^4}\\)<br>\\(E_1-HL=E_2\\)<br>\\((\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_1-HL=(\\frac{v^2}{2g}+\\frac{P}{\\delta}+z)_2\\)<br>\\(\\frac{8{(0.018\\,m^3/s)}^2}{\\pi^2(9.81\\,m/s^2){(0.35\\,m)}^4}+\\frac{120\\,kPa}{9.81\\,kN/m^3}+0-HL=\\frac{8{(0.018\\,m^3/s)}^2}{\\pi^2(9.81\\,m/s^2){(0.125\\,m)}^4}+\\frac{80\\,kPa}{9.81\\,kN/m^3}+0\\)<br>\\(HL = 3.97\\,m\\)",
-    "image": "",
+    "image": "assets/images/situation-7.png",
     "solutionImage": ""
   },
   {
@@ -183,7 +183,7 @@
     "topic": "Open Channel Flow",
     "question": "Situation 9 – High velocity water flows up an inclined plane as shown. What are the two possible depths of flow at section 2? Neglect losses.<br><br>Given:<br>Velocity (v) = 9.806 m/s<br>Depth at section 1 (d1) = 500 mm<br>Datum (z) = 2.5 m<br>Channel width (w) = 2 m<br><br>Required:<br>Two possible depths at section 2 (d2)",
     "solution": "Solution:<br><br>\\(Q=Av\\)<br>\\(=0.5\\,m(2)(9.806\\,m/s)\\)<br>\\(Q=9.806\\,m^3/s\\)<br><br>\\(E_1=d_1+\\frac{v^2}{2g}\\)<br>\\(=0.5\\,m+\\frac{(9.806\\,m/s)^2}{2(9.81\\,m/s^2)}\\)<br>\\(E_1=5.401\\,m\\)<br>\\(E_2=E_1-z\\)<br>\\(=5.401\\,m-2.5\\,m\\)<br>\\(E_2=2.901\\,m\\)<br><br>\\(E_2=d_2+\\frac{v^2}{2g}\\)<br>\\(2.901\\,m = d_2+\\frac{(\\frac{9.806\\,m^3/s}{2d_2})}{2(9.81\\,m/s^2)}\\)<br>\\(d_2=2.738\\,m\\,or\\,0.756\\,m\\)",
-    "image": "assets/images/placeholder.svg",
+    "image": "assets/images/situation-9.png",
     "solutionImage": ""
   },
   {
