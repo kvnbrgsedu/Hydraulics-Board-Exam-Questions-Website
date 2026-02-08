@@ -1460,6 +1460,68 @@ body.home-page .results-info {
   padding: 40px 32px;
   width: 100%;
   box-sizing: border-box;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* ========== DYNAMIC CATEGORIZATION MODES ========== */
+
+/* Topic-Only View: Hide year headers */
+.topic-only-view .year-section,
+.topic-only-view .hierarchical-year,
+.single-topic-view .year-section,
+.single-topic-view .hierarchical-year {
+  display: none !important;
+}
+
+/* Year-Only View: Hide topic headers */
+.year-only-view .topic-section,
+.year-only-view .topic-header,
+.single-year-view .topic-section,
+.single-year-view .topic-header {
+  display: none !important;
+}
+
+/* Primary headers (main category) - larger, bolder */
+.primary-header .year-badge,
+.primary-header .topic-label {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.primary-header .year-badge {
+  background: linear-gradient(135deg, #09637E, #088395);
+  padding: 12px 28px;
+}
+
+.primary-header .topic-label {
+  color: #09637E;
+}
+
+/* Secondary headers (sub-category) - smaller, lighter */
+.secondary-header .topic-label {
+  font-size: 19px;
+  font-weight: 600;
+  color: #7AB2B2;
+}
+
+.secondary-header {
+  background: rgba(122, 178, 178, 0.08);
+  border-left: 3px solid #7AB2B2;
+}
+
+/* Primary section adjustments */
+.primary-section {
+  padding-left: 0;
+}
+
+.primary-section.topic-section {
+  margin-bottom: 48px;
+}
+
+.secondary-section {
+  padding-left: 32px;
+  margin-bottom: 36px;
 }
 
 .hierarchical-year {
@@ -1520,6 +1582,13 @@ body.home-page .results-info {
   text-align: left;
   position: relative;
   display: inline-block;
+  transition: font-size 0.3s ease, padding 0.3s ease;
+}
+
+/* Primary year badge (when year is main category) */
+.primary-header .year-badge {
+  font-size: 28px;
+  padding: 12px 28px;
 }
 
 .hierarchical-year-header .year-badge::after {
@@ -1571,9 +1640,15 @@ body.home-page .results-info {
   padding-left: 32px;
   opacity: 0;
   transform: translateX(-8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, margin-bottom 0.3s ease, padding-left 0.3s ease;
   transition-delay: var(--delay, 0ms);
   position: relative;
+}
+
+/* Topic section as primary (no year headers) */
+.topic-section.primary-section {
+  padding-left: 0;
+  margin-bottom: 48px;
 }
 
 .topic-section.is-visible {
@@ -1606,9 +1681,18 @@ body.home-page .results-info {
   background: rgba(122, 178, 178, 0.08);
   border-left: 3px solid #7AB2B2;
   border-radius: 6px;
-  transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+  transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease, padding 0.3s ease, margin-bottom 0.3s ease;
   position: relative;
   text-align: left;
+}
+
+/* Primary topic header (when topic is main category) */
+.topic-header.primary-header {
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  background: rgba(9, 99, 126, 0.1);
+  border-left: 4px solid #09637E;
+  border-radius: 8px;
 }
 
 .topic-header::before {
@@ -1642,6 +1726,14 @@ body.home-page .results-info {
   color: #7AB2B2;
   letter-spacing: 0.2px;
   text-align: left;
+  transition: font-size 0.3s ease, font-weight 0.3s ease, color 0.3s ease;
+}
+
+/* Primary topic label (when topic is main category) */
+.primary-header .topic-label {
+  font-size: 28px;
+  font-weight: 700;
+  color: #09637E;
 }
 
 .topic-meta {

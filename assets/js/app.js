@@ -374,11 +374,128 @@ const renderGrid = (items) => {
   grid.innerHTML = items.map((item, index) => buildCardHtml(item, index)).join("");
 };
 
-const renderHierarchicalView = (items) => {
+// Helper function to add animation delay to card HTML
+const addCardAnimation = (cardHtml, delay, qIndex) => {
+  if (cardHtml.includes('style="')) {
+    return cardHtml.replace(
+      /style="[^"]*"/,
+      `style="--question-index: ${qIndex}; animation-delay: ${delay}ms;"`
+    );
+  } else {
+    return cardHtml.replace(
+      'class="card',
+      `style="--question-index: ${qIndex}; animation-delay: ${delay}ms;" class="card`
+    );
+  }
+};
+
+// 1. Topic-Only View: "All Topics" selected (no year headers)
+const renderTopicOnlyView = (items) => {
   grid.classList.remove("grid");
-  grid.classList.add("hierarchical-view");
+  grid.classList.add("hierarchical-view", "topic-only-view");
   
-  // Preserve scroll position before rendering
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Group by topic only
+  const grouped = items.reduce((acc, item) => {
+    if (!acc[item.topic]) acc[item.topic] = [];
+    acc[item.topic].push(item);
+    return acc;
+  }, {});
+
+  const topics = Object.keys(grouped).sort();
+  let questionIndex = 0;
+
+  grid.innerHTML = topics
+    .map((topic, topicIndex) => {
+      const questions = grouped[topic];
+      const count = questions.length;
+      const topicDelay = topicIndex * 80 + 150;
+      
+      return `
+        <section class="topic-section primary-section" style="--delay: ${topicDelay}ms">
+          <div class="topic-header primary-header">
+            <span class="topic-label">${topic}</span>
+            <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
+          </div>
+          <div class="topic-content">
+            <div class="questions-grid">
+              ${questions
+                .map((item, qIndex) => {
+                  const cardHtml = buildCardHtml(item, questionIndex++);
+                  const questionDelay = topicDelay + qIndex * 30;
+                  return addCardAnimation(cardHtml, questionDelay, qIndex);
+                })
+                .join("")}
+            </div>
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
+// 2. Year-Only View: "All Years" selected (no topic headers)
+const renderYearOnlyView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view", "year-only-view");
+  
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Group by year only
+  const grouped = items.reduce((acc, item) => {
+    if (!acc[item.year]) acc[item.year] = [];
+    acc[item.year].push(item);
+    return acc;
+  }, {});
+
+  const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
+  let questionIndex = 0;
+
+  grid.innerHTML = years
+    .map((year, yearIndex) => {
+      const questions = grouped[year];
+      const count = questions.length;
+      const yearDelay = yearIndex * 120 + 150;
+      
+      return `
+        <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
+          <div class="year-header hierarchical-year-header primary-header reveal">
+            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
+              <span class="year-badge">${year}</span>
+              <span class="year-toggle-icon">⌄</span>
+            </button>
+            <div class="year-line"></div>
+          </div>
+          <div class="year-content open">
+            <div class="questions-grid">
+              ${questions
+                .map((item, qIndex) => {
+                  const cardHtml = buildCardHtml(item, questionIndex++);
+                  const questionDelay = yearDelay + qIndex * 30;
+                  return addCardAnimation(cardHtml, questionDelay, qIndex);
+                })
+                .join("")}
+            </div>
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  initYearToggles();
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
+// 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected
+const renderFullHierarchyView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view", "full-hierarchy-view");
+  
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
   // Group by year, then by topic
@@ -389,7 +506,6 @@ const renderHierarchicalView = (items) => {
     return acc;
   }, {});
 
-  // Sort years chronologically (2011-2025)
   const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
   let questionIndex = 0;
 
@@ -402,8 +518,8 @@ const renderHierarchicalView = (items) => {
           const count = questions.length;
           const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
           return `
-            <div class="topic-section" style="--delay: ${topicDelay}ms">
-              <div class="topic-header">
+            <div class="topic-section secondary-section" style="--delay: ${topicDelay}ms">
+              <div class="topic-header secondary-header">
                 <span class="topic-label">${topic}</span>
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
               </div>
@@ -412,22 +528,8 @@ const renderHierarchicalView = (items) => {
                   ${questions
                     .map((item, qIndex) => {
                       const cardHtml = buildCardHtml(item, questionIndex++);
-                      // Add animation delay to the card
                       const questionDelay = topicDelay + qIndex * 30;
-                      // Replace or add style attribute with animation delay
-                      if (cardHtml.includes('style="')) {
-                        // Replace existing style, preserving other properties
-                        return cardHtml.replace(
-                          /style="[^"]*"/,
-                          `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms;"`
-                        );
-                      } else {
-                        // Add new style attribute before class
-                        return cardHtml.replace(
-                          'class="card',
-                          `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms;" class="card`
-                        );
-                      }
+                      return addCardAnimation(cardHtml, questionDelay, qIndex);
                     })
                     .join("")}
                 </div>
@@ -438,8 +540,8 @@ const renderHierarchicalView = (items) => {
         .join("");
 
       return `
-        <section class="year-section hierarchical-year" data-year="${year}" style="--year-index: ${yearIndex}">
-          <div class="year-header hierarchical-year-header reveal">
+        <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
+          <div class="year-header hierarchical-year-header primary-header reveal">
             <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
               <span class="year-badge">${year}</span>
               <span class="year-toggle-icon">⌄</span>
@@ -454,46 +556,189 @@ const renderHierarchicalView = (items) => {
     })
     .join("");
 
-  // Add collapsible functionality with scroll preservation
-  requestAnimationFrame(() => {
-    document.querySelectorAll(".year-toggle").forEach((toggle) => {
-      toggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const section = toggle.closest(".year-section");
-        const content = section.querySelector(".year-content");
-        const isOpen = content.classList.toggle("open");
-        toggle.setAttribute("aria-expanded", isOpen);
-        const icon = toggle.querySelector(".year-toggle-icon");
+  initYearToggles();
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
+// 4. Single Topic View: Specific topic selected
+const renderSingleTopicView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view", "single-topic-view");
+  
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+
+  const topic = items[0].topic;
+  let questionIndex = 0;
+  const topicDelay = 150;
+
+  grid.innerHTML = `
+    <section class="topic-section primary-section" style="--delay: ${topicDelay}ms">
+      <div class="topic-header primary-header">
+        <span class="topic-label">${topic}</span>
+        <span class="topic-meta">${items.length} question${items.length === 1 ? "" : "s"}</span>
+      </div>
+      <div class="topic-content">
+        <div class="questions-grid">
+          ${items
+            .map((item, qIndex) => {
+              const cardHtml = buildCardHtml(item, questionIndex++);
+              const questionDelay = topicDelay + qIndex * 30;
+              return addCardAnimation(cardHtml, questionDelay, qIndex);
+            })
+            .join("")}
+        </div>
+      </div>
+    </section>
+  `;
+
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
+// 5. Single Year View: Specific year selected
+const renderSingleYearView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view", "single-year-view");
+  
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+
+  const year = items[0].year;
+  let questionIndex = 0;
+  const yearDelay = 150;
+
+  grid.innerHTML = `
+    <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: 0">
+      <div class="year-header hierarchical-year-header primary-header reveal">
+        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
+          <span class="year-badge">${year}</span>
+          <span class="year-toggle-icon">⌄</span>
+        </button>
+        <div class="year-line"></div>
+      </div>
+      <div class="year-content open">
+        <div class="questions-grid">
+          ${items
+            .map((item, qIndex) => {
+              const cardHtml = buildCardHtml(item, questionIndex++);
+              const questionDelay = yearDelay + qIndex * 30;
+              return addCardAnimation(cardHtml, questionDelay, qIndex);
+            })
+            .join("")}
+        </div>
+      </div>
+    </section>
+  `;
+
+  initYearToggles();
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
+// Main render function that detects state and calls appropriate renderer
+const renderHierarchicalView = (items) => {
+  const isAllTopics = state.topic === "all";
+  const isAllYears = state.year === "all";
+  const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+  const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
+
+  // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy
+  if (isAllTopics && isAllYears) {
+    renderFullHierarchyView(items);
+    return;
+  } 
+  
+  // Case 2: "All Topics" selected → Topic-only view
+  if (isAllTopics) {
+    renderTopicOnlyView(items);
+    return;
+  } 
+  
+  // Case 3: "All Years" selected → Year-only view
+  if (isAllYears) {
+    renderYearOnlyView(items);
+    return;
+  } 
+  
+  // Case 4: Specific topic selected → Single topic view
+  if (isSpecificTopic) {
+    renderSingleTopicView(items);
+    return;
+  } 
+  
+  // Case 5: Specific year selected → Single year view
+  if (isSpecificYear) {
+    renderSingleYearView(items);
+    return;
+  } 
+  
+  // Fallback: Regular grid view
+  renderGrid(items);
+};
+
+// Helper functions
+const initYearToggles = () => {
+  document.querySelectorAll(".year-toggle").forEach((toggle) => {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const section = toggle.closest(".year-section");
+      const content = section.querySelector(".year-content");
+      const isOpen = content.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", isOpen);
+      const icon = toggle.querySelector(".year-toggle-icon");
+      if (icon) {
         icon.style.transform = isOpen ? "rotate(0deg)" : "rotate(-90deg)";
-        
-        // Preserve scroll position when collapsing/expanding
-        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-        requestAnimationFrame(() => {
-          window.scrollTo({
-            top: currentScroll,
-            behavior: "auto"
-          });
+      }
+      
+      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: currentScroll,
+          behavior: "auto"
         });
       });
     });
-    
-    // Animate topic sections with proper delays
+  });
+};
+
+const animateSections = () => {
+  requestAnimationFrame(() => {
     document.querySelectorAll(".topic-section").forEach((section, index) => {
+      const delay = section.style.getPropertyValue("--delay") || `${150 + index * 50}ms`;
       setTimeout(() => {
         section.classList.add("is-visible");
-      }, 100 + index * 50);
+      }, parseInt(delay));
     });
     
-    // Restore scroll position after a brief delay to allow layout
-    setTimeout(() => {
-      if (scrollPosition > 0) {
-        window.scrollTo({
-          top: scrollPosition,
-          behavior: "auto"
-        });
+    document.querySelectorAll(".year-header.reveal, .hierarchical-year-header.reveal").forEach((header) => {
+      if (!observer) {
+        header.classList.add("is-visible");
+        return;
       }
-    }, 50);
+      observer.observe(header);
+    });
   });
+};
+
+const restoreScrollPosition = (scrollPosition) => {
+  setTimeout(() => {
+    if (scrollPosition > 0) {
+      window.scrollTo({
+        top: scrollPosition,
+        behavior: "auto"
+      });
+    }
+  }, 50);
 };
 
 const renderCards = () => {
@@ -540,15 +785,19 @@ const renderCards = () => {
   grid.style.transition = "opacity 0.25s ease";
   
   setTimeout(() => {
-    if (isFullHierarchicalView) {
-      renderHierarchicalView(filtered);
-    } else if (state.year === "all" && state.topic !== "all") {
-      // All years, specific topic - group by year
-      renderHierarchicalView(filtered);
-    } else if (state.topic === "all" && state.year !== "all") {
-      // Specific year, all topics - group by topic
-      renderHierarchicalView(filtered);
-    } else if (isAllView && (state.year === "all" || state.topic === "all")) {
+    // Determine if we should use hierarchical view
+    const isAllTopics = state.topic === "all";
+    const isAllYears = state.year === "all";
+    const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+    const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
+    
+    const shouldUseHierarchical = 
+      isAllTopics || 
+      isAllYears || 
+      isSpecificTopic || 
+      isSpecificYear;
+    
+    if (shouldUseHierarchical && filtered.length > 0) {
       renderHierarchicalView(filtered);
     } else {
       renderGrid(filtered);
