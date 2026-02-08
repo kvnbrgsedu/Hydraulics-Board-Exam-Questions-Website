@@ -1266,7 +1266,6 @@ body.home-page .home-selects {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  overflow-y: auto;
   transform: translateY(-4px);
   transition: max-height 0.2s ease, opacity 0.2s ease,
     transform 0.2s ease;
@@ -1294,24 +1293,30 @@ body.home-page .home-selects {
 }
 
 /* Scrollbar styling for dropdown menu */
-/* Scrollbar styling for dropdown menu */
 .home-select__menu::-webkit-scrollbar {
   width: 8px;
+  -webkit-appearance: none;
 }
 
 .home-select__menu::-webkit-scrollbar-track {
   background: rgba(9, 99, 126, 0.05);
   border-radius: 10px;
+  margin: 4px 0;
 }
 
 .home-select__menu::-webkit-scrollbar-thumb {
   background: rgba(9, 99, 126, 0.4);
   border-radius: 10px;
   transition: background 0.2s ease;
+  min-height: 30px; /* Ensure thumb is visible */
 }
 
 .home-select__menu::-webkit-scrollbar-thumb:hover {
   background: rgba(9, 99, 126, 0.6);
+}
+
+.home-select__menu::-webkit-scrollbar-thumb:active {
+  background: rgba(9, 99, 126, 0.7);
 }
 
 /* Firefox scrollbar */
@@ -1324,7 +1329,7 @@ body.home-page .home-selects {
   max-height: min(500px, calc(100vh - 100px));
   opacity: 1;
   transform: translateY(0);
-  overflow-y: auto;
+  overflow-y: scroll; /* Always show scrollbar when content overflows */
   overflow-x: hidden;
   scroll-behavior: smooth;
   /* Ensure dropdown is not clipped by parent containers */
@@ -1333,6 +1338,8 @@ body.home-page .home-selects {
   visibility: visible;
   clip: auto;
   clip-path: none;
+  /* Ensure scrolling works */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .home-select__option {
