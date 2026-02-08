@@ -9,6 +9,7 @@ const state = {
   topic: "choose",
   search: "",
   data: [],
+  hierarchy: [],
   formulas: [],
 };
 
@@ -659,28 +660,23 @@ const renderFullHierarchyView = (items) => {
     return;
   }
   
-  console.log("renderFullHierarchyView: Called with", items ? items.length : 0, "items");
+  const hierarchyInput = Array.isArray(items) && items[0] && Array.isArray(items[0].topics);
+  const hierarchy = hierarchyInput ? items : buildHierarchy(items);
+  console.log("renderFullHierarchyView: Called with", hierarchyInput ? "hierarchy" : "items");
   
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "full-hierarchy-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
   // If no items, show empty state
-  if (!items || items.length === 0) {
+  if (!hierarchy || hierarchy.length === 0) {
     console.warn("renderFullHierarchyView: No items to render");
     grid.innerHTML = "";
     return;
   }
   
-  console.log("renderFullHierarchyView: Processing", items.length, "items");
-  const hierarchy = buildHierarchy(items);
-
-  if (!hierarchy.length) {
-    console.warn("renderFullHierarchyView: No years found after grouping", items.length, "items");
-    grid.innerHTML = "";
-    return;
-  }
+  console.log("renderFullHierarchyView: Processing", hierarchy.length, "years");
   
   let questionIndex = 0;
   let totalQuestions = 0;
@@ -1357,7 +1353,7 @@ const renderCards = () => {
     if ((topicValue === "all" || state.topic === "all") && (yearValue === "all" || state.year === "all")) {
       state.topic = "all";
       state.year = "all";
-      renderFullHierarchyView(state.data && state.data.length ? state.data : filtered);
+      renderFullHierarchyView(state.hierarchy && state.hierarchy.length ? state.hierarchy : state.data);
       return;
     }
 
@@ -1917,6 +1913,7 @@ const loadQuestionsData = async () => {
   if (state.data.length) return;
   const response = await fetch(DATA_URL);
   state.data = await response.json();
+  state.hierarchy = buildHierarchy(state.data);
 };
 
 const loadFormulaData = async () => {
