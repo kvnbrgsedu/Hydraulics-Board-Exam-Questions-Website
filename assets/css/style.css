@@ -1270,6 +1270,9 @@ body.home-page .home-selects {
   isolation: isolate;
   pointer-events: none;
   -webkit-overflow-scrolling: touch;
+  padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(9, 99, 126, 0.4) rgba(9, 99, 126, 0.05);
 }
 
 .home-select-group.open .home-select__menu {
@@ -1316,11 +1319,6 @@ body.home-page .home-selects {
   background: rgba(9, 99, 126, 0.7);
 }
 
-/* Firefox scrollbar */
-.home-select__menu {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(9, 99, 126, 0.4) rgba(9, 99, 126, 0.05);
-}
 
 .home-select-group.open .home-select__menu {
   max-height: min(500px, calc(100vh - 120px));
@@ -1334,7 +1332,7 @@ body.home-page .home-selects {
 
 .home-select__option {
   width: 100%;
-  padding: 10px 16px;
+  padding: 12px 16px;
   background: transparent;
   border: none;
   color: #0b5a6f;
@@ -1347,6 +1345,9 @@ body.home-page .home-selects {
   -webkit-user-select: none;
   position: relative;
   z-index: 1;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .home-select__option:hover {
