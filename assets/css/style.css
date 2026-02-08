@@ -1384,16 +1384,19 @@ body.home-page .home-selects {
 
 .home-select__option {
   width: 100%;
+  min-height: 44px;
   padding: 8px 12px;
   background: transparent;
   border: none;
   color: #374151;
   font-size: 14px;
   line-height: 1.5;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
   pointer-events: auto;
   white-space: nowrap;
   overflow: hidden;
@@ -1409,11 +1412,18 @@ body.home-page .home-selects {
 }
 
 .home-select__option:hover {
-  background-color: #f3f4f6;
+  background-color: #eef2f7;
+  color: #09637e;
+  transform: translateX(2px);
 }
 
 .home-select__option:active {
   background-color: #e5e7eb;
+}
+
+.home-select__option:focus-visible {
+  outline: 2px solid rgba(9, 99, 126, 0.35);
+  outline-offset: -2px;
 }
 
 .home-select__option.selected {

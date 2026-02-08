@@ -1298,7 +1298,7 @@ const renderCards = () => {
       if (state.topic === "choose" || state.topic === "none" || !state.topic) {
         state.topic = topicValue;
       }
-    } else {
+  } else {
       state.topic = topicValue;
     }
     
