@@ -586,6 +586,43 @@ const initHomeDropdowns = () => {
       groups.forEach((other) => {
         if (other !== group) other.classList.remove("open");
       });
+      
+      // Position dropdown and scroll to selected option
+      if (isOpen) {
+        requestAnimationFrame(() => {
+          const triggerRect = trigger.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const spaceBelow = viewportHeight - triggerRect.bottom;
+          const spaceAbove = triggerRect.top;
+          const menuHeight = Math.min(320, menu.scrollHeight);
+          
+          // Check if we need to open upward
+          if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
+            menu.classList.add("menu-upward");
+          } else {
+            menu.classList.remove("menu-upward");
+          }
+          
+          // Scroll to selected option after menu is fully rendered
+          setTimeout(() => {
+            const selectedOption = menu.querySelector(".home-select__option.selected");
+            if (selectedOption) {
+              const menuHeight = menu.clientHeight;
+              const optionTop = selectedOption.offsetTop;
+              const optionHeight = selectedOption.offsetHeight;
+              
+              // Scroll to center the selected option if possible
+              const scrollTo = optionTop - (menuHeight / 2) + (optionHeight / 2);
+              menu.scrollTo({
+                top: Math.max(0, scrollTo),
+                behavior: "smooth"
+              });
+            }
+          }, 50);
+        });
+      } else {
+        menu.classList.remove("menu-upward");
+      }
     });
 
     menu.addEventListener("click", (event) => {
