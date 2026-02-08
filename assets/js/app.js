@@ -301,7 +301,7 @@ const filterData = () => {
       `${item.year || ""} ${item.batch || ""}`.toLowerCase().includes(query);
     return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
-  
+
   console.log("filterData: Filtered", filtered.length, "items from", state.data.length, "total (topic:", state.topic, "year:", state.year, ")");
   return filtered;
 };
@@ -1233,25 +1233,38 @@ const renderCards = () => {
   
   setTimeout(() => {
     // Determine if we should use hierarchical view
-    // CRITICAL: Always check dropdowns as fallback since state might not be synced yet
+    // CRITICAL: Always check dropdowns FIRST since they are the source of truth
     // This ensures that when user selects "All Topics" then "All Years" (or vice versa),
-    // the correct view is rendered even if state hasn't been fully updated
+    // OR when page first loads with "all" selected, the correct view is rendered
     const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
     const yearValue = startYear ? startYear.value : (state.year || "choose");
     
-    // Update state from dropdowns if they differ (defensive sync)
-    // This ensures state matches dropdowns before rendering
-    if (topicValue === "all" && state.topic !== "all") {
+    // CRITICAL: Always sync state from dropdowns (dropdowns are source of truth)
+    // This is especially important on first load when state might not be synced
+    if (topicValue === "all") {
       state.topic = "all";
-    } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
+    } else if (topicValue === "choose" || topicValue === "none") {
+      // Only update to "choose" if state is also "choose" or undefined
+      // This prevents overwriting a valid state value
+      if (state.topic === "choose" || state.topic === "none" || !state.topic) {
+        state.topic = topicValue;
+      }
+    } else {
       state.topic = topicValue;
     }
     
-    if (yearValue === "all" && state.year !== "all") {
+    if (yearValue === "all") {
       state.year = "all";
-    } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
+    } else if (yearValue === "choose" || yearValue === "none") {
+      // Only update to "choose" if state is also "choose" or undefined
+      if (state.year === "choose" || state.year === "none" || !state.year) {
+        state.year = yearValue;
+      }
+    } else {
       state.year = yearValue;
     }
+    
+    console.log("renderCards: After sync - state.topic:", state.topic, "state.year:", state.year, "dropdown topic:", topicValue, "dropdown year:", yearValue);
     
     // Determine selection types - check both state and dropdown values
     const isAllTopics = state.topic === "all" || topicValue === "all";
@@ -1271,10 +1284,10 @@ const renderCards = () => {
       console.log("renderCards: Using hierarchical view with", filtered.length, "items");
       console.log("renderCards: isAllTopics:", isAllTopics, "isAllYears:", isAllYears);
       renderHierarchicalView(filtered);
-    } else {
+  } else {
       console.log("renderCards: Using grid view with", filtered.length, "items");
-      renderGrid(filtered);
-    }
+    renderGrid(filtered);
+  }
 
     // Fade in new content
   requestAnimationFrame(() => {
@@ -2982,7 +2995,32 @@ const init = async () => {
         syncTopicDropdown();
         syncYearDropdown();
       }
-    renderCards();
+      
+      // CRITICAL: Sync state from dropdowns before initial render
+      // This ensures that if dropdowns are set to "all", state is also "all"
+      if (startTopic) {
+        const topicValue = startTopic.value;
+        if (topicValue === "all") {
+          state.topic = "all";
+        } else if (topicValue !== "choose" && topicValue !== "none") {
+          state.topic = topicValue;
+        }
+      }
+      
+      if (startYear) {
+        const yearValue = startYear.value;
+        if (yearValue === "all") {
+          state.year = "all";
+        } else if (yearValue !== "choose" && yearValue !== "none") {
+          state.year = yearValue;
+        }
+      }
+      
+      console.log("init: Initial state after sync - topic:", state.topic, "year:", state.year);
+      
+      // Call applyFilters instead of renderCards directly
+      // This ensures state is synced from dropdowns before rendering
+      applyFilters();
     } catch (error) {
       console.error("Failed to load questions:", error);
       if (resultsInfo) {
