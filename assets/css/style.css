@@ -38,6 +38,12 @@ body.home-page .hero {
 
 body.home-page .content {
   overflow-x: hidden; /* Prevent horizontal scroll from full-width sections */
+  position: relative;
+}
+
+/* Ensure questions-section can break out of content container */
+body.home-page .content > .questions-section {
+  position: relative;
 }
 
 body.home-page .home-bg {
@@ -2367,7 +2373,7 @@ mark {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 50;
+  z-index: 1000;
 }
 
 .back-to-top.show {
