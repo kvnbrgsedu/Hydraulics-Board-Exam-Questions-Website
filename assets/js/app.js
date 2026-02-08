@@ -1097,8 +1097,11 @@ const renderHierarchicalView = (items) => {
     return;
   } 
   
-  // Case 7: Specific topic selected → Single topic view
-  if (isSpecificTopic) {
+  // Case 7: Specific topic selected (no year selected) → Single topic view
+  // RULE 2: Specific Topic Selected + No Year Selected
+  // Show: Topic header (once, at the top), All matching question cards
+  // Do NOT show: Year headers
+  if (isSpecificTopic && !isSpecificYear && !isAllYears) {
     renderSingleTopicView(items);
     return;
   } 
@@ -1170,7 +1173,29 @@ const restoreScrollPosition = (scrollPosition) => {
 
 const renderCards = () => {
   if (!grid || !resultsInfo || !emptyState || !activeChips) return;
+  
+  // Filter data first - this will sync state from dropdowns and return filtered items
+  // filterData() reads directly from dropdowns (source of truth) and syncs state
   const filtered = filterData();
+  
+  // After filtering, check state (which is now synced from dropdowns)
+  // RULE 1: No Topic Selected + No Year Selected
+  // Do NOT display: Questions, Topic headers, Year headers
+  // Hide the Question Viewing Section entirely
+  // Page remains non-scrollable
+  const noTopicSelected = (state.topic === "choose" || state.topic === "none" || !state.topic);
+  const noYearSelected = (state.year === "choose" || state.year === "none" || !state.year);
+  
+  if (noTopicSelected && noYearSelected) {
+    // Clear all content
+    grid.innerHTML = "";
+    resultsInfo.textContent = "";
+    emptyState.classList.add("hidden");
+    updateActiveChips();
+    // updateHomeLock() will handle hiding the Question Viewing Section
+    return;
+  }
+  
   const isAllView =
     (state.year === "all" || state.topic === "all") &&
     state.batch === "all" &&
@@ -1287,36 +1312,9 @@ const getLoadErrorMessage = (label) => {
 };
 
 const applyFilters = () => {
-  // CRITICAL: Always sync state from dropdowns to ensure consistency
-  // This ensures that when "all" is selected in dropdowns, state is also "all"
-  if (startTopic) {
-    const dropdownValue = startTopic.value;
-    // Sync state to match dropdown, especially for "all" selections
-    if (dropdownValue === "all") {
-      state.topic = "all";
-    } else if (dropdownValue === "choose" || dropdownValue === "none") {
-      state.topic = dropdownValue;
-    } else if (dropdownValue && dropdownValue !== state.topic) {
-      state.topic = dropdownValue;
-    }
-  }
-  
-  if (startYear) {
-    const dropdownValue = startYear.value;
-    // Sync state to match dropdown, especially for "all" selections
-    if (dropdownValue === "all") {
-      state.year = "all";
-    } else if (dropdownValue === "choose" || dropdownValue === "none") {
-      state.year = dropdownValue;
-    } else if (dropdownValue && dropdownValue !== state.year) {
-      state.year = dropdownValue;
-    }
-  }
-  
-  console.log("applyFilters: State after sync - topic:", state.topic, "year:", state.year);
-  const filtered = filterData();
-  console.log("applyFilters: Filtered", filtered.length, "items (total:", state.data ? state.data.length : 0, ")");
-  
+  // filterData() already syncs state from dropdowns, so we don't need to sync here
+  // Just call filterData() and renderCards() - filterData() handles state syncing
+  console.log("applyFilters: Calling filterData() which will sync state from dropdowns");
   renderCards();
   updateHomeLock();
 };
