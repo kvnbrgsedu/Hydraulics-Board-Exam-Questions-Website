@@ -36,6 +36,10 @@ body.home-page .hero {
   z-index: 2;
 }
 
+body.home-page .content {
+  overflow-x: hidden; /* Prevent horizontal scroll from full-width sections */
+}
+
 body.home-page .home-bg {
   position: fixed;
   inset: 0;
