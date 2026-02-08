@@ -455,7 +455,8 @@ const addCardAnimation = (cardHtml, delay, qIndex) => {
   }
 };
 
-// 1. Topic-Only View: "All Topics" selected (no year headers) - Show topic header then ALL questions from that topic
+// 1. Topic-Only View: "All Topics" selected + No Year Selected
+// Shows all questions grouped by topic, with topic headers only (no year headers)
 const renderTopicOnlyView = (items) => {
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "topic-only-view");
@@ -467,13 +468,16 @@ const renderTopicOnlyView = (items) => {
     return;
   }
   
-  // Group by topic only - ensure ALL questions are included
+  // Group by topic only - NO year grouping
   const grouped = items.reduce((acc, item) => {
-    if (!acc[item.topic]) acc[item.topic] = [];
-    acc[item.topic].push(item);
+    if (!item || !item.topic) return acc;
+    const topic = item.topic;
+    if (!acc[topic]) acc[topic] = [];
+    acc[topic].push(item);
     return acc;
   }, {});
 
+  // Sort topics in a logical order (alphabetically for consistency)
   const topics = Object.keys(grouped).sort();
   let questionIndex = 0;
 
@@ -486,7 +490,7 @@ const renderTopicOnlyView = (items) => {
       return `
         <section class="topic-section primary-section" style="--delay: ${topicDelay}ms">
           <div class="topic-header primary-header">
-            <span class="topic-label">${topic}</span>
+            <span class="topic-label">${escapeHtml(topic)}</span>
             <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
           </div>
           <div class="topic-content">
@@ -1073,8 +1077,12 @@ const renderHierarchicalView = (items) => {
   // This ensures we catch all cases, even if state hasn't synced yet
   const isAllTopics = state.topic === "all" || topicValue === "all";
   const isAllYears = state.year === "all" || yearValue === "all";
+  const isNoTopicSelection = state.topic === "choose" || state.topic === "none" || !state.topic;
+  const isNoYearSelection = state.year === "choose" || state.year === "none" || !state.year;
   const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
   const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
+
+  console.log("renderHierarchicalView: isAllTopics:", isAllTopics, "isAllYears:", isAllYears, "isNoTopicSelection:", isNoTopicSelection, "isNoYearSelection:", isNoYearSelection);
 
   // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
@@ -1115,13 +1123,22 @@ const renderHierarchicalView = (items) => {
     return;
   }
   
-  // Case 5: "All Topics" selected (no year filter) → Topic-only view
+  // Case 5: "All Topics" selected + No Year Selected (choose/none) → Topic-only view
+  // This shows all questions grouped by topic, with topic headers only
+  if (isAllTopics && isNoYearSelection) {
+    console.log("renderHierarchicalView: All Topics + No Year - rendering topic-only view");
+    renderTopicOnlyView(items);
+    return;
+  }
+  
+  // Case 6: "All Topics" selected (no specific year filter) → Topic-only view (fallback)
   if (isAllTopics) {
+    console.log("renderHierarchicalView: All Topics - rendering topic-only view");
     renderTopicOnlyView(items);
     return;
   } 
   
-  // Case 6: "All Years" selected (no topic filter) → Year-only view
+  // Case 7: "All Years" selected (no topic filter) → Year-only view
   if (isAllYears) {
     // Force state to "all" if not already set (defensive)
     if (state.year !== "all") {
@@ -1134,13 +1151,13 @@ const renderHierarchicalView = (items) => {
     return;
   } 
   
-  // Case 7: Specific topic selected → Single topic view
+  // Case 8: Specific topic selected → Single topic view
   if (isSpecificTopic) {
     renderSingleTopicView(items);
     return;
   } 
   
-  // Case 8: Specific year selected → Single year view
+  // Case 9: Specific year selected → Single year view
   if (isSpecificYear) {
     renderSingleYearView(items);
     return;
