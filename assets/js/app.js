@@ -590,51 +590,38 @@ const initHomeDropdowns = () => {
         if (other !== group) other.classList.remove("open");
       });
       
-      // Auto-scroll and position logic
+      // Always display below - remove upward positioning
+      menu.classList.remove("menu-upward");
+      
+      // Auto-scroll to ensure dropdown is visible
       requestAnimationFrame(() => {
-        const triggerRect = trigger.getBoundingClientRect();
-        const menuRect = menu.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const spaceBelow = viewportHeight - triggerRect.bottom;
-        const spaceAbove = triggerRect.top;
-        const menuHeight = Math.min(320, menu.scrollHeight);
-        
-        // Check if menu should open upward
-        if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
-          menu.classList.add("menu-upward");
-        } else {
-          menu.classList.remove("menu-upward");
-        }
-        
-        // Scroll to ensure dropdown is visible
-        const finalMenuRect = menu.getBoundingClientRect();
-        const menuBottom = finalMenuRect.bottom;
-        const menuTop = finalMenuRect.top;
-        
-        // If menu extends below viewport, scroll down
-        if (menuBottom > viewportHeight) {
-          const scrollAmount = menuBottom - viewportHeight + 20; // 20px padding
-          window.scrollBy({
-            top: scrollAmount,
-            behavior: "smooth"
-          });
-        }
-        // If menu extends above viewport, scroll up
-        else if (menuTop < 0) {
-          const scrollAmount = menuTop - 20; // 20px padding
-          window.scrollBy({
-            top: scrollAmount,
-            behavior: "smooth"
-          });
-        }
-        // If trigger is not fully visible, scroll to show it
-        else if (triggerRect.top < 0 || triggerRect.bottom > viewportHeight) {
-          trigger.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "nearest"
-          });
-        }
+        // Wait for menu to render
+        setTimeout(() => {
+          const triggerRect = trigger.getBoundingClientRect();
+          const menuRect = menu.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          
+          // Calculate the bottom position of the menu (relative to viewport)
+          const menuBottom = menuRect.bottom;
+          
+          // If menu extends below viewport, scroll down to show it
+          if (menuBottom > viewportHeight) {
+            const scrollAmount = menuBottom - viewportHeight + 20; // 20px padding
+            window.scrollBy({
+              top: scrollAmount,
+              behavior: "smooth"
+            });
+          }
+          // If trigger is above viewport, scroll to show it
+          else if (triggerRect.top < 0) {
+            const scrollAmount = triggerRect.top - 20; // 20px padding from top
+            window.scrollBy({
+              top: scrollAmount,
+              behavior: "smooth"
+            });
+          }
+        }, 100); // Small delay to ensure menu is fully rendered
       });
     });
 
