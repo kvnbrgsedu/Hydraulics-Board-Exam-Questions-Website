@@ -962,8 +962,10 @@ body.home-page .questions-section .active-filters {
 }
 
 body.home-page .questions-section .results-info {
-  text-align: left;
+  text-align: center;
   margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Hierarchical view within white zone */
@@ -1670,11 +1672,15 @@ body.home-page .chip {
 body.home-page .results-info {
   color: #1f2a2e;
   background: rgba(255, 255, 255, 0.95);
-  padding: 10px 16px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
   display: inline-block;
   border: 1px solid rgba(9, 99, 126, 0.2);
-  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.15);
+  box-shadow: 0 1px 3px rgba(9, 99, 126, 0.12);
+  max-width: 520px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .grid {
