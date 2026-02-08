@@ -879,20 +879,27 @@ const renderTopicAndYearView = (items) => {
 };
 
 const renderHierarchicalView = (items) => {
-  // Ensure we're using the correct state values - check both state and dropdowns
+  // State should already be synced from applyFilters, but double-check dropdowns as fallback
   const topicValue = state.topic || (startTopic ? startTopic.value : "choose");
   const yearValue = state.year || (startYear ? startYear.value : "choose");
   
-  const isAllTopics = topicValue === "all" || state.topic === "all";
-  const isAllYears = yearValue === "all" || state.year === "all";
-  const isSpecificTopic = !isAllTopics && topicValue !== "choose" && topicValue !== "none" && state.topic !== "choose" && state.topic !== "none";
-  const isSpecificYear = !isAllYears && yearValue !== "choose" && yearValue !== "none" && state.year !== "choose" && state.year !== "none";
+  // Determine selection types - prioritize state, fallback to dropdown values
+  const isAllTopics = state.topic === "all" || topicValue === "all";
+  const isAllYears = state.year === "all" || yearValue === "all";
+  const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+  const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
 
   // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
-    // Ensure state is set correctly
-    if (state.topic !== "all") state.topic = "all";
-    if (state.year !== "all") state.year = "all";
+    // Force state to "all" if not already set (defensive)
+    if (state.topic !== "all") {
+      state.topic = "all";
+      if (startTopic) startTopic.value = "all";
+    }
+    if (state.year !== "all") {
+      state.year = "all";
+      if (startYear) startYear.value = "all";
+    }
     // Always render full hierarchy view, even if items is empty (will show empty state)
     renderFullHierarchyView(items || []);
     return;
@@ -1067,7 +1074,9 @@ const renderCards = () => {
       isSpecificTopic || 
       isSpecificYear;
     
-    if (shouldUseHierarchical && filtered.length > 0) {
+    // Always use hierarchical view when appropriate, even if filtered is empty
+    // The hierarchical view functions handle empty states internally
+    if (shouldUseHierarchical) {
       renderHierarchicalView(filtered);
   } else {
     renderGrid(filtered);
@@ -1103,20 +1112,28 @@ const getLoadErrorMessage = (label) => {
 };
 
 const applyFilters = () => {
-  // Ensure state values are valid before filtering
-  // This prevents any edge cases where state might be inconsistent
-  if (startTopic && (state.topic === "choose" || state.topic === "none")) {
-    // If state is "choose" or "none" but dropdown has a different value, sync it
+  // CRITICAL: Always sync state from dropdowns to ensure consistency
+  // This ensures that when "all" is selected in dropdowns, state is also "all"
+  if (startTopic) {
     const dropdownValue = startTopic.value;
-    if (dropdownValue !== "choose" && dropdownValue !== "none") {
+    // Sync state to match dropdown, especially for "all" selections
+    if (dropdownValue === "all") {
+      state.topic = "all";
+    } else if (dropdownValue === "choose" || dropdownValue === "none") {
+      state.topic = dropdownValue;
+    } else if (dropdownValue && dropdownValue !== state.topic) {
       state.topic = dropdownValue;
     }
   }
   
-  if (startYear && (state.year === "choose" || state.year === "none")) {
-    // If state is "choose" or "none" but dropdown has a different value, sync it
+  if (startYear) {
     const dropdownValue = startYear.value;
-    if (dropdownValue !== "choose" && dropdownValue !== "none") {
+    // Sync state to match dropdown, especially for "all" selections
+    if (dropdownValue === "all") {
+      state.year = "all";
+    } else if (dropdownValue === "choose" || dropdownValue === "none") {
+      state.year = dropdownValue;
+    } else if (dropdownValue && dropdownValue !== state.year) {
       state.year = dropdownValue;
     }
   }
