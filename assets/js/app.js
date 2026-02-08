@@ -566,9 +566,10 @@ const initHomeDropdowns = () => {
           select.options[select.selectedIndex].text;
       }
       
+      // Update menu items - none should be selected when value is "choose"
       menu.querySelectorAll(".home-select__option").forEach((item) => {
-        // Check against actual select value (which may be "choose" if "none" was clicked)
-        const isSelected = item.dataset.value === select.value || (value === "none" && item.dataset.value === "none");
+        // Only mark as selected if the actual select value matches (not "choose")
+        const isSelected = select.value !== "choose" && item.dataset.value === select.value;
         item.classList.toggle("selected", isSelected);
         item.setAttribute("aria-selected", isSelected ? "true" : "false");
       });
@@ -992,10 +993,10 @@ const bindEvents = () => {
   const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
     
-    // Convert "none" to "choose", and "choose" to "all" for filtering purposes
     let topicValue = startTopic.value;
     let yearValue = startYear.value;
     
+    // If "none" is selected, reset to "choose" (default state)
     if (topicValue === "none") {
       topicValue = "choose";
       startTopic.value = "choose";
@@ -1005,23 +1006,36 @@ const bindEvents = () => {
       startYear.value = "choose";
     }
     
-    // Convert "choose" to "all" for filtering (to show all when placeholder is selected)
-    topicValue = topicValue === "choose" ? "all" : topicValue;
-    yearValue = yearValue === "choose" ? "all" : yearValue;
-    
+    // Set state - keep "choose" as "choose" (don't convert to "all")
+    // Only convert "choose" to "all" for filtering if it wasn't explicitly set to "choose"
     state.topic = topicValue;
     state.year = yearValue;
     
-    // Sync with sidebar filters (including "all" values)
-    if (yearValue !== "choose") {
+    // Sync with sidebar filters only if not "choose"
+    if (yearValue !== "choose" && yearValue !== "none") {
       if (yearSelect) yearSelect.value = yearValue;
+    } else if (yearValue === "choose") {
+      // Reset sidebar year filter to "all" when home dropdown is reset
+      if (yearSelect) yearSelect.value = "all";
     }
-    if (topicValue !== "choose" && topicSelect) {
+    
+    if (topicValue !== "choose" && topicValue !== "none" && topicSelect) {
       topicSelect.value = topicValue;
+    } else if (topicValue === "choose") {
+      // Reset sidebar topic filter to "all" when home dropdown is reset
+      if (topicSelect) topicSelect.value = "all";
     }
     
     // Update dropdown visual state
     syncStartSelectCards();
+    
+    // Clear questions if reset to "choose"
+    if (topicValue === "choose" || yearValue === "choose") {
+      const grid = document.getElementById("questions-grid");
+      const resultsInfo = document.getElementById("results-info");
+      if (grid) grid.innerHTML = "";
+      if (resultsInfo) resultsInfo.textContent = "";
+    }
     
     // Apply filters and update home lock
     applyFilters();
