@@ -255,11 +255,12 @@ const updateActiveChips = () => {
 
 const filterData = () =>
   state.data.filter((item) => {
-    // "choose" means no selection, so don't match anything
+    // "choose" means no specific selection, so treat it as "all" (match everything for that filter)
     // "all" means match everything for that filter
-    const matchesYear = state.year === "choose" ? false : (state.year === "all" ? true : item.year === state.year);
+    // Specific values mean match only that value
+    const matchesYear = (state.year === "choose" || state.year === "none") ? true : (state.year === "all" ? true : item.year === state.year);
     const matchesBatch = state.batch === "all" ? true : item.batch === state.batch;
-    const matchesTopic = state.topic === "choose" ? false : (state.topic === "all" ? true : item.topic === state.topic);
+    const matchesTopic = (state.topic === "choose" || state.topic === "none") ? true : (state.topic === "all" ? true : item.topic === state.topic);
     const query = state.search.trim().toLowerCase();
     const matchesSearch =
       !query ||
@@ -771,7 +772,7 @@ const renderCards = () => {
     grid.style.opacity = "0";
     grid.style.transition = "opacity 0.3s ease";
     setTimeout(() => {
-      grid.innerHTML = "";
+    grid.innerHTML = "";
       grid.style.opacity = "1";
       grid.style.transition = "";
     }, 300);
@@ -799,24 +800,24 @@ const renderCards = () => {
     
     if (shouldUseHierarchical && filtered.length > 0) {
       renderHierarchicalView(filtered);
-    } else {
-      renderGrid(filtered);
-    }
+  } else {
+    renderGrid(filtered);
+  }
 
     // Fade in new content
-    requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
       grid.style.opacity = "1";
       
       typesetMath();
       
       // Animate year headers
       document.querySelectorAll(".year-header.reveal, .hierarchical-year-header.reveal").forEach((header) => {
-        if (!observer) {
-          header.classList.add("is-visible");
-          return;
-        }
-        observer.observe(header);
-      });
+      if (!observer) {
+        header.classList.add("is-visible");
+        return;
+      }
+      observer.observe(header);
+    });
       
       // Animate topic sections with proper delays (handled in renderHierarchicalView)
       // Questions animate automatically via CSS
@@ -1290,12 +1291,16 @@ const bindEvents = () => {
       // Restore selection if still available, otherwise keep "all"
       if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
         topicSelect.value = currentTopic;
+        // Preserve state value
+        state.topic = currentTopic;
       } else if (currentTopic === "all") {
         topicSelect.value = "all";
+        state.topic = "all";
       } else {
-        // If current selection is not available, default to "all"
+        // If current selection is not available, default to "all" but don't change state if it's "choose" or "none"
         topicSelect.value = "all";
-        if (currentTopic !== "choose" && currentTopic !== "none") {
+        // Only update state if it was a specific topic that's no longer available
+        if (currentTopic !== "choose" && currentTopic !== "none" && currentTopic !== "all") {
           state.topic = "all";
         }
       }
@@ -1350,12 +1355,16 @@ const bindEvents = () => {
       // Restore selection if still available, otherwise keep "all"
       if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
         yearSelect.value = currentYear;
+        // Preserve state value
+        state.year = currentYear;
       } else if (currentYear === "all") {
         yearSelect.value = "all";
+        state.year = "all";
       } else {
-        // If current selection is not available, default to "all"
+        // If current selection is not available, default to "all" but don't change state if it's "choose" or "none"
         yearSelect.value = "all";
-        if (currentYear !== "choose" && currentYear !== "none") {
+        // Only update state if it was a specific year that's no longer available
+        if (currentYear !== "choose" && currentYear !== "none" && currentYear !== "all") {
           state.year = "all";
         }
       }
@@ -1600,33 +1609,20 @@ const bindEvents = () => {
       startYear.value = "choose";
     }
     
-    // Preserve existing selections if the other dropdown hasn't changed
+    // Set state values directly from dropdown selections
     // This ensures that when user picks topic then year (or vice versa), both are preserved
-    if (topicValue !== "choose" && topicValue !== "none" && topicValue !== "all") {
-      state.topic = topicValue;
-    } else if (topicValue === "all") {
-      state.topic = "all";
-    } else {
-      // Only reset to "choose" if explicitly "choose" or "none"
-      state.topic = topicValue;
-    }
-    
-    if (yearValue !== "choose" && yearValue !== "none" && yearValue !== "all") {
-      state.year = yearValue;
-    } else if (yearValue === "all") {
-      state.year = "all";
-    } else {
-      // Only reset to "choose" if explicitly "choose" or "none"
-      state.year = yearValue;
-    }
+    state.topic = topicValue;
+    state.year = yearValue;
     
     // Always sync dropdowns based on current state selections
     // This updates available options based on current selections
+    // The sync functions will preserve state values if they're still valid
     syncTopicDropdown();
     syncYearDropdown();
     
-    // After syncing, ensure state values are preserved if they're still valid
-    // If sync functions changed the dropdowns, restore the state values
+    // After syncing, restore state values from the original dropdown selections
+    // This ensures that even if sync functions modified state, we restore the user's actual selections
+    // Only restore if the values are valid selections (not "choose" or "none")
     if (topicValue !== "choose" && topicValue !== "none") {
       state.topic = topicValue;
     }
@@ -2318,15 +2314,15 @@ const init = async () => {
 
   if (hasQuestionUI) {
     try {
-      renderSkeletons();
+    renderSkeletons();
       await loadQuestionsData();
-      renderFilters();
+    renderFilters();
       // Sync dropdowns after data loads
       if (syncTopicDropdown && syncYearDropdown) {
         syncTopicDropdown();
         syncYearDropdown();
       }
-      renderCards();
+    renderCards();
     } catch (error) {
       console.error("Failed to load questions:", error);
       if (resultsInfo) {
@@ -2344,8 +2340,8 @@ const init = async () => {
   if (hasFormulaUI) {
     try {
       await loadFormulaData();
-      renderFormulaFilters();
-      filterFormulas();
+    renderFormulaFilters();
+    filterFormulas();
     } catch (error) {
       console.error("Failed to load formulas:", error);
       if (formulaEmpty) {
