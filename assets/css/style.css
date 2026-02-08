@@ -1547,6 +1547,27 @@ body.home-page .results-info {
   display: none !important;
 }
 
+/* Topic-Year View: Show both year and topic headers */
+.topic-year-view .hierarchical-year {
+  display: block !important;
+}
+
+.topic-year-view .topic-section {
+  display: block !important;
+  padding-left: 24px;
+  margin-top: 16px;
+}
+
+.topic-year-view .secondary-header {
+  margin-bottom: 16px;
+}
+
+.topic-year-view .secondary-header .topic-label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #088395;
+}
+
 /* Primary headers (main category) - larger, bolder */
 .primary-header .year-badge,
 .primary-header .topic-label {
