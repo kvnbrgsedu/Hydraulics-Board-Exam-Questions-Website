@@ -1047,83 +1047,62 @@ const renderHierarchicalView = (items) => {
     state.year = yearValue;
   }
   
-  // Determine selection types - check both state and dropdown values
-  // This ensures we catch all cases, even if state hasn't synced yet
-  const isAllTopics = state.topic === "all" || topicValue === "all";
-  const isAllYears = state.year === "all" || yearValue === "all";
-  const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
-  const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
+  // Determine selection types based on state (source of truth)
+  const isAllTopics = state.topic === "all";
+  const isAllYears = state.year === "all";
+  const isNoTopic = !state.topic || state.topic === "choose" || state.topic === "none";
+  const isNoYear = !state.year || state.year === "choose" || state.year === "none";
+  const isSpecificTopic = state.topic && !isAllTopics && !isNoTopic;
+  const isSpecificYear = state.year && !isAllYears && !isNoYear;
 
-  // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
+  // RULE 1: No Topic + No Year
+  // Already handled in renderCards() - should never reach here
+  
+  // RULE 7: All Topics + All Years → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
-    // Force state to "all" if not already set (defensive)
-    if (state.topic !== "all") {
-      state.topic = "all";
-      if (startTopic) startTopic.value = "all";
-    }
-    if (state.year !== "all") {
-      state.year = "all";
-      if (startYear) startYear.value = "all";
-    }
-    // Ensure we have items to render
-    const itemsToRender = items && Array.isArray(items) ? items : [];
-    console.log("renderHierarchicalView: Rendering full hierarchy with", itemsToRender.length, "items");
-    console.log("renderHierarchicalView: State - topic:", state.topic, "year:", state.year);
-    console.log("renderHierarchicalView: Dropdown - topic:", topicValue, "year:", yearValue);
-    // Always render full hierarchy view, even if items is empty (will show empty state)
-    renderFullHierarchyView(itemsToRender);
-    return;
-  } 
-  
-  // Case 2: "All Topics" selected with a specific year → Show topics within that year
-  if (isAllTopics && isSpecificYear) {
-    renderTopicsInYearView(items);
+    renderFullHierarchyView(items);
     return;
   }
   
-  // Case 3: "All Years" selected with a specific topic → Show years with that topic
-  if (isAllYears && isSpecificTopic) {
-    renderYearsWithTopicView(items);
-    return;
-  }
-  
-  // Case 4: BOTH specific topic AND specific year selected → Year + Topic view
+  // RULE 4: Specific Topic + Specific Year → Year → Topic → Questions
   if (isSpecificTopic && isSpecificYear) {
     renderTopicAndYearView(items);
     return;
   }
   
-  // Case 5: "All Topics" selected (no year filter) → Topic-only view
-  if (isAllTopics) {
-    renderTopicOnlyView(items);
-    return;
-  } 
-  
-  // Case 6: "All Years" selected (no topic filter) → Year-only view
-  if (isAllYears) {
-    // Force state to "all" if not already set (defensive)
-    if (state.year !== "all") {
-      state.year = "all";
-      if (startYear) startYear.value = "all";
-    }
-    // Ensure we have items to render
-    const itemsToRender = items && Array.isArray(items) ? items : [];
-    renderYearOnlyView(itemsToRender);
-    return;
-  } 
-  
-  // Case 7: Specific topic selected (no year selected) → Single topic view
-  // RULE 2: Specific Topic Selected + No Year Selected
-  // Show: Topic header (once, at the top), All matching question cards
-  // Do NOT show: Year headers
-  if (isSpecificTopic && !isSpecificYear && !isAllYears) {
+  // RULE 2: Specific Topic + No Year → Topic header + Questions (no year headers)
+  if (isSpecificTopic && isNoYear) {
     renderSingleTopicView(items);
     return;
-  } 
+  }
   
-  // Case 8: Specific year selected → Single year view
-  if (isSpecificYear) {
+  // RULE 3: No Topic + Specific Year → Year header + Questions (no topic headers)
+  if (isNoTopic && isSpecificYear) {
     renderSingleYearView(items);
+    return;
+  }
+  
+  // RULE 5: All Topics + No Year → Group by Topic (no year headers)
+  if (isAllTopics && isNoYear) {
+    renderTopicOnlyView(items);
+    return;
+  }
+  
+  // RULE 6: No Topic + All Years → Group by Year (no topic headers)
+  if (isNoTopic && isAllYears) {
+    renderYearOnlyView(items);
+    return;
+  }
+  
+  // Additional Cases: All Topics + Specific Year
+  if (isAllTopics && isSpecificYear) {
+    renderTopicsInYearView(items);
+    return;
+  }
+  
+  // Additional Cases: Specific Topic + All Years
+  if (isSpecificTopic && isAllYears) {
+    renderYearsWithTopicView(items);
     return;
   } 
   
