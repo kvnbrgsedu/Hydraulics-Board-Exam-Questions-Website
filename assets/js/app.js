@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const DATA_URL = "assets/data/questions.json";
 const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
@@ -1551,8 +1550,6 @@ const init = async () => {
 };
 
 init();
-=======
-const DATA_URL = "assets/data/questions.json";
 const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
 const QUIZ_STORAGE_KEY = "quizProgressV2";
@@ -3150,4 +3147,3 @@ const init = async () => {
 };
 
 init();
->>>>>>> b6e113a2148a363afeef4fa6025044c56e96ff7f
