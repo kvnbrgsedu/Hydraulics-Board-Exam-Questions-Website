@@ -2281,8 +2281,12 @@ const bindEvents = () => {
     console.log("handleStartSelection: State updated - topic:", state.topic, "year:", state.year);
     
     // Sync dropdowns to update available options
-    syncTopicDropdown();
-    syncYearDropdown();
+    // Avoid rebuilding home selects on home change to prevent value resets
+    const isHomeChange = event && (event.target === startTopic || event.target === startYear);
+    if (!isHomeChange) {
+      syncTopicDropdown();
+      syncYearDropdown();
+    }
     
     // After syncing, preserve the user's selection
     // Re-read dropdown values to ensure they weren't changed by sync
