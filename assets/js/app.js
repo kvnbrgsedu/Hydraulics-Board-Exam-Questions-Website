@@ -1551,28 +1551,6 @@ const init = async () => {
 };
 
 init();
-const QUIZ_URL = "assets/data/quiz.json";
-const QUIZ_STORAGE_KEY = "quizProgressV2";
-
-const state = {
-  year: "all",
-  batch: "all",
-  topic: "all",
-  search: "",
-  data: [],
-  formulas: [],
-};
-
-const quizState = {
-  questions: [],
-  currentIndex: 0,
-  score: 0,
-  answered: false,
-  selectedTopic: "all",
-  selectedDifficulty: "all",
-  currentQuestions: [],
-  scoredQuestions: new Set(),
-};
 
 const grid = document.getElementById("question-grid");
 const yearSelect = document.getElementById("year-select");
