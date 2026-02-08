@@ -1473,9 +1473,11 @@ body.home-page .results-info {
   display: none !important;
 }
 
-/* When "All Years" is selected: Hide topic sections (unless they're primary) */
-.year-only-view .topic-section:not(.primary-section),
-.single-year-view .topic-section {
+/* When "All Years" is selected: Hide ALL topic sections - topics appear only in cards */
+.year-only-view .topic-section,
+.year-only-view .topic-header,
+.single-year-view .topic-section,
+.single-year-view .topic-header {
   display: none !important;
 }
 

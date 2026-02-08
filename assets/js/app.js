@@ -469,13 +469,14 @@ const renderYearOnlyView = (items) => {
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
-  // Group by year only
+  // Group by year only (no topic grouping)
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.year]) acc[item.year] = [];
     acc[item.year].push(item);
     return acc;
   }, {});
 
+  // Sort years chronologically (2011-2025)
   const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
   let questionIndex = 0;
 
@@ -498,8 +499,9 @@ const renderYearOnlyView = (items) => {
             <div class="questions-grid">
               ${questions
                 .map((item, qIndex) => {
+                  // Topic appears in card header (from buildCardHtml)
+                  // No topic headers are created - only year headers
                   let cardHtml = buildCardHtml(item, questionIndex++);
-                  // Topic is already in card header, no need to add
                   const questionDelay = yearDelay + qIndex * 30;
                   return addCardAnimation(cardHtml, questionDelay, qIndex);
                 })
