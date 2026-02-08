@@ -39,6 +39,14 @@ body.home-page .hero {
 body.home-page .content {
   overflow-x: hidden; /* Prevent horizontal scroll from full-width sections */
   position: relative;
+  padding: 0; /* Remove padding to allow full-width sections */
+}
+
+/* Ensure questions-section can break out of content container */
+body.home-page .content > .questions-section {
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* Ensure questions-section can break out of content container */
@@ -882,13 +890,11 @@ body.home-page .questions-section {
   min-height: 100vh;
   width: 100vw;
   left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
   padding: 60px 20px 80px;
+  margin: 0;
   margin-top: 0;
   opacity: 0;
-  transform: translateY(50px);
+  transform: translateX(-50%) translateY(50px);
   max-height: 0;
   overflow: hidden;
   transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
@@ -903,7 +909,7 @@ body.home-page .questions-section {
 /* Question Viewing Zone - Active State */
 body.home-page .questions-section.is-active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
   max-height: none;
   overflow: visible;
   pointer-events: auto;
