@@ -1463,6 +1463,18 @@ body.home-page .home-selects {
   display: none;
 }
 
+/* Avoid duplicate topic headers inside cards for hierarchical views */
+.topic-only-view .card__header span:last-child,
+.single-topic-view .card__header span:last-child,
+.year-only-view .card__header span:last-child,
+.single-year-view .card__header span:last-child,
+.topics-in-year-view .card__header span:last-child,
+.years-with-topic-view .card__header span:last-child,
+.full-hierarchy-view .card__header span:last-child,
+.topic-year-view .card__header span:last-child {
+  display: none;
+}
+
 body.home-page.home-select-open .home-bg {
   filter: blur(1.5px);
 }
