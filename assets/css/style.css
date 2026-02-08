@@ -1755,15 +1755,29 @@ body.home-page .results-info {
   padding-left: 24px;
   margin-top: 16px;
   margin-bottom: 24px;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .full-hierarchy-view .topic-section:last-child {
   margin-bottom: 0;
 }
 
+.full-hierarchy-view .topic-header {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 .full-hierarchy-view .secondary-header {
   display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   margin-bottom: 16px;
+  padding: 12px 18px;
+  background: rgba(122, 178, 178, 0.08) !important;
+  border-left: 3px solid #7AB2B2 !important;
+  border-radius: 6px;
 }
 
 .full-hierarchy-view .secondary-header .topic-label {
@@ -1771,11 +1785,32 @@ body.home-page .results-info {
   font-weight: 600;
   color: #088395;
   display: block !important;
+  visibility: visible !important;
+}
+
+.full-hierarchy-view .topic-meta {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.full-hierarchy-view .topic-content {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .full-hierarchy-view .hierarchical-year-header {
   display: flex !important;
   margin-bottom: 24px;
+}
+
+/* Ensure topic sections are visible immediately in full hierarchy view */
+.full-hierarchy-view .topic-section.is-visible,
+.full-hierarchy-view .topic-section {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+  visibility: visible !important;
 }
 
 .full-hierarchy-view .year-content {
