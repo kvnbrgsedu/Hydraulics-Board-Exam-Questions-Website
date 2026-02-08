@@ -2120,34 +2120,8 @@ const bindEvents = () => {
     if (searchInput) searchInput.value = "";
     
     // Reset home dropdowns to "choose" (placeholder state)
-    if (startTopic) {
-      startTopic.value = "choose";
-      // Update the custom dropdown trigger text
-      const topicGroup = startTopic.closest(".home-select-group");
-      if (topicGroup) {
-        const trigger = topicGroup.querySelector(".home-select__trigger");
-        if (trigger) {
-          const valueSpan = trigger.querySelector(".home-select__value");
-          if (valueSpan) {
-            valueSpan.textContent = "Choose Topic";
-          }
-        }
-      }
-    }
-    if (startYear) {
-      startYear.value = "choose";
-      // Update the custom dropdown trigger text
-      const yearGroup = startYear.closest(".home-select-group");
-      if (yearGroup) {
-        const trigger = yearGroup.querySelector(".home-select__trigger");
-        if (trigger) {
-          const valueSpan = trigger.querySelector(".home-select__value");
-          if (valueSpan) {
-            valueSpan.textContent = "Choose Year";
-          }
-        }
-      }
-    }
+    if (startTopic) startTopic.value = "choose";
+    if (startYear) startYear.value = "choose";
     
     // Clear questions grid and results
     if (grid) grid.innerHTML = "";
