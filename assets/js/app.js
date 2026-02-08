@@ -1249,8 +1249,10 @@ const renderCards = () => {
   if (!grid || !resultsInfo || !emptyState || !activeChips) return;
   const currentToken = ++renderToken;
   let filtered = filterData();
-  const dropdownAllSelected = startTopic?.value === "all" && startYear?.value === "all";
-  if (dropdownAllSelected && state.data && state.data.length) {
+  const allSelected =
+    (startTopic?.value === "all" || state.topic === "all") &&
+    (startYear?.value === "all" || state.year === "all");
+  if (allSelected && state.data && state.data.length) {
     filtered = state.data;
   }
   const isAllView =
@@ -1354,7 +1356,7 @@ const renderCards = () => {
       isSpecificTopic || 
       isSpecificYear;
     
-    if (topicValue === "all" && yearValue === "all") {
+    if ((topicValue === "all" || state.topic === "all") && (yearValue === "all" || state.year === "all")) {
       state.topic = "all";
       state.year = "all";
       renderFullHierarchyView(state.data && state.data.length ? state.data : filtered);
