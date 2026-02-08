@@ -2080,8 +2080,8 @@ body.home-page .results-info {
 .hierarchical-year-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 0;
+  margin-bottom: 20px;
   position: relative;
   text-align: left;
   width: 100%;
@@ -2095,17 +2095,17 @@ body.home-page .results-info {
 }
 
 .hierarchical-year-header .year-toggle {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px 0;
+  padding: 0;
   transition: transform 0.2s ease, opacity 0.2s ease;
   font-family: inherit;
   text-align: left;
-  min-width: 120px;
+  min-width: 0;
   max-width: 100%;
 }
 
@@ -2118,19 +2118,19 @@ body.home-page .results-info {
 }
 
 .hierarchical-year-header .year-badge {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(135deg, #09637E, #088395);
-  padding: 10px 24px;
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(9, 99, 126, 0.2);
-  letter-spacing: 0.5px;
+  background: #09637E;
+  padding: 8px 20px;
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(9, 99, 126, 0.2);
+  letter-spacing: 0.3px;
   text-align: left;
   position: relative;
   display: inline-block;
   max-width: 100%;
-  transition: font-size 0.3s ease, padding 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Primary year badge (when year is main category) */
@@ -2139,32 +2139,12 @@ body.home-page .results-info {
   padding: 12px 28px;
 }
 
-.hierarchical-year-header .year-badge::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 24px;
-  right: 24px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 1px;
-}
-
 .hierarchical-year-header .year-toggle-icon {
-  font-size: 18px;
-  color: #09637E;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-block;
-  margin-left: 6px;
-  font-weight: 600;
+  display: none;
 }
 
 .hierarchical-year-header .year-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(9, 99, 126, 0.2), transparent);
-  max-width: 200px;
-  min-width: 40px;
+  display: none;
 }
 
 .hierarchical-year .year-content {
