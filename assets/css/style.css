@@ -2083,6 +2083,7 @@ body.home-page .results-info {
   margin-bottom: 24px;
   position: relative;
   text-align: left;
+  width: 100%;
 }
 
 .hierarchical-year-header .year-toggle {
@@ -2097,6 +2098,7 @@ body.home-page .results-info {
   font-family: inherit;
   text-align: left;
   min-width: 120px;
+  max-width: 100%;
 }
 
 .hierarchical-year-header .year-toggle:hover {
@@ -2119,6 +2121,7 @@ body.home-page .results-info {
   text-align: left;
   position: relative;
   display: inline-block;
+  max-width: 100%;
   transition: font-size 0.3s ease, padding 0.3s ease;
 }
 
@@ -2153,6 +2156,7 @@ body.home-page .results-info {
   height: 1px;
   background: linear-gradient(90deg, rgba(9, 99, 126, 0.2), transparent);
   max-width: 200px;
+  min-width: 40px;
 }
 
 .hierarchical-year .year-content {
