@@ -664,27 +664,33 @@ const renderSingleYearView = (items) => {
 const renderHierarchicalView = (items) => {
   const isAllTopics = state.topic === "all";
   const isAllYears = state.year === "all";
-  const isSpecificTopic = state.topic !== "all" && state.topic !== "choose";
-  const isSpecificYear = state.year !== "all" && state.year !== "choose";
+  const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+  const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
 
-  // Determine which view to render
+  // Determine which view to render based on selection priority
+  // Priority: Full hierarchy > Topic-only > Year-only > Single topic > Single year
+  
   if (isAllTopics && isAllYears) {
-    // Both "All Topics" and "All Years" - Full hierarchy
+    // Both "All Topics" and "All Years" - Full hierarchy (Year → Topic → Questions)
     renderFullHierarchyView(items);
-  } else if (isAllTopics && !isAllYears) {
-    // "All Topics" selected, specific or no year - Topic only
+  } else if (isAllTopics) {
+    // "All Topics" selected (regardless of year selection) - Topic headers only
+    // Year appears as metadata in cards
     renderTopicOnlyView(items);
   } else if (isAllYears && !isAllTopics) {
-    // "All Years" selected, specific or no topic - Year only
+    // "All Years" selected, but NOT "All Topics" - Year headers only
+    // Topic appears in card headers
     renderYearOnlyView(items);
   } else if (isSpecificTopic) {
-    // Specific topic selected - Single topic view
+    // Specific topic selected (any year) - Single topic view
+    // Show topic header once, year as metadata
     renderSingleTopicView(items);
-  } else if (isSpecificYear) {
-    // Specific year selected - Single year view
+  } else if (isSpecificYear && !isSpecificTopic) {
+    // Specific year selected, but NOT specific topic - Single year view
+    // Show year header once, topic in cards
     renderSingleYearView(items);
   } else {
-    // Fallback to grid view
+    // Fallback to grid view (no clear categorization)
     renderGrid(items);
   }
 };
@@ -790,12 +796,18 @@ const renderCards = () => {
   setTimeout(() => {
     // Use hierarchical view for all cases where we have meaningful categorization
     // renderHierarchicalView will detect the state and call the appropriate renderer
-    const shouldUseHierarchical = 
-      state.year === "all" || 
-      state.topic === "all" || 
-      (state.year !== "all" && state.year !== "choose" && state.topic !== "all" && state.topic !== "choose");
+    const isAllTopics = state.topic === "all";
+    const isAllYears = state.year === "all";
+    const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+    const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
     
-    if (shouldUseHierarchical) {
+    const shouldUseHierarchical = 
+      isAllTopics || 
+      isAllYears || 
+      isSpecificTopic || 
+      isSpecificYear;
+    
+    if (shouldUseHierarchical && filtered.length > 0) {
       renderHierarchicalView(filtered);
     } else {
       renderGrid(filtered);
@@ -1373,7 +1385,8 @@ const bindEvents = () => {
     state.year = event.target.value;
     // Sync with home dropdown (including "all" values)
     if (startYear) {
-      startYear.value = state.year === "all" ? "all" : state.year;
+      // Map "all" to "all", everything else stays as is
+      startYear.value = state.year;
     }
     // Sync topic dropdown based on selected year
     syncTopicDropdown();
@@ -1391,7 +1404,8 @@ const bindEvents = () => {
     state.topic = event.target.value;
     // Sync with home dropdown (including "all" values)
     if (startTopic) {
-      startTopic.value = state.topic === "all" ? "all" : state.topic;
+      // Map "all" to "all", everything else stays as is
+      startTopic.value = state.topic;
     }
     // Sync year dropdown based on selected topic
     syncYearDropdown();
