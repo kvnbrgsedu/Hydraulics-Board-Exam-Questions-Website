@@ -834,6 +834,24 @@ const getLoadErrorMessage = (label) => {
 };
 
 const applyFilters = () => {
+  // Ensure state values are valid before filtering
+  // This prevents any edge cases where state might be inconsistent
+  if (startTopic && (state.topic === "choose" || state.topic === "none")) {
+    // If state is "choose" or "none" but dropdown has a different value, sync it
+    const dropdownValue = startTopic.value;
+    if (dropdownValue !== "choose" && dropdownValue !== "none") {
+      state.topic = dropdownValue;
+    }
+  }
+  
+  if (startYear && (state.year === "choose" || state.year === "none")) {
+    // If state is "choose" or "none" but dropdown has a different value, sync it
+    const dropdownValue = startYear.value;
+    if (dropdownValue !== "choose" && dropdownValue !== "none") {
+      state.year = dropdownValue;
+    }
+  }
+  
   renderCards();
   updateHomeLock();
 };
@@ -1319,16 +1337,25 @@ const bindEvents = () => {
       startTopic.innerHTML = startTopicOptions;
       // Restore selection if still available
       // Prioritize preserving the user's actual selection from the dropdown
-      if (previousValue !== "choose" && previousValue !== "none" && previousValue !== "all" && availableTopics.includes(previousValue)) {
+      if (previousValue === "all") {
+        startTopic.value = "all";
+        // Preserve "all" in state
+        if (state.topic !== "all") {
+          state.topic = "all";
+        }
+      } else if (previousValue !== "choose" && previousValue !== "none" && availableTopics.includes(previousValue)) {
         startTopic.value = previousValue;
         // Update state to match the preserved selection
         if (state.topic !== previousValue) {
           state.topic = previousValue;
         }
-      } else if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
-        startTopic.value = currentTopic;
-      } else if (currentTopic === "all" || previousValue === "all") {
+      } else if (currentTopic === "all") {
         startTopic.value = "all";
+        if (state.topic !== "all") {
+          state.topic = "all";
+        }
+      } else if (currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
+        startTopic.value = currentTopic;
       } else {
         // Preserve "choose" or "none" if that was the previous value
         startTopic.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
@@ -1393,16 +1420,25 @@ const bindEvents = () => {
       startYear.innerHTML = startYearOptions;
       // Restore selection if still available
       // Prioritize preserving the user's actual selection from the dropdown
-      if (previousValue !== "choose" && previousValue !== "none" && previousValue !== "all" && availableYears.includes(previousValue)) {
+      if (previousValue === "all") {
+        startYear.value = "all";
+        // Preserve "all" in state
+        if (state.year !== "all") {
+          state.year = "all";
+        }
+      } else if (previousValue !== "choose" && previousValue !== "none" && availableYears.includes(previousValue)) {
         startYear.value = previousValue;
         // Update state to match the preserved selection
         if (state.year !== previousValue) {
           state.year = previousValue;
         }
-      } else if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
-        startYear.value = currentYear;
-      } else if (currentYear === "all" || previousValue === "all") {
+      } else if (currentYear === "all") {
         startYear.value = "all";
+        if (state.year !== "all") {
+          state.year = "all";
+        }
+      } else if (currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
+        startYear.value = currentYear;
       } else {
         // Preserve "choose" or "none" if that was the previous value
         startYear.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
@@ -1630,7 +1666,7 @@ const bindEvents = () => {
     }
     
     // Set state values directly from dropdown selections
-    // Preserve "choose" values - don't convert them to "all"
+    // Preserve "all" and "choose" values correctly
     // This allows filtering to work when user picks topic then year (or vice versa)
     state.topic = topicValue;
     state.year = yearValue;
@@ -1646,15 +1682,30 @@ const bindEvents = () => {
     const finalTopicValue = startTopic.value;
     const finalYearValue = startYear.value;
     
-    // Update state to match the final dropdown values (after sync has preserved/updated them)
-    // Only update if the value is a specific selection (not "choose" or "none")
-    if (finalTopicValue !== "choose" && finalTopicValue !== "none") {
+    // CRITICAL: Always preserve "all" if it was originally selected, regardless of sync results
+    if (topicValue === "all") {
+      state.topic = "all";
+      // Ensure dropdown also shows "all"
+      if (startTopic && startTopic.value !== "all") {
+        startTopic.value = "all";
+      }
+    } else if (finalTopicValue === "all") {
+      state.topic = "all";
+    } else if (finalTopicValue !== "choose" && finalTopicValue !== "none") {
       state.topic = finalTopicValue;
     } else {
       state.topic = topicValue; // Keep original "choose" or "none" converted value
     }
     
-    if (finalYearValue !== "choose" && finalYearValue !== "none") {
+    if (yearValue === "all") {
+      state.year = "all";
+      // Ensure dropdown also shows "all"
+      if (startYear && startYear.value !== "all") {
+        startYear.value = "all";
+      }
+    } else if (finalYearValue === "all") {
+      state.year = "all";
+    } else if (finalYearValue !== "choose" && finalYearValue !== "none") {
       state.year = finalYearValue;
     } else {
       state.year = yearValue; // Keep original "choose" or "none" converted value
