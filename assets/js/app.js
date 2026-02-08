@@ -211,15 +211,28 @@ const renderFilters = () => {
     `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
+  // Home dropdowns: Keep "Choose..." as default placeholder (value="choose"), add "All Topics/Years" (value="all") and actual options
   startTopic.innerHTML =
+    `<option value="choose">Choose Topic</option>` +
     `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
-  startTopic.value = state.topic;
+  // Set to "choose" if no selection, otherwise keep current value
+  if (state.topic === "all") {
+    startTopic.value = "choose";
+  } else {
+    startTopic.value = state.topic;
+  }
 
   startYear.innerHTML =
+    `<option value="choose">Choose Year</option>` +
     `<option value="all">All Years</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
-  startYear.value = state.year;
+  // Set to "choose" if no selection, otherwise keep current value
+  if (state.year === "all") {
+    startYear.value = "choose";
+  } else {
+    startYear.value = state.year;
+  }
 };
 
 const updateActiveChips = () => {
@@ -419,6 +432,28 @@ const updateHomeLock = () => {
   const shouldLock = !hasSelection && !document.body.classList.contains("home-show-all");
   document.body.classList.toggle("home-locked", shouldLock);
   syncStartSelectCards();
+  // Sync home dropdowns to match state
+  if (startTopic && startYear) {
+    if (state.topic === "all") {
+      startTopic.value = "choose";
+    } else {
+      startTopic.value = state.topic;
+    }
+    if (state.year === "all") {
+      startYear.value = "choose";
+    } else {
+      startYear.value = state.year;
+    }
+    // Update dropdown visual state
+    if (startTopic.value !== "choose") {
+      const topicGroup = startTopic.closest(".home-select-group");
+      if (topicGroup) topicGroup.classList.add("has-selection");
+    }
+    if (startYear.value !== "choose") {
+      const yearGroup = startYear.closest(".home-select-group");
+      if (yearGroup) yearGroup.classList.add("has-selection");
+    }
+  }
 };
 
 const initHomeBackground = () => {
@@ -507,7 +542,11 @@ const initHomeDropdowns = () => {
     menu.className = "home-select__menu";
     menu.setAttribute("role", "listbox");
 
-    Array.from(select.options).forEach((option, index) => {
+    // Skip the first option (default "Choose..." text) when building menu
+    const options = Array.from(select.options);
+    const menuOptions = options.slice(1); // Skip first option
+    
+    menuOptions.forEach((option, index) => {
       const item = document.createElement("button");
       item.type = "button";
       item.className = "home-select__option";
@@ -519,7 +558,10 @@ const initHomeDropdowns = () => {
         <span class="home-select__label-text">${option.text}</span>
         <span class="home-select__check"></span>
       `;
-      if (option.selected) {
+      // Check if this option matches the current value (accounting for skipped first option)
+      const currentValue = select.value;
+      const isSelected = option.value === currentValue || (currentValue === "all" && option.value === "all" && option.text !== "Choose Topic" && option.text !== "Choose Year");
+      if (isSelected) {
         item.classList.add("selected");
         item.setAttribute("aria-selected", "true");
       }
@@ -527,9 +569,25 @@ const initHomeDropdowns = () => {
     });
 
     const updateSelection = (value) => {
-      select.value = value;
-      trigger.querySelector(".home-select__value").textContent =
-        select.options[select.selectedIndex].text;
+      // Find the option with this value (skip first "Choose..." option)
+      const options = Array.from(select.options);
+      const targetOption = options.find(opt => opt.value === value && opt.text !== "Choose Topic" && opt.text !== "Choose Year");
+      if (targetOption) {
+        select.selectedIndex = targetOption.index;
+      } else {
+        // If value is "all", set to first "Choose..." option
+        select.selectedIndex = 0;
+      }
+      
+      // Update trigger text - show "Choose..." if all, otherwise show selected text
+      const selectedOption = select.options[select.selectedIndex];
+      if (value === "all" && (selectedOption.text === "Choose Topic" || selectedOption.text === "Choose Year")) {
+        trigger.querySelector(".home-select__value").textContent = selectedOption.text;
+      } else {
+        const displayOption = options.find(opt => opt.value === value && opt.text !== "Choose Topic" && opt.text !== "Choose Year");
+        trigger.querySelector(".home-select__value").textContent = displayOption ? displayOption.text : selectedOption.text;
+      }
+      
       menu.querySelectorAll(".home-select__option").forEach((item) => {
         const isSelected = item.dataset.value === value;
         item.classList.toggle("selected", isSelected);
@@ -773,8 +831,8 @@ const bindEvents = () => {
     if (batchSelect) batchSelect.value = "all";
     if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
-    if (startTopic) startTopic.value = "all";
-    if (startYear) startYear.value = "all";
+    if (startTopic) startTopic.value = "choose";
+    if (startYear) startYear.value = "choose";
     
     // Reset home dropdown visual state
     syncStartSelectCards();
@@ -875,8 +933,11 @@ const bindEvents = () => {
 
   const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
-    state.topic = startTopic.value;
-    state.year = startYear.value;
+    // Convert "choose" to "all" for filtering
+    const topicValue = startTopic.value === "choose" ? "all" : startTopic.value;
+    const yearValue = startYear.value === "choose" ? "all" : startYear.value;
+    state.topic = topicValue;
+    state.year = yearValue;
     yearSelect.value = state.year;
     if (topicSelect) topicSelect.value = state.topic;
     applyFilters();

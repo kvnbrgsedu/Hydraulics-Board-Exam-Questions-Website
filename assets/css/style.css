@@ -946,6 +946,20 @@ body.home-page .home-selects {
 @media (max-width: 768px) {
   body.home-page .home-selects {
     flex-direction: column;
+    gap: 16px;
+  }
+  
+  .home-select-group {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .home-select__menu {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: calc(100vw - 32px);
   }
 }
 
