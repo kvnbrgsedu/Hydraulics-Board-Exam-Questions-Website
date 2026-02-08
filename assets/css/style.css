@@ -1250,6 +1250,9 @@ body.home-page .home-selects {
   box-shadow: 0 12px 24px rgba(9, 99, 126, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease,
     border-color 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 2;
 }
 
 .home-select__trigger:hover {
