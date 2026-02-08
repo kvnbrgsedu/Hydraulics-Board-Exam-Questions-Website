@@ -1289,20 +1289,15 @@ const bindEvents = () => {
       const previousValue = topicSelect.value;
       topicSelect.innerHTML = topicOptions;
       // Restore selection if still available, otherwise keep "all"
+      // Don't modify state - state is managed by handleStartSelection and sidebar handlers
       if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
         topicSelect.value = currentTopic;
-        // Preserve state value
-        state.topic = currentTopic;
       } else if (currentTopic === "all") {
         topicSelect.value = "all";
-        state.topic = "all";
       } else {
-        // If current selection is not available, default to "all" but don't change state if it's "choose" or "none"
+        // If current selection is not available, default to "all" for the dropdown
+        // But don't modify state - let the calling function handle state updates
         topicSelect.value = "all";
-        // Only update state if it was a specific topic that's no longer available
-        if (currentTopic !== "choose" && currentTopic !== "none" && currentTopic !== "all") {
-          state.topic = "all";
-        }
       }
     }
     
@@ -1353,20 +1348,15 @@ const bindEvents = () => {
       const previousValue = yearSelect.value;
       yearSelect.innerHTML = yearOptions;
       // Restore selection if still available, otherwise keep "all"
+      // Don't modify state - state is managed by handleStartSelection and sidebar handlers
       if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
         yearSelect.value = currentYear;
-        // Preserve state value
-        state.year = currentYear;
       } else if (currentYear === "all") {
         yearSelect.value = "all";
-        state.year = "all";
       } else {
-        // If current selection is not available, default to "all" but don't change state if it's "choose" or "none"
+        // If current selection is not available, default to "all" for the dropdown
+        // But don't modify state - let the calling function handle state updates
         yearSelect.value = "all";
-        // Only update state if it was a specific year that's no longer available
-        if (currentYear !== "choose" && currentYear !== "none" && currentYear !== "all") {
-          state.year = "all";
-        }
       }
     }
     
@@ -1610,35 +1600,32 @@ const bindEvents = () => {
     }
     
     // Set state values directly from dropdown selections
-    // This ensures that when user picks topic then year (or vice versa), both are preserved
+    // Preserve "choose" values - don't convert them to "all"
+    // This allows filtering to work when user picks topic then year (or vice versa)
     state.topic = topicValue;
     state.year = yearValue;
     
     // Always sync dropdowns based on current state selections
     // This updates available options based on current selections
-    // The sync functions will preserve state values if they're still valid
     syncTopicDropdown();
     syncYearDropdown();
     
-    // After syncing, restore state values from the original dropdown selections
-    // This ensures that even if sync functions modified state, we restore the user's actual selections
-    // Only restore if the values are valid selections (not "choose" or "none")
-    if (topicValue !== "choose" && topicValue !== "none") {
-      state.topic = topicValue;
-    }
-    if (yearValue !== "choose" && yearValue !== "none") {
-      state.year = yearValue;
-    }
+    // After syncing, ensure state values match the dropdown selections
+    // This preserves user selections even after dropdowns are updated
+    state.topic = topicValue;
+    state.year = yearValue;
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
+    // Convert "choose" to "all" only for sidebar compatibility, but keep "choose" in state for filtering
     if (yearValue === "all" || (yearValue !== "choose" && yearValue !== "none")) {
       if (yearSelect) {
         yearSelect.value = yearValue;
       }
     } else if (yearValue === "choose" || yearValue === "none") {
       // Reset sidebar year filter to "all" when home dropdown is reset
+      // But keep state.year as "choose" so filtering works correctly
       if (yearSelect) yearSelect.value = "all";
-      state.year = "all"; // Set state to "all" for sidebar compatibility
+      // Don't change state.year - keep it as "choose" for proper filtering
     }
     
     if (topicValue === "all" || (topicValue !== "choose" && topicValue !== "none")) {
@@ -1647,15 +1634,16 @@ const bindEvents = () => {
       }
     } else if (topicValue === "choose" || topicValue === "none") {
       // Reset sidebar topic filter to "all" when home dropdown is reset
+      // But keep state.topic as "choose" so filtering works correctly
       if (topicSelect) topicSelect.value = "all";
-      state.topic = "all"; // Set state to "all" for sidebar compatibility
+      // Don't change state.topic - keep it as "choose" for proper filtering
     }
     
     // Update dropdown visual state
     syncStartSelectCards();
     
     // Apply filters and update home lock immediately
-    // This will filter based on current state.topic and state.year values
+    // filterData treats "choose" as "all" (match everything), so filtering will work correctly
     applyFilters();
     updateHomeLock();
     
