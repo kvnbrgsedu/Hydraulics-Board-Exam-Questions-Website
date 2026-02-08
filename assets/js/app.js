@@ -747,6 +747,13 @@ const renderFullHierarchyView = (items) => {
 
 // 4. Single Topic View: Specific topic selected
 const renderSingleTopicView = (items) => {
+  // RULE 2: Specific Topic Selected + No Year Selected
+  // Filtering Logic: Filter all questions where question.topic === selectedTopic
+  // Display Rules:
+  // - Show: Topic header (once, at the top), All matching question cards
+  // - Do NOT show: Year headers
+  // - Optional: Each question may include a small year tag (already in card metadata)
+  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "single-topic-view");
   
@@ -1105,8 +1112,11 @@ const renderHierarchicalView = (items) => {
     return;
   } 
   
-  // Case 7: Specific topic selected → Single topic view
-  if (isSpecificTopic) {
+  // Case 7: Specific topic selected (no year selected) → Single topic view
+  // RULE 2: Specific Topic Selected + No Year Selected
+  // Show: Topic header (once, at the top), All matching question cards
+  // Do NOT show: Year headers
+  if (isSpecificTopic && !isSpecificYear && !isAllYears) {
     renderSingleTopicView(items);
     return;
   } 
