@@ -117,7 +117,7 @@
     "topic": "Fluid Kinematics",
     "question": "Situation 3 – If a jet is inclined upward 30° from the horizontal, what must be its velocity to reach over a 4 m wall at a horizontal distance of 25 m. Neglect friction.<br><br>Given:<br>Angle θ = 30°<br>Vertical distance (y) = 4 m<br>Horizontal distance (x) = 25 m<br><br>Required:<br>Velocity (v)",
     "solution": "Solution:<br><br>\\(y = x\\tan\\theta-\\frac{g x^2}{2v^2{\\cos{\\theta}}^2}\\)<br>\\(4\\,m = 25\\,m[\\tan(30)]- \\frac{9.81\\,m/s^2\\,(25\\,m)^2}{2v^2[\\cos(30)^2]}\\)<br>\\(v = 19.793\\,m/s\\)",
-    "image": "",
+    "image": "assets/images/situation-3.png",
     "solutionImage": ""
   },
   {
