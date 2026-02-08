@@ -259,27 +259,22 @@ const filterData = () => {
     return [];
   }
   
-  // CRITICAL: Always check dropdowns as fallback to ensure we have the latest values
-  // This is important when user selects "All Topics" then "All Years" (or vice versa)
-  const topicValue = startTopic ? startTopic.value : state.topic;
-  const yearValue = startYear ? startYear.value : state.year;
+  // PRIMARY SOURCE OF TRUTH: Always read directly from dropdowns
+  // Dropdowns are the authoritative source for current user selection
+  const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
+  const yearValue = startYear ? startYear.value : (state.year || "choose");
   
-  // Sync state from dropdowns if they differ (defensive)
-  if (topicValue === "all" && state.topic !== "all") {
-    state.topic = "all";
-  } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
-    state.topic = topicValue;
-  }
+  // Normalize "none" to "choose" (both mean no selection)
+  const normalizedTopic = (topicValue === "none") ? "choose" : topicValue;
+  const normalizedYear = (yearValue === "none") ? "choose" : yearValue;
   
-  if (yearValue === "all" && state.year !== "all") {
-    state.year = "all";
-  } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
-    state.year = yearValue;
-  }
+  // Update state to match dropdowns (state is derived from dropdowns)
+  state.topic = normalizedTopic;
+  state.year = normalizedYear;
   
   // If both topic and year are "all", and batch is "all", and no search query,
   // we can return all items directly (optimization)
-  if (state.topic === "all" && state.year === "all" && state.batch === "all" && !state.search.trim()) {
+  if (normalizedTopic === "all" && normalizedYear === "all" && state.batch === "all" && !state.search.trim()) {
     console.log("filterData: Returning all", state.data.length, "items (both filters are 'all')");
     return state.data;
   }
@@ -287,22 +282,31 @@ const filterData = () => {
   const filtered = state.data.filter((item) => {
     if (!item) return false;
     
-    // "choose" means no specific selection, so treat it as "all" (match everything for that filter)
-    // "all" means match everything for that filter
-    // Specific values mean match only that value
-    const matchesYear = (state.year === "choose" || state.year === "none") ? true : (state.year === "all" ? true : String(item.year) === String(state.year));
+    // Filtering logic based on dropdown values (source of truth):
+    // - "choose" or "none" = match everything (no filter applied)
+    // - "all" = match everything (show all)
+    // - Specific value = match only that value
+    const matchesYear = (normalizedYear === "choose" || normalizedYear === "none") 
+      ? true 
+      : (normalizedYear === "all" ? true : String(item.year) === String(normalizedYear));
+    
     const matchesBatch = state.batch === "all" ? true : String(item.batch) === String(state.batch);
-    const matchesTopic = (state.topic === "choose" || state.topic === "none") ? true : (state.topic === "all" ? true : String(item.topic) === String(state.topic));
+    
+    const matchesTopic = (normalizedTopic === "choose" || normalizedTopic === "none") 
+      ? true 
+      : (normalizedTopic === "all" ? true : String(item.topic) === String(normalizedTopic));
+    
     const query = state.search.trim().toLowerCase();
     const matchesSearch =
       !query ||
       (item.question && item.question.toLowerCase().includes(query)) ||
       (item.topic && item.topic.toLowerCase().includes(query)) ||
       `${item.year || ""} ${item.batch || ""}`.toLowerCase().includes(query);
+    
     return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
 
-  console.log("filterData: Filtered", filtered.length, "items from", state.data.length, "total (topic:", state.topic, "year:", state.year, ")");
+  console.log("filterData: Filtered", filtered.length, "items from", state.data.length, "total (topic:", normalizedTopic, "year:", normalizedYear, ")");
   return filtered;
 };
 
@@ -1022,30 +1026,18 @@ const renderTopicAndYearView = (items) => {
 };
 
 const renderHierarchicalView = (items) => {
-  // CRITICAL: Always check dropdowns first, then state as fallback
-  // This ensures we get the most up-to-date selection values
-  const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
-  const yearValue = startYear ? startYear.value : (state.year || "choose");
+  // State is already synced from dropdowns in filterData()
+  // Use state values which are guaranteed to match dropdowns
+  const topicValue = state.topic || "choose";
+  const yearValue = state.year || "choose";
   
-  // Sync state from dropdowns if they differ (defensive)
-  if (topicValue === "all" && state.topic !== "all") {
-    state.topic = "all";
-  } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
-    state.topic = topicValue;
-  }
+  console.log("renderHierarchicalView: State - topic:", state.topic, "year:", state.year);
   
-  if (yearValue === "all" && state.year !== "all") {
-    state.year = "all";
-  } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
-    state.year = yearValue;
-  }
-  
-  // Determine selection types - check both state and dropdown values
-  // This ensures we catch all cases, even if state hasn't synced yet
-  const isAllTopics = state.topic === "all" || topicValue === "all";
-  const isAllYears = state.year === "all" || yearValue === "all";
-  const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
-  const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
+  // Determine selection types based on state (which matches dropdowns)
+  const isAllTopics = topicValue === "all";
+  const isAllYears = yearValue === "all";
+  const isSpecificTopic = topicValue && topicValue !== "all" && topicValue !== "choose" && topicValue !== "none";
+  const isSpecificYear = yearValue && yearValue !== "all" && yearValue !== "choose" && yearValue !== "none";
 
   // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
@@ -1232,45 +1224,21 @@ const renderCards = () => {
   grid.style.transition = "opacity 0.25s ease";
   
   setTimeout(() => {
-    // Determine if we should use hierarchical view
-    // CRITICAL: Always check dropdowns FIRST since they are the source of truth
-    // This ensures that when user selects "All Topics" then "All Years" (or vice versa),
-    // OR when page first loads with "all" selected, the correct view is rendered
-    const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
-    const yearValue = startYear ? startYear.value : (state.year || "choose");
+    // Clear existing content completely before rendering new content
+    grid.innerHTML = "";
     
-    // CRITICAL: Always sync state from dropdowns (dropdowns are source of truth)
-    // This is especially important on first load when state might not be synced
-    if (topicValue === "all") {
-      state.topic = "all";
-    } else if (topicValue === "choose" || topicValue === "none") {
-      // Only update to "choose" if state is also "choose" or undefined
-      // This prevents overwriting a valid state value
-      if (state.topic === "choose" || state.topic === "none" || !state.topic) {
-        state.topic = topicValue;
-      }
-    } else {
-      state.topic = topicValue;
-    }
+    // State is already synced from dropdowns in filterData()
+    // Use state values which are now guaranteed to match dropdowns
+    const topicValue = state.topic || "choose";
+    const yearValue = state.year || "choose";
     
-    if (yearValue === "all") {
-      state.year = "all";
-    } else if (yearValue === "choose" || yearValue === "none") {
-      // Only update to "choose" if state is also "choose" or undefined
-      if (state.year === "choose" || state.year === "none" || !state.year) {
-        state.year = yearValue;
-      }
-    } else {
-      state.year = yearValue;
-    }
+    console.log("renderCards: Rendering with state.topic:", state.topic, "state.year:", state.year);
     
-    console.log("renderCards: After sync - state.topic:", state.topic, "state.year:", state.year, "dropdown topic:", topicValue, "dropdown year:", yearValue);
-    
-    // Determine selection types - check both state and dropdown values
-    const isAllTopics = state.topic === "all" || topicValue === "all";
-    const isAllYears = state.year === "all" || yearValue === "all";
-    const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
-    const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
+    // Determine selection types based on state (which matches dropdowns)
+    const isAllTopics = topicValue === "all";
+    const isAllYears = yearValue === "all";
+    const isSpecificTopic = topicValue && topicValue !== "all" && topicValue !== "choose" && topicValue !== "none";
+    const isSpecificYear = yearValue && yearValue !== "all" && yearValue !== "choose" && yearValue !== "none";
     
     const shouldUseHierarchical = 
       isAllTopics || 
