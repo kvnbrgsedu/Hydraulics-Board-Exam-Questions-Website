@@ -370,7 +370,7 @@ const buildCardHtml = (item, index = 0) => {
       <div class="card__meta">${item.year} • ${item.batch}</div>
       <div class="card__question">${question}</div>
       ${questionImage}
-      <button class="btn btn--primary solution-toggle">Show Solution</button>
+      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Solution</button>
       <div class="solution">
         <div class="solution-content">${solution}</div>
         ${solutionImage}
@@ -1515,6 +1515,9 @@ const initHomeDropdowns = () => {
   if (!groups.length) return;
 
   const closeAll = () => {
+    const wasOpen = Array.from(groups).some((group) =>
+      group.classList.contains("open")
+    );
     groups.forEach((group) => {
       group.classList.remove("open");
       const trigger = group.querySelector(".home-select__trigger");
@@ -1522,7 +1525,7 @@ const initHomeDropdowns = () => {
     });
     document.body.classList.remove("home-select-open");
     // Scroll back to top of home screen when dropdown closes
-    if (document.body.classList.contains("home-page")) {
+    if (wasOpen && document.body.classList.contains("home-page")) {
       window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -2182,11 +2185,15 @@ const bindEvents = () => {
   });
 
   addListener(grid, "click", (event) => {
-    if (event.target.classList.contains("solution-toggle")) {
-      const button = event.target;
+    const solutionButton = event.target.closest(".solution-toggle");
+    if (solutionButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      const button = solutionButton;
       const solution = button.nextElementSibling;
       const isOpen = solution.classList.toggle("open");
       button.textContent = isOpen ? "Hide Solution" : "Show Solution";
+      button.setAttribute("aria-expanded", String(isOpen));
     }
 
     if (event.target.classList.contains("tag")) {

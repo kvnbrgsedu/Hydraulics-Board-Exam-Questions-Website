@@ -2367,16 +2367,19 @@ body.home-page .results-info {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.35s ease;
+  transform: translateY(-6px);
+  transition: max-height 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
   background: #f1fafb;
   border-radius: 14px;
   padding: 0 14px;
+  will-change: max-height, opacity, transform;
 }
 
 .solution.open {
-  max-height: 300px;
+  max-height: 800px;
   opacity: 1;
   padding: 14px;
+  transform: translateY(0);
 }
 
 .solution-content {
