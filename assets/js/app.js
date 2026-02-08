@@ -2769,6 +2769,18 @@ const init = async () => {
   setSidebarOpen(isPinned && isDesktop());
 
   bindEvents();
+  
+  // Initialize home page state
+  if (document.body.classList.contains("home-page")) {
+    // Ensure Question Viewing Zone is hidden initially
+    const questionsSection = document.querySelector('.questions-section');
+    if (questionsSection) {
+      questionsSection.classList.remove('is-active');
+    }
+    // Ensure scrolling is disabled initially
+    document.body.style.overflow = 'hidden';
+  }
+  
   updateHomeLock();
   updateHomeViewFromHash();
   addListener(window, "hashchange", updateHomeViewFromHash);

@@ -966,9 +966,23 @@ body.home-page.content-zone-active .home-bg {
   transition: opacity 0.3s ease;
 }
 
-body.home-page.home-locked:not(.home-show-all) #questions {
-  display: none;
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  body.home-page .questions-section {
+    padding: 40px 16px 60px;
+  }
+  
+  body.home-page .questions-section.is-active {
+    padding: 40px 16px 60px;
+  }
+  
+  body.home-page .start-review {
+    padding: 20px 16px;
+    min-height: calc(100vh - 60px);
+  }
 }
+
+/* Removed - using new two-zone design with .is-active class for visibility */
 
 body.home-page:not(.home-show-all) #formulas,
 body.home-page:not(.home-show-all) #about {
