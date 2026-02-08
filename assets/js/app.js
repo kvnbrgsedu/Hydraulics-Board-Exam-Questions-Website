@@ -424,31 +424,19 @@ const updateHomeLock = () => {
 const initHomeBackground = () => {
   if (!document.body.classList.contains("home-page")) return;
   
-  // Load Lottie background animation
-  const bgAnimationContainer = document.getElementById("home-bg-animation");
-  if (bgAnimationContainer && window.lottie && !bgAnimationContainer.hasChildNodes()) {
-    const loadAnimation = () => {
-      const lottieLib = window.lottie || window.bodymovin || (typeof lottie !== 'undefined' ? lottie : null);
-      if (lottieLib) {
-        try {
-          lottieLib.loadAnimation({
-            container: bgAnimationContainer,
-            renderer: "svg",
-            loop: true,
-            autoplay: true,
-            path: "assets/images/Background01.json",
-          });
-        } catch (error) {
-          console.error("Failed to load home background animation:", error);
-        }
-      } else {
-        setTimeout(loadAnimation, 100);
-      }
-    };
-    if (document.readyState === 'loading') {
-      window.addEventListener("DOMContentLoaded", loadAnimation);
-    } else {
-      loadAnimation();
+  // Load fog background Lottie animation
+  const fogAnimationContainer = document.getElementById("fog-animation");
+  if (fogAnimationContainer && window.lottie && !fogAnimationContainer.hasChildNodes()) {
+    try {
+      lottie.loadAnimation({
+        container: fogAnimationContainer,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: "assets/images/Fog Background Decoration.json",
+      });
+    } catch (error) {
+      console.error("Failed to load fog background animation:", error);
     }
   }
   
