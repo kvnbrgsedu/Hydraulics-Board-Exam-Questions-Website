@@ -449,6 +449,11 @@ body.home-page .toggle__subtitle {
   transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* On home page, allow dropdowns to overflow hero container */
+body.home-page .hero {
+  overflow: visible;
+}
+
 body.home-page.home-locked .hero {
   padding: 110px 32px 40px 32px;
 }
@@ -881,6 +886,8 @@ body.home-page .start-review {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Ensure dropdowns are not clipped */
+  overflow: visible;
 }
 
 /* Question Viewing Zone (Content Zone) - Hidden by default */
@@ -1166,6 +1173,8 @@ body.home-page .home-selects {
   transition: transform 0.2s ease;
   flex-shrink: 0;
   z-index: 10;
+  /* Ensure dropdown menu is not clipped */
+  overflow: visible;
 }
 
 .home-select-group.open {
@@ -1312,12 +1321,18 @@ body.home-page .home-selects {
 }
 
 .home-select-group.open .home-select__menu {
-  max-height: min(400px, calc(100vh - 150px));
+  max-height: min(500px, calc(100vh - 100px));
   opacity: 1;
   transform: translateY(0);
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  /* Ensure dropdown is not clipped by parent containers */
+  position: absolute;
+  /* Ensure full visibility */
+  visibility: visible;
+  clip: auto;
+  clip-path: none;
 }
 
 .home-select__option {

@@ -1331,11 +1331,30 @@ const initHomeDropdowns = () => {
       // Always display below - remove upward positioning
       menu.classList.remove("menu-upward");
       
-      // Auto-scroll to selected item and ensure dropdown is visible
+      // Auto-scroll to selected item and ensure dropdown is fully visible
       requestAnimationFrame(() => {
         // Wait for menu to render
         setTimeout(() => {
-          // Find and scroll to selected option
+          // Ensure menu is fully visible and not cut off
+          const triggerRect = trigger.getBoundingClientRect();
+          const menuRect = menu.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const viewportWidth = window.innerWidth;
+          const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const currentScrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+          
+          // Check if menu would be cut off at the bottom
+          const menuBottom = triggerRect.bottom + menuRect.height;
+          const spaceBelow = viewportHeight - triggerRect.bottom;
+          const menuMaxHeight = Math.min(500, viewportHeight - 100);
+          
+          // If menu would be cut off, adjust max-height or scroll
+          if (menuRect.height > spaceBelow && spaceBelow < menuMaxHeight) {
+            // Menu is being cut off - ensure it fits within viewport
+            menu.style.maxHeight = `${Math.min(menuMaxHeight, spaceBelow - 20)}px`;
+          }
+          
+          // Find and scroll to selected option within the dropdown
           const selectedOption = menu.querySelector('.home-select__option.selected, .home-select__option[aria-selected="true"]');
           if (selectedOption) {
             // Scroll the selected item into view within the dropdown menu
@@ -1346,23 +1365,19 @@ const initHomeDropdowns = () => {
             });
           }
           
-          // Also scroll page to show dropdown with extra space below
-          const triggerRect = trigger.getBoundingClientRect();
-          const menuRect = menu.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-          const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          
-          // Calculate target scroll position to show dropdown with extra space below
-          const menuBottom = triggerRect.bottom + menuRect.height;
+          // Scroll page to show dropdown with extra space below if needed
+          const menuBottomAfter = triggerRect.bottom + (menu.offsetHeight || menuRect.height);
           const extraSpace = 100; // Extra space below dropdown
-          const targetScrollTop = currentScrollTop + (menuBottom - viewportHeight) + extraSpace;
+          const targetScrollTop = currentScrollTop + (menuBottomAfter - viewportHeight) + extraSpace;
           
-          // Scroll to show dropdown with extra space
-          window.scrollTo({
-            top: Math.max(0, targetScrollTop),
-            behavior: "smooth"
-          });
-        }, 100); // Small delay to ensure menu is fully rendered
+          // Only scroll if dropdown would be cut off
+          if (menuBottomAfter > viewportHeight) {
+            window.scrollTo({
+              top: Math.max(0, targetScrollTop),
+              behavior: "smooth"
+            });
+          }
+        }, 150); // Slightly longer delay to ensure menu is fully rendered and measured
       });
     });
 
