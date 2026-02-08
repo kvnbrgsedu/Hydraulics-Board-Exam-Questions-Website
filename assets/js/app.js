@@ -519,14 +519,23 @@ const renderFullHierarchyView = (items) => {
   
   // Group by year, then by topic - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
-    if (!item || !item.year || !item.topic) return acc; // Skip invalid items
-    if (!acc[item.year]) acc[item.year] = {};
-    if (!acc[item.year][item.topic]) acc[item.year][item.topic] = [];
-    acc[item.year][item.topic].push(item);
+    // Skip invalid items - but be more lenient with validation
+    if (!item) return acc;
+    const year = String(item.year || "").trim();
+    const topic = String(item.topic || "").trim();
+    if (!year || !topic) return acc; // Only skip if both are missing
+    if (!acc[year]) acc[year] = {};
+    if (!acc[year][topic]) acc[year][topic] = [];
+    acc[year][topic].push(item);
     return acc;
   }, {});
 
-  const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
+  const years = Object.keys(grouped).sort((a, b) => {
+    const yearA = parseInt(a);
+    const yearB = parseInt(b);
+    if (isNaN(yearA) || isNaN(yearB)) return a.localeCompare(b);
+    return yearA - yearB;
+  });
   
   // If no years after grouping, show empty
   if (years.length === 0) {
@@ -865,13 +874,20 @@ const renderTopicAndYearView = (items) => {
 };
 
 const renderHierarchicalView = (items) => {
-  const isAllTopics = state.topic === "all";
-  const isAllYears = state.year === "all";
-  const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
-  const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
+  // Ensure we're using the correct state values - check both state and dropdowns
+  const topicValue = state.topic || (startTopic ? startTopic.value : "choose");
+  const yearValue = state.year || (startYear ? startYear.value : "choose");
+  
+  const isAllTopics = topicValue === "all" || state.topic === "all";
+  const isAllYears = yearValue === "all" || state.year === "all";
+  const isSpecificTopic = !isAllTopics && topicValue !== "choose" && topicValue !== "none" && state.topic !== "choose" && state.topic !== "none";
+  const isSpecificYear = !isAllYears && yearValue !== "choose" && yearValue !== "none" && state.year !== "choose" && state.year !== "none";
 
   // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
+    // Ensure state is set correctly
+    if (state.topic !== "all") state.topic = "all";
+    if (state.year !== "all") state.year = "all";
     // Always render full hierarchy view, even if items is empty (will show empty state)
     renderFullHierarchyView(items || []);
     return;
