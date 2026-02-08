@@ -1281,7 +1281,15 @@ const bindEvents = () => {
       ).sort();
     }
     
-    const currentTopic = state.topic;
+    // Get current selections from dropdowns (not state) to preserve user's actual selections
+    const currentTopicFromState = state.topic;
+    const currentTopicFromDropdown = startTopic ? startTopic.value : (topicSelect ? topicSelect.value : currentTopicFromState);
+    
+    // Use the dropdown value if it's a specific topic, otherwise use state
+    const currentTopic = (currentTopicFromDropdown !== "choose" && currentTopicFromDropdown !== "none" && currentTopicFromDropdown !== "all") 
+      ? currentTopicFromDropdown 
+      : currentTopicFromState;
+    
     const topicOptions = `<option value="all">All Topics</option>` +
       availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
     
@@ -1310,9 +1318,16 @@ const bindEvents = () => {
       const previousValue = startTopic.value;
       startTopic.innerHTML = startTopicOptions;
       // Restore selection if still available
-      if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
+      // Prioritize preserving the user's actual selection from the dropdown
+      if (previousValue !== "choose" && previousValue !== "none" && previousValue !== "all" && availableTopics.includes(previousValue)) {
+        startTopic.value = previousValue;
+        // Update state to match the preserved selection
+        if (state.topic !== previousValue) {
+          state.topic = previousValue;
+        }
+      } else if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
         startTopic.value = currentTopic;
-      } else if (currentTopic === "all") {
+      } else if (currentTopic === "all" || previousValue === "all") {
         startTopic.value = "all";
       } else {
         // Preserve "choose" or "none" if that was the previous value
@@ -1340,7 +1355,15 @@ const bindEvents = () => {
       ).sort((a, b) => parseInt(a) - parseInt(b));
     }
     
-    const currentYear = state.year;
+    // Get current selections from dropdowns (not state) to preserve user's actual selections
+    const currentYearFromState = state.year;
+    const currentYearFromDropdown = startYear ? startYear.value : (yearSelect ? yearSelect.value : currentYearFromState);
+    
+    // Use the dropdown value if it's a specific year, otherwise use state
+    const currentYear = (currentYearFromDropdown !== "choose" && currentYearFromDropdown !== "none" && currentYearFromDropdown !== "all") 
+      ? currentYearFromDropdown 
+      : currentYearFromState;
+    
     const yearOptions = `<option value="all">All Years</option>` +
       availableYears.map((year) => `<option value="${year}">${year}</option>`).join("");
     
@@ -1369,9 +1392,16 @@ const bindEvents = () => {
       const previousValue = startYear.value;
       startYear.innerHTML = startYearOptions;
       // Restore selection if still available
-      if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
+      // Prioritize preserving the user's actual selection from the dropdown
+      if (previousValue !== "choose" && previousValue !== "none" && previousValue !== "all" && availableYears.includes(previousValue)) {
+        startYear.value = previousValue;
+        // Update state to match the preserved selection
+        if (state.year !== previousValue) {
+          state.year = previousValue;
+        }
+      } else if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
         startYear.value = currentYear;
-      } else if (currentYear === "all") {
+      } else if (currentYear === "all" || previousValue === "all") {
         startYear.value = "all";
       } else {
         // Preserve "choose" or "none" if that was the previous value
@@ -1607,32 +1637,47 @@ const bindEvents = () => {
     
     // Always sync dropdowns based on current state selections
     // This updates available options based on current selections
+    // The sync functions will preserve valid selections and update state if needed
     syncTopicDropdown();
     syncYearDropdown();
     
-    // After syncing, ensure state values match the dropdown selections
-    // This preserves user selections even after dropdowns are updated
-    state.topic = topicValue;
-    state.year = yearValue;
+    // After syncing, read the actual dropdown values again to ensure state matches
+    // The sync functions may have updated the dropdowns and state to preserve valid selections
+    const finalTopicValue = startTopic.value;
+    const finalYearValue = startYear.value;
+    
+    // Update state to match the final dropdown values (after sync has preserved/updated them)
+    // Only update if the value is a specific selection (not "choose" or "none")
+    if (finalTopicValue !== "choose" && finalTopicValue !== "none") {
+      state.topic = finalTopicValue;
+    } else {
+      state.topic = topicValue; // Keep original "choose" or "none" converted value
+    }
+    
+    if (finalYearValue !== "choose" && finalYearValue !== "none") {
+      state.year = finalYearValue;
+    } else {
+      state.year = yearValue; // Keep original "choose" or "none" converted value
+    }
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
     // Convert "choose" to "all" only for sidebar compatibility, but keep "choose" in state for filtering
-    if (yearValue === "all" || (yearValue !== "choose" && yearValue !== "none")) {
+    if (state.year === "all" || (state.year !== "choose" && state.year !== "none")) {
       if (yearSelect) {
-        yearSelect.value = yearValue;
+        yearSelect.value = state.year;
       }
-    } else if (yearValue === "choose" || yearValue === "none") {
+    } else if (state.year === "choose" || state.year === "none") {
       // Reset sidebar year filter to "all" when home dropdown is reset
       // But keep state.year as "choose" so filtering works correctly
       if (yearSelect) yearSelect.value = "all";
       // Don't change state.year - keep it as "choose" for proper filtering
     }
     
-    if (topicValue === "all" || (topicValue !== "choose" && topicValue !== "none")) {
+    if (state.topic === "all" || (state.topic !== "choose" && state.topic !== "none")) {
       if (topicSelect) {
-        topicSelect.value = topicValue;
+        topicSelect.value = state.topic;
       }
-    } else if (topicValue === "choose" || topicValue === "none") {
+    } else if (state.topic === "choose" || state.topic === "none") {
       // Reset sidebar topic filter to "all" when home dropdown is reset
       // But keep state.topic as "choose" so filtering works correctly
       if (topicSelect) topicSelect.value = "all";
