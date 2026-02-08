@@ -1118,10 +1118,39 @@ const updateHomeLock = () => {
   if (!document.body.classList.contains("home-page")) return;
   // Has selection if topic or year is "all" or a specific value (but not "choose")
   // "all" is a valid selection that should unlock the home screen
-  const hasSelection = (state.topic === "all" || (state.topic !== "choose" && state.topic)) || 
-                       (state.year === "all" || (state.year !== "choose" && state.year));
+  const hasSelection = (state.topic === "all" || (state.topic !== "choose" && state.topic !== "none" && state.topic)) || 
+                       (state.year === "all" || (state.year !== "choose" && state.year !== "none" && state.year));
   const shouldLock = !hasSelection && !document.body.classList.contains("home-show-all");
   document.body.classList.toggle("home-locked", shouldLock);
+  
+  // Show/hide Question Viewing Zone
+  const questionsSection = document.querySelector('.questions-section');
+  if (questionsSection) {
+    if (hasSelection) {
+      // Activate Question Viewing Zone with animation
+      questionsSection.classList.add('is-active');
+      document.body.classList.add('content-zone-active');
+      // Enable scrolling
+      document.body.style.overflow = 'auto';
+      // Smooth scroll to content zone after a brief delay
+      setTimeout(() => {
+        questionsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else {
+      // Deactivate Question Viewing Zone with animation
+      questionsSection.classList.remove('is-active');
+      document.body.classList.remove('content-zone-active');
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Disable scrolling after animation
+      setTimeout(() => {
+        if (!questionsSection.classList.contains('is-active')) {
+          document.body.style.overflow = 'hidden';
+        }
+      }, 500);
+    }
+  }
+  
   syncStartSelectCards();
 };
 
@@ -1841,20 +1870,15 @@ const bindEvents = () => {
       }
     }
     
-    // Clear the questions grid
+    // Clear questions grid and results
     if (grid) grid.innerHTML = "";
     if (resultsInfo) resultsInfo.textContent = "";
     
     // Reset home dropdown visual state
     syncStartSelectCards();
     
-    // Update home lock state (will lock since state is "choose")
+    // Update home lock state (this will handle Question Viewing Zone visibility and scrolling)
     updateHomeLock();
-    
-    // Scroll back to top if on home page
-    if (document.body.classList.contains("home-page")) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
     
     closeSidebarIfAutoHide();
   });

@@ -849,6 +849,123 @@ body.home-page.home-locked .content {
   overflow: hidden;
 }
 
+/* ========== TWO-ZONE DESIGN: HOME ZONE & QUESTION VIEWING ZONE ========== */
+
+/* Home Zone (Selection Zone) - Always visible */
+body.home-page .start-review {
+  position: relative;
+  z-index: 2;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* Question Viewing Zone (Content Zone) - Hidden by default */
+body.home-page .questions-section {
+  position: relative;
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 60px 20px 80px;
+  margin-top: 0;
+  opacity: 0;
+  transform: translateY(50px);
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* Question Viewing Zone - Active State */
+body.home-page .questions-section.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: none;
+  overflow: visible;
+  pointer-events: auto;
+  padding: 60px 20px 80px;
+}
+
+/* Content alignment within Question Viewing Zone */
+body.home-page .questions-section .active-filters,
+body.home-page .questions-section .results-info,
+body.home-page .questions-section #question-grid,
+body.home-page .questions-section .empty {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+body.home-page .questions-section .active-filters {
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+body.home-page .questions-section .results-info {
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+/* Hierarchical view within white zone */
+body.home-page .questions-section .hierarchical-view {
+  margin: 0 auto;
+}
+
+/* Smooth scroll indicator (optional) */
+body.home-page .scroll-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+body.home-page .questions-section.is-active .scroll-indicator {
+  opacity: 1;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  20%, 80% { opacity: 1; }
+}
+
+body.home-page .scroll-indicator::before {
+  content: "↓";
+  font-size: 24px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* Home Zone subtle dim when content zone is active */
+body.home-page.content-zone-active .start-review {
+  opacity: 0.95;
+  transition: opacity 0.3s ease;
+}
+
+body.home-page.content-zone-active .home-bg {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
 body.home-page.home-locked:not(.home-show-all) #questions {
   display: none;
 }
