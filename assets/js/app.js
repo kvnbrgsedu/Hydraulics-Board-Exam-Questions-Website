@@ -1331,10 +1331,22 @@ const initHomeDropdowns = () => {
       // Always display below - remove upward positioning
       menu.classList.remove("menu-upward");
       
-      // Scroll down to show dropdown with extra space below
+      // Auto-scroll to selected item and ensure dropdown is visible
       requestAnimationFrame(() => {
         // Wait for menu to render
         setTimeout(() => {
+          // Find and scroll to selected option
+          const selectedOption = menu.querySelector('.home-select__option.selected, .home-select__option[aria-selected="true"]');
+          if (selectedOption) {
+            // Scroll the selected item into view within the dropdown menu
+            selectedOption.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'nearest'
+            });
+          }
+          
+          // Also scroll page to show dropdown with extra space below
           const triggerRect = trigger.getBoundingClientRect();
           const menuRect = menu.getBoundingClientRect();
           const viewportHeight = window.innerHeight;
