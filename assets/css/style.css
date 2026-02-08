@@ -951,7 +951,7 @@ body.home-page .home-selects {
   
   .home-select-group {
     width: 100%;
-    max-width: 100%;
+    min-width: auto;
   }
   
   .home-select__menu {
