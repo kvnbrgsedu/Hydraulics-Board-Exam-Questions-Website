@@ -94,21 +94,7 @@
     "batch": "April",
     "topic": "Pipe Flow",
     "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the ff:<br><br>Volume flow rate in m^3/s and L/s<br>Mass flow rate in kg/s<br>Weight flow rate in N/s<br><br>Given:<br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br>Required:<br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
-    "solution": "	Q\ =\ Av
-=\ \frac{\pi}{4}(0.1\ m)(4\ m/s)
-Q\ =\ 0.031416\ m^3/s
-\mathbit{Q}\ =\ \mathbf{31}.\mathbf{416}\ \mathbit{L}/\mathbit{s}
-\mathbit{Q}\ =\ \mathbf{0}.\mathbf{031}\ \mathbit{m}^\mathbf{3}/\mathbit{s}
-
-	M\ =\ \rhoQ
-=1000\left(0.031\right)
-\mathbf{M}\ =\ \mathbf{31}\ \mathbf{kg}/\mathbf{s}
-
-
-	W\ =\ \deltaQ
-=9810\left(0.031\right)
-\mathbf{W}=\mathbf{304}.\mathbf{11}\ \mathbf{N}/\mathbf{s}
-,
+    "solution": "<b>a.</b> &nbsp; \\( Q = Av \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;\\( = \\frac{\\pi}{4}(0.1\\,m)^2(4\\,m/s) \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;\\( Q = 0.031416\\,m^3/s \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>Final Answers:</b> <b>\\( Q = \\mathbf{0.031}\\,\\mathbit{m}^3/\\mathbit{s} = \\mathbf{31.416}\\,\\mathbit{L}/\\mathbit{s} \\)</b><br><br><b>b.</b> &nbsp; \\( M = \\rho Q \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;\\( = 1000 \\times 0.031416 \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>Final Answer:</b> <b>\\( M = \\mathbf{31.4}\\,\\mathbit{kg}/\\mathbit{s} \\)</b><br><br><b>c.</b> &nbsp; \\( W = \\delta Q \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;\\( = 9810 \\times 0.031416 \\) <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>Final Answer:</b> <b>\\( W = \\mathbf{308}\\,\\mathbf{N}/\\mathbit{s} \\)</b>",
     "image": "",
     "solutionImage": ""
   },
