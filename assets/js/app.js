@@ -390,14 +390,19 @@ const addCardAnimation = (cardHtml, delay, qIndex) => {
   }
 };
 
-// 1. Topic-Only View: "All Topics" selected (no year headers)
+// 1. Topic-Only View: "All Topics" selected (no year headers) - Show topic header then ALL questions from that topic
 const renderTopicOnlyView = (items) => {
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "topic-only-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
-  // Group by topic only
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+  
+  // Group by topic only - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.topic]) acc[item.topic] = [];
     acc[item.topic].push(item);
@@ -439,14 +444,19 @@ const renderTopicOnlyView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
-// 2. Year-Only View: "All Years" selected (no topic headers)
+// 2. Year-Only View: "All Years" selected (no topic headers) - Show year header then ALL questions from that year
 const renderYearOnlyView = (items) => {
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "year-only-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
-  // Group by year only
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+  
+  // Group by year only - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.year]) acc[item.year] = [];
     acc[item.year].push(item);
@@ -492,14 +502,19 @@ const renderYearOnlyView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
-// 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected
+// 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected - Show BOTH year and topic headers
 const renderFullHierarchyView = (items) => {
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "full-hierarchy-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
-  // Group by year, then by topic
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+  
+  // Group by year, then by topic - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.year]) acc[item.year] = {};
     if (!acc[item.year][item.topic]) acc[item.year][item.topic] = [];
@@ -519,7 +534,7 @@ const renderFullHierarchyView = (items) => {
           const count = questions.length;
           const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
           return `
-            <div class="topic-section secondary-section" style="--delay: ${topicDelay}ms">
+            <section class="topic-section secondary-section" style="--delay: ${topicDelay}ms">
               <div class="topic-header secondary-header">
                 <span class="topic-label">${topic}</span>
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
@@ -535,7 +550,7 @@ const renderFullHierarchyView = (items) => {
                     .join("")}
                 </div>
               </div>
-            </div>
+            </section>
           `;
         })
         .join("");
