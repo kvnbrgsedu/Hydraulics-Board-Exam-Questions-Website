@@ -963,11 +963,26 @@ const renderTopicAndYearView = (items) => {
 };
 
 const renderHierarchicalView = (items) => {
-  // State should already be synced from applyFilters, but double-check dropdowns as fallback
-  const topicValue = state.topic || (startTopic ? startTopic.value : "choose");
-  const yearValue = state.year || (startYear ? startYear.value : "choose");
+  // CRITICAL: Always check dropdowns first, then state as fallback
+  // This ensures we get the most up-to-date selection values
+  const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
+  const yearValue = startYear ? startYear.value : (state.year || "choose");
   
-  // Determine selection types - prioritize state, fallback to dropdown values
+  // Sync state from dropdowns if they differ (defensive)
+  if (topicValue === "all" && state.topic !== "all") {
+    state.topic = "all";
+  } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
+    state.topic = topicValue;
+  }
+  
+  if (yearValue === "all" && state.year !== "all") {
+    state.year = "all";
+  } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
+    state.year = yearValue;
+  }
+  
+  // Determine selection types - check both state and dropdown values
+  // This ensures we catch all cases, even if state hasn't synced yet
   const isAllTopics = state.topic === "all" || topicValue === "all";
   const isAllYears = state.year === "all" || yearValue === "all";
   const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
@@ -2201,8 +2216,6 @@ const bindEvents = () => {
       state.year = finalYearValue;
     }
     
-    // Debug: Log final state to help diagnose issues
-    console.log("handleStartSelection: Final state - topic:", state.topic, "year:", state.year, "items will be filtered");
     
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
