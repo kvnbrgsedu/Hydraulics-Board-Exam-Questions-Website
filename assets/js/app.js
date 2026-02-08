@@ -1156,10 +1156,27 @@ const renderCards = () => {
   
   setTimeout(() => {
     // Determine if we should use hierarchical view
-    // Check both state and dropdown values to ensure accuracy
-    const topicValue = state.topic || (startTopic ? startTopic.value : "choose");
-    const yearValue = state.year || (startYear ? startYear.value : "choose");
+    // CRITICAL: Always check dropdowns as fallback since state might not be synced yet
+    // This ensures that when user selects "All Topics" then "All Years" (or vice versa),
+    // the correct view is rendered even if state hasn't been fully updated
+    const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
+    const yearValue = startYear ? startYear.value : (state.year || "choose");
     
+    // Update state from dropdowns if they differ (defensive sync)
+    // This ensures state matches dropdowns before rendering
+    if (topicValue === "all" && state.topic !== "all") {
+      state.topic = "all";
+    } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
+      state.topic = topicValue;
+    }
+    
+    if (yearValue === "all" && state.year !== "all") {
+      state.year = "all";
+    } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
+      state.year = yearValue;
+    }
+    
+    // Determine selection types - check both state and dropdown values
     const isAllTopics = state.topic === "all" || topicValue === "all";
     const isAllYears = state.year === "all" || yearValue === "all";
     const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
@@ -2100,9 +2117,15 @@ const bindEvents = () => {
     }
   });
 
-  const handleStartSelection = () => {
+  const handleStartSelection = (event) => {
     if (!startTopic || !startYear) return;
     
+    // Get the dropdown that triggered this event
+    const changedSelect = event ? event.target : null;
+    const isTopicChange = changedSelect && changedSelect.id === "start-topic";
+    const isYearChange = changedSelect && changedSelect.id === "start-year";
+    
+    // Read current values from both dropdowns
     let topicValue = startTopic.value;
     let yearValue = startYear.value;
     
@@ -2116,44 +2139,53 @@ const bindEvents = () => {
       startYear.value = "choose";
     }
     
-    // CRITICAL: Set state values directly from dropdown selections BEFORE syncing
-    // This ensures "all" values are preserved correctly
-    // Preserve "all" values immediately to prevent sync functions from overwriting them
+    // CRITICAL: Update state based on current dropdown values
+    // Always preserve "all" values - they should never be overwritten
     if (topicValue === "all") {
       state.topic = "all";
-      if (startTopic) startTopic.value = "all";
-    } else {
+      if (startTopic.value !== "all") startTopic.value = "all";
+    } else if (topicValue !== "choose" && topicValue !== "none") {
       state.topic = topicValue;
+    } else {
+      // Keep current state if dropdown is "choose" or "none", unless we're explicitly changing it
+      if (isTopicChange) {
+        state.topic = topicValue;
+      }
     }
     
     if (yearValue === "all") {
       state.year = "all";
-      if (startYear) startYear.value = "all";
-      console.log("handleStartSelection: Set state.year to 'all' immediately");
-    } else {
+      if (startYear.value !== "all") startYear.value = "all";
+    } else if (yearValue !== "choose" && yearValue !== "none") {
       state.year = yearValue;
+    } else {
+      // Keep current state if dropdown is "choose" or "none", unless we're explicitly changing it
+      if (isYearChange) {
+        state.year = yearValue;
+      }
     }
-    
-    console.log("handleStartSelection: Initial state set - topic:", state.topic, "year:", state.year);
     
     // Always sync dropdowns based on current state selections
     // This updates available options based on current selections
-    // The sync functions will preserve valid selections and update state if needed
     syncTopicDropdown();
     syncYearDropdown();
     
-    // After syncing, ensure "all" values are still preserved
-    // Read the actual dropdown values to verify
+    // CRITICAL: After syncing, re-read dropdowns and ensure "all" values are preserved
     const finalTopicValue = startTopic ? startTopic.value : state.topic;
     const finalYearValue = startYear ? startYear.value : state.year;
     
-    // CRITICAL: Always preserve "all" if it was originally selected, regardless of sync results
+    // Force "all" values to be preserved if they were selected
+    // This ensures that when user selects "All Topics" then "All Years" (or vice versa),
+    // both values remain "all" and questions are displayed correctly
     if (topicValue === "all" || finalTopicValue === "all") {
       state.topic = "all";
       if (startTopic && startTopic.value !== "all") {
         startTopic.value = "all";
       }
-    } else if (finalTopicValue !== "choose" && finalTopicValue !== "none") {
+    } else if (finalTopicValue !== "choose" && finalTopicValue !== "none" && finalTopicValue) {
+      state.topic = finalTopicValue;
+    } else if (isTopicChange && (finalTopicValue === "choose" || finalTopicValue === "none")) {
+      // Only update if this dropdown was changed
       state.topic = finalTopicValue;
     }
     
@@ -2162,10 +2194,15 @@ const bindEvents = () => {
       if (startYear && startYear.value !== "all") {
         startYear.value = "all";
       }
-      console.log("handleStartSelection: Preserved state.year as 'all' after sync");
-    } else if (finalYearValue !== "choose" && finalYearValue !== "none") {
+    } else if (finalYearValue !== "choose" && finalYearValue !== "none" && finalYearValue) {
+      state.year = finalYearValue;
+    } else if (isYearChange && (finalYearValue === "choose" || finalYearValue === "none")) {
+      // Only update if this dropdown was changed
       state.year = finalYearValue;
     }
+    
+    // Debug: Log final state to help diagnose issues
+    console.log("handleStartSelection: Final state - topic:", state.topic, "year:", state.year, "items will be filtered");
     
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
@@ -2207,8 +2244,8 @@ const bindEvents = () => {
     }
   };
 
-  addListener(startTopic, "change", handleStartSelection);
-  addListener(startYear, "change", handleStartSelection);
+  addListener(startTopic, "change", (event) => handleStartSelection(event));
+  addListener(startYear, "change", (event) => handleStartSelection(event));
 
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
