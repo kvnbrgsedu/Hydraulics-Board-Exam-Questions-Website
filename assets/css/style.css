@@ -2343,6 +2343,13 @@ body.home-page .results-info {
 .card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
+  animation: cardBounce 0.35s ease;
+}
+
+@keyframes cardBounce {
+  0% { transform: translateY(-6px) scale(1); }
+  45% { transform: translateY(-10px) scale(1.01); }
+  100% { transform: translateY(-6px) scale(1); }
 }
 
 .card__header {
