@@ -387,7 +387,7 @@ const buildCardHtml = (item, index = 0) => {
 };
 
 const renderTimeline = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("timeline");
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.year]) acc[item.year] = {};
@@ -437,8 +437,25 @@ const renderTimeline = (items) => {
     .join("");
 };
 
+const resetGridViewClasses = () => {
+  if (!grid) return;
+  grid.classList.remove(
+    "grid",
+    "timeline",
+    "hierarchical-view",
+    "topic-only-view",
+    "year-only-view",
+    "full-hierarchy-view",
+    "single-topic-view",
+    "single-year-view",
+    "topics-in-year-view",
+    "years-with-topic-view",
+    "topic-year-view"
+  );
+};
+
 const renderGrid = (items) => {
-  grid.classList.remove("timeline");
+  resetGridViewClasses();
   grid.classList.add("grid");
   grid.innerHTML = items.map((item, index) => buildCardHtml(item, index)).join("");
 };
@@ -461,7 +478,7 @@ const addCardAnimation = (cardHtml, delay, qIndex) => {
 // 1. Topic-Only View: "All Topics" selected + No Year Selected
 // Shows all questions grouped by topic, with topic headers only (no year headers)
 const renderTopicOnlyView = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "topic-only-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -519,8 +536,7 @@ const renderTopicOnlyView = (items) => {
 // 2. Year-Only View: "All Years" selected (no topic headers) - Show year header then ALL questions from that year
 const renderYearOnlyView = (items) => {
   if (!grid) return;
-  
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "year-only-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -783,7 +799,7 @@ const renderFullHierarchyView = (items) => {
 
 // 4. Single Topic View: Specific topic selected
 const renderSingleTopicView = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "single-topic-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -823,7 +839,7 @@ const renderSingleTopicView = (items) => {
 
 // 5. Single Year View: Specific year selected
 const renderSingleYearView = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "single-year-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -867,7 +883,7 @@ const renderSingleYearView = (items) => {
 
 // Render topics within a specific year (All Topics + Specific Year)
 const renderTopicsInYearView = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "topics-in-year-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -937,7 +953,7 @@ const renderTopicsInYearView = (items) => {
 
 // Render years with a specific topic (All Years + Specific Topic)
 const renderYearsWithTopicView = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "years-with-topic-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -1005,7 +1021,7 @@ const renderYearsWithTopicView = (items) => {
 
 // Main render function that detects state and calls appropriate renderer
 const renderTopicAndYearView = (items) => {
-  grid.classList.remove("grid");
+  resetGridViewClasses();
   grid.classList.add("hierarchical-view", "topic-year-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
