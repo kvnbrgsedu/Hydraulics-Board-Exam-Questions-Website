@@ -489,7 +489,6 @@ const renderYearOnlyView = (items) => {
   
   // If no years after grouping, show empty
   if (years.length === 0) {
-    console.warn("renderYearOnlyView: No years found after grouping items");
     grid.innerHTML = "";
     return;
   }
@@ -536,9 +535,6 @@ const renderYearOnlyView = (items) => {
 
   // Verify we rendered something
   if (!grid.innerHTML.trim()) {
-    console.error("renderYearOnlyView: No content generated despite having", items.length, "items");
-    console.error("Years found:", years);
-    console.error("Grouped data:", grouped);
     grid.innerHTML = "";
     return;
   }
@@ -571,7 +567,6 @@ const renderFullHierarchyView = (items) => {
     const year = String(item.year || "").trim();
     const topic = String(item.topic || "").trim();
     if (!year || !topic) {
-      console.warn("Skipping item with missing year or topic:", item);
       return acc; // Only skip if both are missing
     }
     if (!acc[year]) acc[year] = {};
@@ -665,14 +660,10 @@ const renderFullHierarchyView = (items) => {
 
   // Verify we rendered something
   if (!grid.innerHTML.trim()) {
-    console.error("renderFullHierarchyView: No content generated despite having", items.length, "items");
-    console.error("Years found:", years);
-    console.error("Grouped data:", grouped);
     grid.innerHTML = "";
     return;
   }
 
-  console.log("renderFullHierarchyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
   
   // Immediately mark all topic sections as visible for full hierarchy view
   requestAnimationFrame(() => {
