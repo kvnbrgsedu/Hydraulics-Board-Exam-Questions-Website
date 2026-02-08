@@ -26,7 +26,7 @@ const quizState = {
 const grid = document.getElementById("question-grid");
 const yearSelect = document.getElementById("year-select");
 const batchSelect = document.getElementById("batch-select");
-const topicList = document.getElementById("topic-list");
+const topicSelect = document.getElementById("topic-select");
 const searchInput = document.getElementById("search-input");
 const resultsInfo = document.getElementById("results-info");
 const emptyState = document.getElementById("empty-state");
@@ -37,11 +37,10 @@ const progressBar = document.getElementById("progress-bar");
 const sidebar = document.getElementById("sidebar");
 const hamburger = document.getElementById("hamburger");
 const pinToggle = document.getElementById("pin-toggle");
-const topicToggle = document.getElementById("topic-toggle");
 const hideSidebarButton = document.getElementById("hide-sidebar");
 const startTopic = document.getElementById("start-topic");
 const startYear = document.getElementById("start-year");
-const startCta = document.getElementById("start-cta");
+const startReviewCards = document.querySelectorAll("[data-select-group]");
 const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
@@ -96,7 +95,7 @@ const setSidebarOpen = (open) => {
 
 const loadPinnedPreference = () => {
   const stored = localStorage.getItem(SIDEBAR_PIN_KEY);
-  if (stored === null) return false;
+  if (stored === null) return true;
   return stored === "true";
 };
 
@@ -189,7 +188,7 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!yearSelect || !batchSelect || !topicList || !startTopic || !startYear) return;
+  if (!yearSelect || !batchSelect || !topicSelect || !startTopic || !startYear) return;
   yearRange.forEach((year) => {
     const option = document.createElement("option");
     option.value = String(year);
@@ -207,23 +206,20 @@ const renderFilters = () => {
     batchSelect.appendChild(option);
   });
 
-  const topics = Array.from(
-    new Set(state.data.map((item) => item.topic))
-  ).sort();
-  topicList.innerHTML = topics
-    .map(
-      (topic) =>
-        `<button class="topic-pill" data-topic="${topic}">${topic}</button>`
-    )
-    .join("");
+  const topics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
+  topicSelect.innerHTML =
+    `<option value="all">All Topics</option>` +
+    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
   startTopic.innerHTML =
     `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  startTopic.value = state.topic;
 
   startYear.innerHTML =
     `<option value="all">All Years</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
+  startYear.value = state.year;
 };
 
 const updateActiveChips = () => {
@@ -252,7 +248,7 @@ const filterData = () =>
     return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
 
-const buildCardHtml = (item) => {
+const buildCardHtml = (item, index = 0) => {
   const question = buildHighlights(item.question, state.search);
   const solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
@@ -276,7 +272,7 @@ const buildCardHtml = (item) => {
     : "";
 
   return `
-    <article class="card">
+    <article class="card question-card" style="--stagger: ${index * 40}ms;">
       <div class="card__header">
         <span>Question ${item.number}</span>
         <span>${item.topic}</span>
@@ -312,6 +308,7 @@ const renderTimeline = (items) => {
 
   const years = Object.keys(grouped).sort();
   const batchOrder = ["April", "November"];
+  let timelineIndex = 0;
   grid.innerHTML = years
     .map((year) => {
       const batches = grouped[year];
@@ -327,7 +324,9 @@ const renderTimeline = (items) => {
               </div>
               <div class="batch-content open">
                 <div class="year-grid grid">
-                  ${batches[batch].map((item) => buildCardHtml(item)).join("")}
+                  ${batches[batch]
+                    .map((item) => buildCardHtml(item, timelineIndex++))
+                    .join("")}
                 </div>
               </div>
             </div>
@@ -351,7 +350,7 @@ const renderTimeline = (items) => {
 const renderGrid = (items) => {
   grid.classList.remove("timeline");
   grid.classList.add("grid");
-  grid.innerHTML = items.map((item) => buildCardHtml(item)).join("");
+  grid.innerHTML = items.map((item, index) => buildCardHtml(item, index)).join("");
 };
 
 const renderCards = () => {
@@ -392,8 +391,189 @@ const renderCards = () => {
   });
 };
 
+const getLoadErrorMessage = (label) => {
+  const base = `Unable to load ${label}.`;
+  if (window.location.protocol === "file:") {
+    return `${base} Open the site with a local server (not file://).`;
+  }
+  return `${base} Please check your network and refresh.`;
+};
+
 const applyFilters = () => {
   renderCards();
+  updateHomeLock();
+};
+
+const syncStartSelectCards = () => {
+  if (!startReviewCards.length) return;
+  startReviewCards.forEach((card) => {
+    const select = card.querySelector("select");
+    if (!select) return;
+    card.classList.toggle("has-selection", select.value !== "all");
+  });
+};
+
+const updateHomeLock = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const hasSelection = state.topic !== "all" || state.year !== "all";
+  const shouldLock = !hasSelection && !document.body.classList.contains("home-show-all");
+  document.body.classList.toggle("home-locked", shouldLock);
+  syncStartSelectCards();
+};
+
+const initHomeBackground = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const particlesContainer = document.querySelector(".home-particles");
+  if (particlesContainer && !particlesContainer.childElementCount) {
+    const count = 18;
+    for (let i = 0; i < count; i += 1) {
+      const dot = document.createElement("span");
+      dot.className = "home-particle";
+      const size = 3 + Math.random() * 3;
+      const left = Math.random() * 100;
+      const duration = 16 + Math.random() * 10;
+      const delay = Math.random() * 6;
+      dot.style.setProperty("--size", `${size}px`);
+      dot.style.left = `${left}%`;
+      dot.style.setProperty("--duration", `${duration}s`);
+      dot.style.setProperty("--delay", `${delay}s`);
+      particlesContainer.appendChild(dot);
+    }
+  }
+
+  let rafId = null;
+  const handleMove = (event) => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 12;
+      const y = (event.clientY / window.innerHeight - 0.5) * 8;
+      document.body.style.setProperty("--flow-x", `${x}px`);
+      document.body.style.setProperty("--flow-y", `${y}px`);
+      rafId = null;
+    });
+  };
+  window.addEventListener("mousemove", handleMove);
+
+  const content = document.querySelector(".content");
+  if (content) {
+    content.addEventListener("mouseenter", () => document.body.classList.add("home-pause"));
+    content.addEventListener("mouseleave", () => document.body.classList.remove("home-pause"));
+  }
+};
+
+const initHomeDropdowns = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const groups = document.querySelectorAll(".home-select-group");
+  if (!groups.length) return;
+
+  const closeAll = () => {
+    groups.forEach((group) => group.classList.remove("open"));
+    document.body.classList.remove("home-select-open");
+  };
+
+  groups.forEach((group) => {
+    if (group.querySelector(".home-select__trigger")) return;
+    const select = group.querySelector("select");
+    if (!select) return;
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "home-select__trigger";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.innerHTML = `
+      <span class="home-select__value">${select.options[select.selectedIndex].text}</span>
+      <span class="home-select__chevron">⌄</span>
+    `;
+
+    const menu = document.createElement("div");
+    menu.className = "home-select__menu";
+    menu.setAttribute("role", "listbox");
+
+    Array.from(select.options).forEach((option, index) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "home-select__option";
+      item.setAttribute("role", "option");
+      item.dataset.value = option.value;
+      item.style.setProperty("--delay", `${index * 40}ms`);
+      item.innerHTML = `
+        <span class="home-select__icon"></span>
+        <span class="home-select__label-text">${option.text}</span>
+        <span class="home-select__check"></span>
+      `;
+      if (option.selected) {
+        item.classList.add("selected");
+        item.setAttribute("aria-selected", "true");
+      }
+      menu.appendChild(item);
+    });
+
+    const updateSelection = (value) => {
+      select.value = value;
+      trigger.querySelector(".home-select__value").textContent =
+        select.options[select.selectedIndex].text;
+      menu.querySelectorAll(".home-select__option").forEach((item) => {
+        const isSelected = item.dataset.value === value;
+        item.classList.toggle("selected", isSelected);
+        item.setAttribute("aria-selected", isSelected ? "true" : "false");
+      });
+      group.classList.toggle("has-selection", value !== "all");
+    };
+
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const isOpen = group.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      document.body.classList.toggle("home-select-open", isOpen);
+      if (!isOpen) return;
+      groups.forEach((other) => {
+        if (other !== group) other.classList.remove("open");
+      });
+    });
+
+    menu.addEventListener("click", (event) => {
+      const item = event.target.closest(".home-select__option");
+      if (!item) return;
+      updateSelection(item.dataset.value);
+      group.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("home-select-open");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    group.appendChild(trigger);
+    group.appendChild(menu);
+    updateSelection(select.value);
+  });
+
+  document.addEventListener("click", closeAll);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAll();
+  });
+};
+
+const updateHomeViewFromHash = () => {
+  if (!document.body.classList.contains("home-page")) return;
+  const hash = window.location.hash;
+  const showAll = hash === "#formulas" || hash === "#about";
+  document.body.classList.toggle("home-show-all", showAll);
+  if (showAll) {
+    document.body.classList.remove("home-locked");
+  } else {
+    updateHomeLock();
+  }
+};
+
+const clearGlobalSearchResults = () => {
+  if (!globalSearchResults) return;
+  globalSearchResults.classList.remove("show");
+  globalSearchResults.innerHTML = "";
+};
+
+const updateSidebarSearch = (value) => {
+  state.search = value ?? "";
+  applyFilters();
 };
 
 const buildFormulaGroups = (formulas, query) => {
@@ -515,9 +695,22 @@ const renderGlobalResults = (query) => {
   globalSearchResults.classList.toggle("show", true);
 };
 
+const loadQuestionsData = async () => {
+  if (state.data.length) return;
+  const response = await fetch(DATA_URL);
+  state.data = await response.json();
+};
+
+const loadFormulaData = async () => {
+  if (state.formulas.length) return;
+  const response = await fetch(FORMULA_URL);
+  state.formulas = await response.json();
+};
+
 const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
+    if (startYear) startYear.value = state.year;
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -528,49 +721,29 @@ const bindEvents = () => {
     closeSidebarIfAutoHide();
   });
 
-  addListener(topicList, "click", (event) => {
-    const button = event.target.closest(".topic-pill");
-    if (!button) return;
-    state.topic = button.dataset.topic;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
+  addListener(topicSelect, "change", (event) => {
+    state.topic = event.target.value;
+    if (startTopic) startTopic.value = state.topic;
     applyFilters();
     closeSidebarIfAutoHide();
   });
 
-  addListener(topicToggle, "click", () => {
-    topicToggle.classList.toggle("collapsed");
-    if (topicList) topicList.classList.toggle("collapsed");
-  });
-
   addListener(searchInput, "input", (event) => {
-    state.search = event.target.value;
-    applyFilters();
+    updateSidebarSearch(event.target.value);
   });
 
-  addListener(clearFilters, "click", (event) => {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  addListener(clearFilters, "click", () => {
     state.year = "all";
     state.batch = "all";
     state.topic = "all";
     state.search = "";
     if (yearSelect) yearSelect.value = "all";
     if (batchSelect) batchSelect.value = "all";
+    if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) => pill.classList.remove("active"));
+    if (startTopic) startTopic.value = "all";
+    if (startYear) startYear.value = "all";
     applyFilters();
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
-      questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
     closeSidebarIfAutoHide();
   });
 
@@ -589,14 +762,12 @@ const bindEvents = () => {
         state.batch = batch;
         yearSelect.value = year;
         batchSelect.value = batch;
+        if (startYear) startYear.value = year;
       }
       if (topic) {
         state.topic = topic;
-        document
-          .querySelectorAll(".topic-pill")
-          .forEach((pill) =>
-            pill.classList.toggle("active", pill.dataset.topic === topic)
-          );
+        if (topicSelect) topicSelect.value = topic;
+        if (startTopic) startTopic.value = topic;
       }
       applyFilters();
       closeSidebarIfAutoHide();
@@ -658,22 +829,21 @@ const bindEvents = () => {
     }
   });
 
-  addListener(startCta, "click", () => {
+  const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
     state.topic = startTopic.value;
     state.year = startYear.value;
     yearSelect.value = state.year;
-    document
-      .querySelectorAll(".topic-pill")
-      .forEach((pill) =>
-        pill.classList.toggle("active", pill.dataset.topic === state.topic)
-      );
+    if (topicSelect) topicSelect.value = state.topic;
     applyFilters();
     const questionsSection = document.getElementById("questions");
-    if (questionsSection) {
+    if (questionsSection && !document.body.classList.contains("home-locked")) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
     }
-  });
+  };
+
+  addListener(startTopic, "change", handleStartSelection);
+  addListener(startYear, "change", handleStartSelection);
 
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
@@ -694,6 +864,11 @@ const bindEvents = () => {
     topNav.classList.toggle("search-open");
     if (topNav.classList.contains("search-open") && globalSearchInput) {
       globalSearchInput.focus();
+      if (globalSearchInput.value.trim()) {
+        renderGlobalResults(globalSearchInput.value);
+      }
+    } else {
+      clearGlobalSearchResults();
     }
   });
 
@@ -708,7 +883,7 @@ const bindEvents = () => {
     const targetElement = document.querySelector(target);
     if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
     if (topNav) topNav.classList.remove("search-open");
-    if (globalSearchResults) globalSearchResults.classList.remove("show");
+    clearGlobalSearchResults();
   });
 
   document.querySelectorAll(".nav-link").forEach((link) => {
@@ -717,6 +892,7 @@ const bindEvents = () => {
         .querySelectorAll(".nav-link")
         .forEach((item) => item.classList.remove("active"));
       link.classList.add("active");
+      updateHomeViewFromHash();
     });
   });
 
@@ -740,7 +916,7 @@ const bindEvents = () => {
     if (!globalSearch || !globalSearchToggle || !topNav || !globalSearchResults) return;
     if (!globalSearch.contains(event.target) && event.target !== globalSearchToggle) {
       topNav.classList.remove("search-open");
-      globalSearchResults.classList.remove("show");
+      clearGlobalSearchResults();
     }
   });
 
@@ -1313,20 +1489,47 @@ const init = async () => {
   const hasFormulaUI = Boolean(formulaGroups && formulaTopic);
 
   if (hasQuestionUI) {
-    renderSkeletons();
-    const response = await fetch(DATA_URL);
-    const data = await response.json();
-    state.data = data;
-    renderFilters();
-    renderCards();
+    try {
+      renderSkeletons();
+      await loadQuestionsData();
+      renderFilters();
+      renderCards();
+    } catch (error) {
+      console.error("Failed to load questions:", error);
+      if (resultsInfo) {
+        resultsInfo.textContent = getLoadErrorMessage("questions");
+      }
+      if (emptyState) {
+        emptyState.querySelector("h3").textContent = "Questions unavailable";
+        emptyState.querySelector("p").textContent = getLoadErrorMessage("questions");
+        emptyState.classList.remove("hidden");
+      }
+      if (grid) grid.innerHTML = "";
+    }
   }
 
   if (hasFormulaUI) {
-    const formulaResponse = await fetch(FORMULA_URL);
-    const formulaData = await formulaResponse.json();
-    state.formulas = formulaData;
-    renderFormulaFilters();
-    filterFormulas();
+    try {
+      await loadFormulaData();
+      renderFormulaFilters();
+      filterFormulas();
+    } catch (error) {
+      console.error("Failed to load formulas:", error);
+      if (formulaEmpty) {
+        formulaEmpty.querySelector("h3").textContent = "Formulas unavailable";
+        formulaEmpty.querySelector("p").textContent = getLoadErrorMessage("formulas");
+        formulaEmpty.classList.remove("hidden");
+      }
+      if (formulaGroups) formulaGroups.innerHTML = "";
+    }
+  }
+
+  if (globalSearchInput && (!state.data.length || !state.formulas.length)) {
+    try {
+      await Promise.all([loadQuestionsData(), loadFormulaData()]);
+    } catch (error) {
+      console.error("Failed to load global search data:", error);
+    }
   }
 
   isPinned = loadPinnedPreference();
@@ -1337,6 +1540,11 @@ const init = async () => {
   setSidebarOpen(isPinned && isDesktop());
 
   bindEvents();
+  updateHomeLock();
+  updateHomeViewFromHash();
+  addListener(window, "hashchange", updateHomeViewFromHash);
+  initHomeBackground();
+  initHomeDropdowns();
 
   await initQuiz();
 };

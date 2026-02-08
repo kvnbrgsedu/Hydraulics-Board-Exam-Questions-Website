@@ -13,8 +13,17 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
-  <body id="top">
+  <body id="top" class="home-page home-locked">
     <div id="progress-bar"></div>
+    <div class="home-bg" aria-hidden="true">
+      <svg class="flow-lines" viewBox="0 0 1200 800" preserveAspectRatio="none">
+        <path d="M-50,120 C200,40 380,200 650,140 C920,80 1120,160 1250,120" />
+        <path d="M-80,300 C180,220 420,420 680,360 C940,300 1100,420 1280,360" />
+        <path d="M-40,520 C220,440 400,620 690,560 C980,500 1120,620 1260,560" />
+        <path d="M-60,700 C260,640 420,760 720,720 C1020,680 1180,760 1300,720" />
+      </svg>
+      <div class="home-particles"></div>
+    </div>
 
     <header class="top-nav" id="top-nav">
       <div class="top-nav__brand">
@@ -34,10 +43,9 @@
       <div class="top-nav__right">
         <nav class="top-nav__links">
           <a href="#home" class="nav-link active">Home</a>
-          <a href="#questions" class="nav-link">Questions</a>
           <a href="quiz.html" class="nav-link">Quiz</a>
-          <a href="#formulas" class="nav-link">Formula Sheet</a>
-          <a href="#about" class="nav-link">About</a>
+          <a href="formula.html" class="nav-link">Formula Sheet</a>
+          <a href="about.html" class="nav-link">About</a>
         </nav>
         <div class="top-nav__actions">
           <button id="global-search-toggle" class="icon-btn" aria-label="Search">
@@ -104,11 +112,10 @@
       </div>
 
       <div class="filter-block">
-        <button class="filter-label filter-toggle" id="topic-toggle">
-          Topics
-          <span class="chevron">▾</span>
-        </button>
-        <div id="topic-list" class="topic-list"></div>
+        <label class="filter-label" for="topic-select">Topics</label>
+        <select id="topic-select">
+          <option value="all">All Topics</option>
+        </select>
       </div>
 
       <div class="filter-block">
@@ -116,7 +123,7 @@
         <nav class="sidebar__nav">
           <a href="#questions">All Questions</a>
           <a href="quiz.html">Interactive Quiz</a>
-          <a href="#formulas">Formula Sheet</a>
+          <a href="formula.html">Formula Sheet</a>
           <a href="#results-info">Results Summary</a>
         </nav>
       </div>
@@ -141,23 +148,19 @@
 
     <main class="content">
       <section class="start-review">
-        <div>
-          <p class="section-eyebrow">Start Reviewing</p>
-          <h2>Quick Access Controls</h2>
-          <p class="section-subtitle">
-            Choose a topic and jump straight into the questions.
-          </p>
-        </div>
-        <div class="start-review__controls">
-          <select id="start-topic">
-            <option value="all">All Topics</option>
-          </select>
-          <select id="start-year">
-            <option value="all">All Years</option>
-          </select>
-          <button id="start-cta" class="btn btn--primary">
-            View Questions
-          </button>
+        <div class="start-review__controls home-selects">
+          <div class="home-select-group" data-select-group="topic">
+            <label class="home-select__label" for="start-topic">Topic</label>
+            <select id="start-topic" class="home-select">
+              <option value="all">All Topics</option>
+            </select>
+          </div>
+          <div class="home-select-group" data-select-group="year">
+            <label class="home-select__label" for="start-year">Year</label>
+            <select id="start-year" class="home-select">
+              <option value="all">All Years</option>
+            </select>
+          </div>
         </div>
       </section>
 
@@ -178,65 +181,6 @@
       </section>
 
 
-      <section id="formulas" class="formula-section">
-        <div class="section-header">
-          <p class="section-eyebrow">Formula Sheet</p>
-          <h2>Hydraulics Formula Library</h2>
-          <p class="section-subtitle">
-            Filter by topic and search formulas instantly.
-          </p>
-        </div>
-        <div class="formula-controls">
-          <input
-            id="formula-search"
-            type="text"
-            placeholder="Search formulas..."
-          />
-          <select id="formula-topic">
-            <option value="all">All Topics</option>
-          </select>
-        </div>
-        <div id="formula-groups" class="formula-groups"></div>
-        <div id="formula-empty" class="empty hidden">
-          <div class="empty__bubble"></div>
-          <h3>No formulas found</h3>
-          <p>Try a different topic or keyword.</p>
-        </div>
-      </section>
-
-      <section id="about" class="about-section">
-        <div class="section-header">
-          <p class="section-eyebrow">About</p>
-          <h2>Designed for Focused Review</h2>
-          <p class="section-subtitle">
-            Built to make board exam preparation organized, accessible, and
-            premium in quality.
-          </p>
-        </div>
-        <div class="about-grid">
-          <div class="about-card">
-            <h3>Official Question Archive</h3>
-            <p>
-              Consolidated hydraulics board exam questions from 2011-2025 with
-              clean organization by year, batch, and topic.
-            </p>
-          </div>
-          <div class="about-card">
-            <h3>Formula-first Recall</h3>
-            <p>
-              A dedicated formula sheet with instant filtering and math-ready
-              rendering for quick refreshers.
-            </p>
-          </div>
-          <div class="about-card">
-            <h3>Premium Review Experience</h3>
-            <p>
-              A calm, readable interface with purposeful animations to reduce
-              friction during study sessions.
-            </p>
-          </div>
-        </div>
-      </section>
     </main>
 
     <button id="back-to-top" class="back-to-top" aria-label="Back to top">
