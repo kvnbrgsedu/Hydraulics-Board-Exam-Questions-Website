@@ -1544,13 +1544,13 @@ const init = async () => {
   updateHomeViewFromHash();
   addListener(window, "hashchange", updateHomeViewFromHash);
   initHomeBackground();
+  initPageBackground();
   initHomeDropdowns();
 
   await initQuiz();
 };
 
 init();
-const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
 const QUIZ_STORAGE_KEY = "quizProgressV2";
 
