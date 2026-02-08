@@ -1102,53 +1102,66 @@ const renderHierarchicalView = (items) => {
   const isSpecificTopic = state.topic && !isAllTopics && !isNoTopic;
   const isSpecificYear = state.year && !isAllYears && !isNoYear;
 
+  console.log(`🔍 Selection State: Topic=${state.topic}, Year=${state.year}`);
+  console.log(`   isAllTopics=${isAllTopics}, isAllYears=${isAllYears}`);
+  console.log(`   isSpecificTopic=${isSpecificTopic}, isSpecificYear=${isSpecificYear}`);
+  console.log(`   isNoTopic=${isNoTopic}, isNoYear=${isNoYear}`);
+
   // RULE 1: No Topic + No Year
   // Already handled in renderCards() - should never reach here
   
   // RULE 7: All Topics + All Years → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
+    console.log("🎯 RULE 7: All Topics + All Years → Full Hierarchy");
     renderFullHierarchyView(items);
     return;
   }
   
   // RULE 4: Specific Topic + Specific Year → Year → Topic → Questions
   if (isSpecificTopic && isSpecificYear) {
+    console.log(`🎯 RULE 4: ${state.topic} + ${state.year} → Year → Topic → Questions`);
     renderTopicAndYearView(items);
     return;
   }
   
   // RULE 2: Specific Topic + No Year → Topic header + Questions (no year headers)
   if (isSpecificTopic && isNoYear) {
+    console.log(`🎯 RULE 2: ${state.topic} + No Year → Topic header only`);
     renderSingleTopicView(items);
     return;
   }
   
   // RULE 3: No Topic + Specific Year → Year header + Questions (no topic headers)
   if (isNoTopic && isSpecificYear) {
+    console.log(`🎯 RULE 3: No Topic + ${state.year} → Year header only`);
     renderSingleYearView(items);
     return;
   }
   
   // RULE 5: All Topics + No Year → Group by Topic (no year headers)
   if (isAllTopics && isNoYear) {
+    console.log("🎯 RULE 5: All Topics + No Year → Group by Topic");
     renderTopicOnlyView(items);
     return;
   }
   
   // RULE 6: No Topic + All Years → Group by Year (no topic headers)
   if (isNoTopic && isAllYears) {
+    console.log("🎯 RULE 6: No Topic + All Years → Group by Year");
     renderYearOnlyView(items);
     return;
   }
   
   // Additional Cases: All Topics + Specific Year
   if (isAllTopics && isSpecificYear) {
+    console.log(`🎯 Additional: All Topics + ${state.year} → Topics in Year`);
     renderTopicsInYearView(items);
     return;
   }
   
   // Additional Cases: Specific Topic + All Years
   if (isSpecificTopic && isAllYears) {
+    console.log(`🎯 Additional: ${state.topic} + All Years → Years with Topic`);
     renderYearsWithTopicView(items);
     return;
   } 
@@ -1219,14 +1232,14 @@ const renderCards = () => {
   const topicValue = startTopic ? startTopic.value : (state.topic || "choose");
   const yearValue = startYear ? startYear.value : (state.year || "choose");
   
-  // RULE 1: No Topic Selected + No Year Selected
+  // RULE 1: No Topic + No Year
   // Do NOT display: Questions, Topic headers, Year headers
-  // Hide the Question Viewing Section entirely
-  // Page remains non-scrollable
+  // Hide the Question Viewing Section entirely, Page remains non-scrollable
   const noTopicSelected = (topicValue === "choose" || topicValue === "none" || !topicValue);
   const noYearSelected = (yearValue === "choose" || yearValue === "none" || !yearValue);
   
   if (noTopicSelected && noYearSelected) {
+    console.log("🎯 RULE 1: No Topic + No Year → Show nothing");
     // Clear all content
     grid.innerHTML = "";
     resultsInfo.textContent = "";
@@ -1236,7 +1249,10 @@ const renderCards = () => {
     return;
   }
   
+  // Apply filters
   const filtered = filterData();
+  console.log(`📊 Filtered ${filtered.length} questions (Topic: ${state.topic}, Year: ${state.year})`);
+  
   const isAllView =
     (state.year === "all" || state.topic === "all") &&
     state.batch === "all" &&
@@ -1249,6 +1265,7 @@ const renderCards = () => {
 
   updateActiveChips();
   
+  // Update results info
   if (isFullHierarchicalView) {
     resultsInfo.textContent = `${filtered.length} questions grouped by year and topic.`;
   } else if (isAllView) {
