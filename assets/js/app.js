@@ -1266,7 +1266,7 @@ const bindEvents = () => {
     if (!state.data.length) return;
     
     let availableTopics;
-    if (state.year === "all" || state.year === "choose") {
+    if (state.year === "all" || state.year === "choose" || state.year === "none") {
       // Show all topics
       availableTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
     } else {
@@ -1285,16 +1285,19 @@ const bindEvents = () => {
       availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
     
     if (topicSelect) {
+      const previousValue = topicSelect.value;
       topicSelect.innerHTML = topicOptions;
-      // Restore selection if still available
-      if (currentTopic !== "all" && currentTopic !== "choose" && availableTopics.includes(currentTopic)) {
+      // Restore selection if still available, otherwise keep "all"
+      if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
         topicSelect.value = currentTopic;
-        state.topic = currentTopic;
       } else if (currentTopic === "all") {
         topicSelect.value = "all";
       } else {
+        // If current selection is not available, default to "all"
         topicSelect.value = "all";
-        state.topic = "all";
+        if (currentTopic !== "choose" && currentTopic !== "none") {
+          state.topic = "all";
+        }
       }
     }
     
@@ -1304,6 +1307,7 @@ const bindEvents = () => {
         `<option value="none">None</option>` +
         `<option value="all">All Topics</option>` +
         availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+      const previousValue = startTopic.value;
       startTopic.innerHTML = startTopicOptions;
       // Restore selection if still available
       if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
@@ -1311,7 +1315,8 @@ const bindEvents = () => {
       } else if (currentTopic === "all") {
         startTopic.value = "all";
       } else {
-        startTopic.value = currentTopic === "choose" ? "choose" : "choose";
+        // Preserve "choose" or "none" if that was the previous value
+        startTopic.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
       }
     }
   };
@@ -1321,7 +1326,7 @@ const bindEvents = () => {
     if (!state.data.length) return;
     
     let availableYears;
-    if (state.topic === "all" || state.topic === "choose") {
+    if (state.topic === "all" || state.topic === "choose" || state.topic === "none") {
       // Show all years
       availableYears = Array.from(new Set(state.data.map((item) => item.year))).sort((a, b) => parseInt(a) - parseInt(b));
     } else {
@@ -1340,16 +1345,19 @@ const bindEvents = () => {
       availableYears.map((year) => `<option value="${year}">${year}</option>`).join("");
     
     if (yearSelect) {
+      const previousValue = yearSelect.value;
       yearSelect.innerHTML = yearOptions;
-      // Restore selection if still available
-      if (currentYear !== "all" && currentYear !== "choose" && availableYears.includes(currentYear)) {
+      // Restore selection if still available, otherwise keep "all"
+      if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
         yearSelect.value = currentYear;
-        state.year = currentYear;
       } else if (currentYear === "all") {
         yearSelect.value = "all";
       } else {
+        // If current selection is not available, default to "all"
         yearSelect.value = "all";
-        state.year = "all";
+        if (currentYear !== "choose" && currentYear !== "none") {
+          state.year = "all";
+        }
       }
     }
     
@@ -1359,6 +1367,7 @@ const bindEvents = () => {
         `<option value="none">None</option>` +
         `<option value="all">All Years</option>` +
         availableYears.map((year) => `<option value="${year}">${year}</option>`).join("");
+      const previousValue = startYear.value;
       startYear.innerHTML = startYearOptions;
       // Restore selection if still available
       if (currentYear !== "all" && currentYear !== "choose" && currentYear !== "none" && availableYears.includes(currentYear)) {
@@ -1366,20 +1375,34 @@ const bindEvents = () => {
       } else if (currentYear === "all") {
         startYear.value = "all";
       } else {
-        startYear.value = currentYear === "choose" ? "choose" : "choose";
+        // Preserve "choose" or "none" if that was the previous value
+        startYear.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
       }
     }
   };
 
   addListener(yearSelect, "change", (event) => {
-    state.year = event.target.value;
-    // Sync with home dropdown (including "all" values)
+    const newYear = event.target.value;
+    state.year = newYear;
+    
+    // Sync with home dropdown
     if (startYear) {
-      startYear.value = state.year === "all" ? "all" : state.year;
+      // Map "all" to "all", specific years stay as is
+      if (newYear === "all") {
+        startYear.value = "all";
+      } else {
+        startYear.value = newYear;
+      }
+      // Update visual state
+      syncStartSelectCards();
     }
-    // Sync topic dropdown based on selected year
+    
+    // Sync topic dropdown based on selected year (updates available topics)
     syncTopicDropdown();
+    
+    // Apply filters immediately
     applyFilters();
+    updateHomeLock();
     closeSidebarIfAutoHide();
   });
 
@@ -1390,14 +1413,27 @@ const bindEvents = () => {
   });
 
   addListener(topicSelect, "change", (event) => {
-    state.topic = event.target.value;
-    // Sync with home dropdown (including "all" values)
+    const newTopic = event.target.value;
+    state.topic = newTopic;
+    
+    // Sync with home dropdown
     if (startTopic) {
-      startTopic.value = state.topic === "all" ? "all" : state.topic;
+      // Map "all" to "all", specific topics stay as is
+      if (newTopic === "all") {
+        startTopic.value = "all";
+      } else {
+        startTopic.value = newTopic;
+      }
+      // Update visual state
+      syncStartSelectCards();
     }
-    // Sync year dropdown based on selected topic
+    
+    // Sync year dropdown based on selected topic (updates available years)
     syncYearDropdown();
+    
+    // Apply filters immediately
     applyFilters();
+    updateHomeLock();
     closeSidebarIfAutoHide();
   });
 
@@ -1549,7 +1585,7 @@ const bindEvents = () => {
   });
 
   const handleStartSelection = () => {
-    if (!startTopic || !startYear || !yearSelect) return;
+    if (!startTopic || !startYear) return;
     
     let topicValue = startTopic.value;
     let yearValue = startYear.value;
@@ -1568,36 +1604,43 @@ const bindEvents = () => {
     state.topic = topicValue;
     state.year = yearValue;
     
-    // Sync dropdowns based on selections
-    if (yearValue !== "choose" && yearValue !== "none") {
-      syncTopicDropdown();
-    }
-    if (topicValue !== "choose" && topicValue !== "none") {
-      syncYearDropdown();
-    }
+    // Always sync dropdowns based on current selections (even if "choose")
+    syncTopicDropdown();
+    syncYearDropdown();
     
-    // Sync with sidebar filters
+    // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
     if (yearValue === "all" || (yearValue !== "choose" && yearValue !== "none")) {
-      if (yearSelect) yearSelect.value = yearValue;
-    } else if (yearValue === "choose") {
+      if (yearSelect) {
+        yearSelect.value = yearValue;
+        // Trigger change event to ensure state is updated
+        if (yearSelect.value !== yearValue) {
+          yearSelect.value = yearValue;
+        }
+      }
+    } else if (yearValue === "choose" || yearValue === "none") {
       // Reset sidebar year filter to "all" when home dropdown is reset
       if (yearSelect) yearSelect.value = "all";
+      state.year = "all"; // Set state to "all" for sidebar compatibility
     }
     
     if (topicValue === "all" || (topicValue !== "choose" && topicValue !== "none")) {
-      if (topicSelect) topicSelect.value = topicValue;
-    } else if (topicValue === "choose") {
+      if (topicSelect) {
+        topicSelect.value = topicValue;
+        // Trigger change event to ensure state is updated
+        if (topicSelect.value !== topicValue) {
+          topicSelect.value = topicValue;
+        }
+      }
+    } else if (topicValue === "choose" || topicValue === "none") {
       // Reset sidebar topic filter to "all" when home dropdown is reset
       if (topicSelect) topicSelect.value = "all";
+      state.topic = "all"; // Set state to "all" for sidebar compatibility
     }
     
     // Update dropdown visual state
     syncStartSelectCards();
     
-    // Don't manually clear - let applyFilters handle rendering
-    // The filterData function will return empty array if either is "choose"
-    
-    // Apply filters and update home lock
+    // Apply filters and update home lock immediately
     applyFilters();
     updateHomeLock();
     
