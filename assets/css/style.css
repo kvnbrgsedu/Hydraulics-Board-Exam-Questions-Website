@@ -2333,6 +2333,21 @@ body.home-page .results-info {
   gap: 12px;
 }
 
+@keyframes cardHoverBounce {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  70% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(-4px);
+  }
+}
+
 .question-card {
   opacity: 0;
   transform: translateY(12px);
@@ -2341,7 +2356,8 @@ body.home-page .results-info {
 }
 
 .card:hover {
-  transform: translateY(-6px);
+  animation: cardHoverBounce 0.35s ease;
+  transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
 }
 
