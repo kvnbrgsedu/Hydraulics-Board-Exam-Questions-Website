@@ -22,9 +22,6 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
 }
 
 body.home-page {
@@ -201,12 +198,9 @@ body.home-locked {
   box-shadow: 0 8px 22px rgba(9, 99, 126, 0.18);
   z-index: 70;
   border-bottom: 1px solid transparent;
-  transition: height 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, padding 0.25s ease;
+  transition: height 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   animation: navEntrance 0.6s ease;
   opacity: 1;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: visible;
 }
 
 .top-nav__brand {
@@ -453,8 +447,6 @@ body.home-page .toggle__subtitle {
   color: #f8feff;
   overflow: hidden;
   transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 100%;
-  box-sizing: border-box;
 }
 
 /* On home page, allow dropdowns to overflow hero container */
@@ -589,8 +581,6 @@ body.home-page .hero__content {
   width: 100%;
   position: relative;
   margin: 0 auto;
-  padding: 0 16px;
-  box-sizing: border-box;
 }
 
 body.home-page .hero__content::before {
@@ -873,11 +863,7 @@ select option {
 .content {
   margin-left: 0;
   padding: 16px 32px 80px;
-  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body:not(.home-page) .content {
@@ -897,12 +883,9 @@ body.home-page .start-review {
   z-index: 3;
   margin-top: 48px;
   width: 100%;
-  max-width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 16px;
-  box-sizing: border-box;
 }
 
 /* Question Viewing Zone (Content Zone) - Hidden by default */
@@ -926,7 +909,6 @@ body.home-page .questions-section {
   pointer-events: none;
   box-sizing: border-box;
   z-index: 1;
-  overflow-x: hidden;
 }
 
 /* Question Viewing Zone - Active State */
@@ -935,7 +917,6 @@ body.home-page .questions-section.is-active {
   transform: translateX(-50%) translateY(0);
   max-height: none;
   overflow: visible;
-  overflow-x: hidden;
   pointer-events: auto;
   padding: 60px 20px 80px;
 }
@@ -1114,9 +1095,6 @@ body.home-page.sidebar-open .content {
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 12px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
 }
 
 .start-review {
@@ -1167,30 +1145,17 @@ body.home-page .home-selects {
   z-index: 10;
   /* Ensure dropdowns are not clipped */
   overflow: visible;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
   body.home-page .home-selects {
     flex-direction: column;
     gap: 16px;
-    width: 100%;
-    padding: 0 16px;
-    box-sizing: border-box;
   }
   
   .home-select-group {
     width: 100%;
     min-width: auto;
-    max-width: 100%;
-  }
-  
-  .home-select__trigger {
-    padding: 12px 40px 12px 16px;
-    font-size: 15px;
   }
   
   .home-select__menu {
@@ -1205,62 +1170,17 @@ body.home-page .home-selects {
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
   }
-  
-  .top-nav {
-    padding: 0 16px;
-  }
-  
-  .hero {
-    padding: 100px 20px 60px 20px;
-  }
-  
-  .content {
-    padding: 16px 20px 60px;
-  }
-  
-  .active-filters {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .chips {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-  
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .questions-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .card {
-    padding: 16px;
-  }
-  
-  .card__header {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
 }
 
 .home-select-group {
   position: relative;
   min-width: 240px;
-  max-width: 100%;
   text-align: left;
-  transition: transform 0.2s ease, width 0.3s ease;
-  flex-shrink: 1;
-  flex-grow: 0;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
   z-index: 10;
   /* Ensure dropdown menu is not clipped by parent containers */
   overflow: visible;
-  box-sizing: border-box;
 }
 
 .home-select-group.open {
@@ -1292,7 +1212,6 @@ body.home-page .home-selects {
 
 .home-select__trigger {
   width: 100%;
-  max-width: 100%;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-bottom-width: 2px;
@@ -1310,11 +1229,7 @@ body.home-page .home-selects {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 12px 24px rgba(9, 99, 126, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease,
-    border-color 0.2s ease, background 0.2s ease, padding 0.3s ease, font-size 0.3s ease;
-  box-sizing: border-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    border-color 0.2s ease, background 0.2s ease;
 }
 
 .home-select__trigger:hover {
@@ -1330,11 +1245,6 @@ body.home-page .home-selects {
 .home-select__value {
   text-align: center;
   flex: 0 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-  min-width: 0;
 }
 
 .home-select__chevron {
@@ -1615,9 +1525,6 @@ section {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
 }
 
 .chip {
@@ -1629,12 +1536,6 @@ section {
   font-size: 12px;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(9, 99, 126, 0.1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  box-sizing: border-box;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 body.home-page .chip {
@@ -1704,9 +1605,6 @@ body.home-page .results-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
 }
 
 .timeline {
@@ -1827,9 +1725,6 @@ body.home-page .results-info {
   max-width: 1100px;
   margin: 0 auto;
   padding: 40px 20px;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
 }
 
 /* Full Hierarchy View: Both year and topic headers visible */
@@ -2207,12 +2102,9 @@ body.home-page .results-info {
 
 .questions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 18px;
   margin-top: 16px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
 }
 
 .questions-grid .card {
@@ -2284,92 +2176,33 @@ body.home-page .results-info {
 
 @media (max-width: 480px) {
   .hierarchical-view {
-    padding: 20px 12px;
-    gap: 24px;
+    padding: 24px 16px;
+    gap: 28px;
   }
 
   .hierarchical-year-header .year-badge {
-    font-size: 18px;
-    padding: 6px 14px;
-  }
-  
-  .hierarchical-year-header {
-    flex-wrap: wrap;
-    gap: 8px;
+    font-size: 20px;
+    padding: 8px 18px;
   }
 
   .topic-section {
-    padding-left: 12px;
-    margin-bottom: 20px;
+    padding-left: 20px;
+    margin-bottom: 24px;
   }
 
   .topic-header {
-    padding: 8px 12px;
+    padding: 10px 14px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 8px;
   }
 
   .topic-label {
-    font-size: 15px;
-  }
-  
-  .topic-meta {
-    font-size: 11px;
-    padding: 4px 10px;
+    font-size: 16px;
   }
 
   .questions-grid {
-    gap: 12px;
-  }
-  
-  .card {
-    padding: 12px;
-  }
-  
-  .card__question {
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  
-  .hero h1 {
-    font-size: 24px;
-  }
-  
-  .hero__subtitle {
-    font-size: 13px;
-  }
-  
-  .top-nav {
-    height: 60px;
-    padding: 0 12px;
-  }
-  
-  .top-nav__brand {
-    font-size: 13px;
-  }
-  
-  .icon-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 16px;
-  }
-  
-  .home-select__trigger {
-    padding: 10px 32px 10px 12px;
-    font-size: 13px;
-  }
-  
-  body.home-page .start-review {
-    padding: 16px 12px;
-  }
-  
-  body.home-page .questions-section {
-    padding: 32px 12px 50px;
-  }
-  
-  body.home-page .questions-section.is-active {
-    padding: 32px 12px 50px;
+    gap: 14px;
   }
 }
 
@@ -2415,10 +2248,6 @@ body.home-page .results-info {
 .card__question {
   font-size: 15px;
   color: var(--text);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  line-height: 1.6;
 }
 
 .card__image {
@@ -2440,11 +2269,9 @@ body.home-page .results-info {
 
 .card__image img {
   width: 100%;
-  max-width: 100%;
-  height: auto;
+  max-width: 420px;
   display: block;
   border-radius: 12px;
-  object-fit: contain;
 }
 
 .image-caption {
@@ -2768,12 +2595,10 @@ mark {
 @media (max-width: 1024px) {
   .hero {
     padding-left: 32px;
-    padding-right: 32px;
   }
 
   .content {
     margin-left: 0;
-    padding: 16px 24px 60px;
   }
 
   body.sidebar-open .content {
@@ -2797,7 +2622,6 @@ mark {
 
   .sidebar {
     transform: translateX(-100%);
-    width: 280px;
   }
 
   .sidebar.open {
@@ -2815,97 +2639,32 @@ mark {
   .top-nav__right {
     gap: 10px;
   }
-  
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 18px;
-  }
-  
-  .questions-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  }
-  
-  .hierarchical-view {
-    padding: 36px 24px;
-  }
 }
 
 @media (max-width: 600px) {
   .hero {
-    padding: 90px 16px 40px;
-  }
-  
-  .hero h1 {
-    font-size: 28px;
-  }
-  
-  .hero__subtitle {
-    font-size: 14px;
-    padding: 0 8px;
+    padding: 110px 20px 40px;
   }
 
   .content {
-    padding: 16px 16px 60px;
+    padding: 20px 20px 80px;
   }
 
   .card {
-    padding: 14px;
-    border-radius: 14px;
-  }
-  
-  .card__question {
-    font-size: 14px;
-  }
-  
-  .card__header {
-    font-size: 13px;
+    padding: 16px;
   }
 
   .top-nav {
-    padding: 0 16px;
-    height: 64px;
-  }
-  
-  .top-nav__brand {
-    font-size: 14px;
+    padding: 0 20px;
   }
 
   .year-header {
     position: sticky;
-    top: 64px;
+    top: 70px;
     z-index: 5;
   }
 
   .timeline {
-    padding-left: 12px;
-  }
-  
-  .home-select__trigger {
-    padding: 10px 36px 10px 14px;
-    font-size: 14px;
-  }
-  
-  .home-select__chevron {
-    right: 12px;
-    width: 18px;
-    height: 18px;
-  }
-  
-  .hierarchical-view {
-    padding: 24px 12px;
-    gap: 24px;
-  }
-  
-  .hierarchical-year-header .year-badge {
-    font-size: 18px;
-    padding: 8px 16px;
-  }
-  
-  .topic-label {
-    font-size: 15px;
-  }
-  
-  .topic-section {
     padding-left: 16px;
   }
 }
