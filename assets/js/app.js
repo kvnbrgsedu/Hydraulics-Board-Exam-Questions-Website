@@ -213,8 +213,8 @@ const renderFilters = () => {
 
   startTopic.innerHTML =
     `<option value="choose">Choose Topic</option>` +
-    `<option value="all">All Topics</option>` +
     `<option value="none">None</option>` +
+    `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
   // Set to "choose" if no selection, otherwise use state value
   if (state.topic === "all" || state.topic === "choose" || !state.topic) {
@@ -225,8 +225,8 @@ const renderFilters = () => {
 
   startYear.innerHTML =
     `<option value="choose">Choose Year</option>` +
-    `<option value="all">All Years</option>` +
     `<option value="none">None</option>` +
+    `<option value="all">All Years</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
   // Set to "choose" if no selection, otherwise use state value
   if (state.year === "all" || state.year === "choose" || !state.year) {
