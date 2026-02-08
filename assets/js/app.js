@@ -211,28 +211,15 @@ const renderFilters = () => {
     `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
-  // Home dropdowns: Keep "Choose..." as default placeholder (value="choose"), add "All Topics/Years" (value="all") and actual options
   startTopic.innerHTML =
-    `<option value="choose">Choose Topic</option>` +
     `<option value="all">All Topics</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
-  // Set to "choose" if no selection, otherwise keep current value
-  if (state.topic === "all") {
-    startTopic.value = "choose";
-  } else {
-    startTopic.value = state.topic;
-  }
+  startTopic.value = state.topic;
 
   startYear.innerHTML =
-    `<option value="choose">Choose Year</option>` +
     `<option value="all">All Years</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
-  // Set to "choose" if no selection, otherwise keep current value
-  if (state.year === "all") {
-    startYear.value = "choose";
-  } else {
-    startYear.value = state.year;
-  }
+  startYear.value = state.year;
 };
 
 const updateActiveChips = () => {
@@ -422,8 +409,7 @@ const syncStartSelectCards = () => {
   startReviewCards.forEach((card) => {
     const select = card.querySelector("select");
     if (!select) return;
-    // Has selection if value is not "choose" or "all"
-    card.classList.toggle("has-selection", select.value !== "all" && select.value !== "choose");
+    card.classList.toggle("has-selection", select.value !== "all");
   });
 };
 
@@ -433,28 +419,6 @@ const updateHomeLock = () => {
   const shouldLock = !hasSelection && !document.body.classList.contains("home-show-all");
   document.body.classList.toggle("home-locked", shouldLock);
   syncStartSelectCards();
-  // Sync home dropdowns to match state
-  if (startTopic && startYear) {
-    if (state.topic === "all") {
-      startTopic.value = "choose";
-    } else {
-      startTopic.value = state.topic;
-    }
-    if (state.year === "all") {
-      startYear.value = "choose";
-    } else {
-      startYear.value = state.year;
-    }
-    // Update dropdown visual state
-    if (startTopic.value !== "choose") {
-      const topicGroup = startTopic.closest(".home-select-group");
-      if (topicGroup) topicGroup.classList.add("has-selection");
-    }
-    if (startYear.value !== "choose") {
-      const yearGroup = startYear.closest(".home-select-group");
-      if (yearGroup) yearGroup.classList.add("has-selection");
-    }
-  }
 };
 
 const initHomeBackground = () => {
@@ -543,11 +507,7 @@ const initHomeDropdowns = () => {
     menu.className = "home-select__menu";
     menu.setAttribute("role", "listbox");
 
-    // Skip the first option (default "Choose..." text) when building menu
-    const options = Array.from(select.options);
-    const menuOptions = options.slice(1); // Skip first option
-    
-    menuOptions.forEach((option, index) => {
+    Array.from(select.options).forEach((option, index) => {
       const item = document.createElement("button");
       item.type = "button";
       item.className = "home-select__option";
@@ -559,10 +519,7 @@ const initHomeDropdowns = () => {
         <span class="home-select__label-text">${option.text}</span>
         <span class="home-select__check"></span>
       `;
-      // Check if this option matches the current value
-      const currentValue = select.value;
-      const isSelected = option.value === currentValue;
-      if (isSelected) {
+      if (option.selected) {
         item.classList.add("selected");
         item.setAttribute("aria-selected", "true");
       }
@@ -570,29 +527,15 @@ const initHomeDropdowns = () => {
     });
 
     const updateSelection = (value) => {
-      // Find the option with this value
-      const options = Array.from(select.options);
-      const targetOption = options.find(opt => opt.value === value);
-      
-      if (targetOption) {
-        select.selectedIndex = targetOption.index;
-      } else if (value === "choose") {
-        // If value is "choose", set to first "Choose..." option
-        select.selectedIndex = 0;
-      }
-      
-      // Update trigger text - show selected option text
-      const selectedOption = select.options[select.selectedIndex];
-      const displayText = selectedOption.text;
-      trigger.querySelector(".home-select__value").textContent = displayText;
-      
+      select.value = value;
+      trigger.querySelector(".home-select__value").textContent =
+        select.options[select.selectedIndex].text;
       menu.querySelectorAll(".home-select__option").forEach((item) => {
         const isSelected = item.dataset.value === value;
         item.classList.toggle("selected", isSelected);
         item.setAttribute("aria-selected", isSelected ? "true" : "false");
       });
-      // Has selection if value is not "choose" or "all"
-      group.classList.toggle("has-selection", value !== "choose" && value !== "all");
+      group.classList.toggle("has-selection", value !== "all");
     };
 
     trigger.addEventListener("click", (event) => {
@@ -830,8 +773,8 @@ const bindEvents = () => {
     if (batchSelect) batchSelect.value = "all";
     if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
-    if (startTopic) startTopic.value = "choose";
-    if (startYear) startYear.value = "choose";
+    if (startTopic) startTopic.value = "all";
+    if (startYear) startYear.value = "all";
     
     // Reset home dropdown visual state
     syncStartSelectCards();
@@ -932,22 +875,11 @@ const bindEvents = () => {
 
   const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
-    // Convert "choose" to "all" for filtering, otherwise use the selected value
-    const topicValue = startTopic.value === "choose" ? "all" : startTopic.value;
-    const yearValue = startYear.value === "choose" ? "all" : startYear.value;
-    
-    // Update state immediately
-    state.topic = topicValue;
-    state.year = yearValue;
-    
-    // Sync with sidebar filters
+    state.topic = startTopic.value;
+    state.year = startYear.value;
     yearSelect.value = state.year;
     if (topicSelect) topicSelect.value = state.topic;
-    
-    // Apply filters immediately - this will show all questions if "all" is selected
     applyFilters();
-    
-    // Scroll to questions section if not locked
     const questionsSection = document.getElementById("questions");
     if (questionsSection && !document.body.classList.contains("home-locked")) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
