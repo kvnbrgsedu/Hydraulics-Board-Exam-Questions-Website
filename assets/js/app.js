@@ -1028,7 +1028,15 @@ const renderHierarchicalView = (items) => {
   
   // Case 6: "All Years" selected (no topic filter) → Year-only view
   if (isAllYears) {
-    renderYearOnlyView(items);
+    // Force state to "all" if not already set (defensive)
+    if (state.year !== "all") {
+      state.year = "all";
+      if (startYear) startYear.value = "all";
+    }
+    // Ensure we have items to render
+    const itemsToRender = items && Array.isArray(items) ? items : [];
+    console.log("renderHierarchicalView: Rendering year-only view with", itemsToRender.length, "items");
+    renderYearOnlyView(itemsToRender);
     return;
   } 
   
@@ -1160,10 +1168,20 @@ const renderCards = () => {
   
   setTimeout(() => {
     // Determine if we should use hierarchical view
-    const isAllTopics = state.topic === "all";
-    const isAllYears = state.year === "all";
-    const isSpecificTopic = state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
-    const isSpecificYear = state.year !== "all" && state.year !== "choose" && state.year !== "none";
+    // Check both state and dropdown values to ensure accuracy
+    const topicValue = state.topic || (startTopic ? startTopic.value : "choose");
+    const yearValue = state.year || (startYear ? startYear.value : "choose");
+    
+    const isAllTopics = state.topic === "all" || topicValue === "all";
+    const isAllYears = state.year === "all" || yearValue === "all";
+    const isSpecificTopic = state.topic && state.topic !== "all" && state.topic !== "choose" && state.topic !== "none";
+    const isSpecificYear = state.year && state.year !== "all" && state.year !== "choose" && state.year !== "none";
+    
+    // Debug logging
+    console.log("renderCards: State check - topic:", state.topic, "year:", state.year);
+    console.log("renderCards: Dropdown check - topic:", topicValue, "year:", yearValue);
+    console.log("renderCards: isAllYears:", isAllYears, "isAllTopics:", isAllTopics);
+    console.log("renderCards: Filtered items count:", filtered.length);
     
     const shouldUseHierarchical = 
       isAllTopics || 
@@ -1174,10 +1192,12 @@ const renderCards = () => {
     // Always use hierarchical view when appropriate, even if filtered is empty
     // The hierarchical view functions handle empty states internally
     if (shouldUseHierarchical) {
+      console.log("renderCards: Using hierarchical view");
       renderHierarchicalView(filtered);
-  } else {
-    renderGrid(filtered);
-  }
+    } else {
+      console.log("renderCards: Using grid view");
+      renderGrid(filtered);
+    }
 
     // Fade in new content
   requestAnimationFrame(() => {
@@ -2116,11 +2136,25 @@ const bindEvents = () => {
       startYear.value = "choose";
     }
     
-    // Set state values directly from dropdown selections
-    // Preserve "all" and "choose" values correctly
-    // This allows filtering to work when user picks topic then year (or vice versa)
-    state.topic = topicValue;
-    state.year = yearValue;
+    // CRITICAL: Set state values directly from dropdown selections BEFORE syncing
+    // This ensures "all" values are preserved correctly
+    // Preserve "all" values immediately to prevent sync functions from overwriting them
+    if (topicValue === "all") {
+      state.topic = "all";
+      if (startTopic) startTopic.value = "all";
+    } else {
+      state.topic = topicValue;
+    }
+    
+    if (yearValue === "all") {
+      state.year = "all";
+      if (startYear) startYear.value = "all";
+      console.log("handleStartSelection: Set state.year to 'all' immediately");
+    } else {
+      state.year = yearValue;
+    }
+    
+    console.log("handleStartSelection: Initial state set - topic:", state.topic, "year:", state.year);
     
     // Always sync dropdowns based on current state selections
     // This updates available options based on current selections
@@ -2128,39 +2162,32 @@ const bindEvents = () => {
     syncTopicDropdown();
     syncYearDropdown();
     
-    // After syncing, read the actual dropdown values again to ensure state matches
-    // The sync functions may have updated the dropdowns and state to preserve valid selections
-    const finalTopicValue = startTopic.value;
-    const finalYearValue = startYear.value;
+    // After syncing, ensure "all" values are still preserved
+    // Read the actual dropdown values to verify
+    const finalTopicValue = startTopic ? startTopic.value : state.topic;
+    const finalYearValue = startYear ? startYear.value : state.year;
     
     // CRITICAL: Always preserve "all" if it was originally selected, regardless of sync results
-    if (topicValue === "all") {
+    if (topicValue === "all" || finalTopicValue === "all") {
       state.topic = "all";
-      // Ensure dropdown also shows "all"
       if (startTopic && startTopic.value !== "all") {
         startTopic.value = "all";
       }
-    } else if (finalTopicValue === "all") {
-      state.topic = "all";
     } else if (finalTopicValue !== "choose" && finalTopicValue !== "none") {
       state.topic = finalTopicValue;
-    } else {
-      state.topic = topicValue; // Keep original "choose" or "none" converted value
     }
     
-    if (yearValue === "all") {
+    if (yearValue === "all" || finalYearValue === "all") {
       state.year = "all";
-      // Ensure dropdown also shows "all"
       if (startYear && startYear.value !== "all") {
         startYear.value = "all";
       }
-    } else if (finalYearValue === "all") {
-      state.year = "all";
+      console.log("handleStartSelection: Preserved state.year as 'all' after sync");
     } else if (finalYearValue !== "choose" && finalYearValue !== "none") {
       state.year = finalYearValue;
-    } else {
-      state.year = yearValue; // Keep original "choose" or "none" converted value
     }
+    
+    console.log("handleStartSelection: Final state - topic:", state.topic, "year:", state.year);
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
     // Convert "choose" to "all" only for sidebar compatibility, but keep "choose" in state for filtering
