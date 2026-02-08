@@ -504,18 +504,22 @@ const renderYearOnlyView = (items) => {
 
 // 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected - Show BOTH year and topic headers
 const renderFullHierarchyView = (items) => {
+  if (!grid) return;
+  
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "full-hierarchy-view");
   
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
   
-  if (items.length === 0) {
+  // If no items, show empty state
+  if (!items || items.length === 0) {
     grid.innerHTML = "";
     return;
   }
   
   // Group by year, then by topic - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
+    if (!item || !item.year || !item.topic) return acc; // Skip invalid items
     if (!acc[item.year]) acc[item.year] = {};
     if (!acc[item.year][item.topic]) acc[item.year][item.topic] = [];
     acc[item.year][item.topic].push(item);
@@ -523,6 +527,13 @@ const renderFullHierarchyView = (items) => {
   }, {});
 
   const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
+  
+  // If no years after grouping, show empty
+  if (years.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+  
   let questionIndex = 0;
 
   grid.innerHTML = years
@@ -861,7 +872,8 @@ const renderHierarchicalView = (items) => {
 
   // Case 1: Both "All Topics" AND "All Years" selected → Full hierarchy (Year → Topic → Questions)
   if (isAllTopics && isAllYears) {
-    renderFullHierarchyView(items);
+    // Always render full hierarchy view, even if items is empty (will show empty state)
+    renderFullHierarchyView(items || []);
     return;
   } 
   

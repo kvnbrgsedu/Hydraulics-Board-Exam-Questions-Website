@@ -1522,6 +1522,30 @@ body.home-page .results-info {
   gap: 48px;
   max-width: 1100px;
   margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Full Hierarchy View: Both year and topic headers visible */
+.full-hierarchy-view .hierarchical-year {
+  display: block !important;
+}
+
+.full-hierarchy-view .topic-section {
+  display: block !important;
+  padding-left: 24px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.full-hierarchy-view .secondary-header {
+  margin-bottom: 16px;
+}
+
+.full-hierarchy-view .secondary-header .topic-label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #088395;
+}
   padding: 40px 32px;
   width: 100%;
   box-sizing: border-box;
