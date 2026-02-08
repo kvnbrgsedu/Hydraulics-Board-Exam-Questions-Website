@@ -3011,9 +3011,6 @@ const init = async () => {
         syncYearDropdown();
       }
       
-      // Home dropdowns now use the native select UI (same as sidebar list)
-      // so we no longer initialize the custom dropdown menu here.
-      
       // CRITICAL: Sync state from dropdowns before initial render
       // This ensures that if dropdowns are set to "all", state is also "all"
       if (startTopic) {
