@@ -1740,8 +1740,14 @@ body.home-page .results-info {
 }
 
 /* Full Hierarchy View: Both year and topic headers visible */
+/* Full Hierarchy View: Both year and topic headers visible */
 .full-hierarchy-view .hierarchical-year {
   display: block !important;
+  margin-bottom: 32px;
+}
+
+.full-hierarchy-view .hierarchical-year:last-child {
+  margin-bottom: 0;
 }
 
 .full-hierarchy-view .topic-section {
@@ -1751,7 +1757,12 @@ body.home-page .results-info {
   margin-bottom: 24px;
 }
 
+.full-hierarchy-view .topic-section:last-child {
+  margin-bottom: 0;
+}
+
 .full-hierarchy-view .secondary-header {
+  display: flex !important;
   margin-bottom: 16px;
 }
 
@@ -1759,6 +1770,22 @@ body.home-page .results-info {
   font-size: 22px;
   font-weight: 600;
   color: #088395;
+  display: block !important;
+}
+
+.full-hierarchy-view .hierarchical-year-header {
+  display: flex !important;
+  margin-bottom: 24px;
+}
+
+.full-hierarchy-view .year-content {
+  display: block !important;
+}
+
+.full-hierarchy-view .year-content.open {
+  display: block !important;
+  max-height: none !important;
+  opacity: 1 !important;
 }
 
 /* ========== DYNAMIC CATEGORIZATION MODES ========== */

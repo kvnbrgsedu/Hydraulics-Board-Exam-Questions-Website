@@ -534,7 +534,10 @@ const renderFullHierarchyView = (items) => {
     if (!item) return acc;
     const year = String(item.year || "").trim();
     const topic = String(item.topic || "").trim();
-    if (!year || !topic) return acc; // Only skip if both are missing
+    if (!year || !topic) {
+      console.warn("Skipping item with missing year or topic:", item);
+      return acc; // Only skip if both are missing
+    }
     if (!acc[year]) acc[year] = {};
     if (!acc[year][topic]) acc[year][topic] = [];
     acc[year][topic].push(item);
@@ -550,47 +553,67 @@ const renderFullHierarchyView = (items) => {
   
   // If no years after grouping, show empty
   if (years.length === 0) {
+    console.warn("No years found after grouping items");
     grid.innerHTML = "";
     return;
   }
   
   let questionIndex = 0;
+  let totalQuestions = 0;
 
+  // Build the HTML structure: Year (Primary) → Topic (Secondary) → Questions
   grid.innerHTML = years
     .map((year, yearIndex) => {
       const topics = Object.keys(grouped[year]).sort();
+      
+      // Count total questions in this year
+      const yearQuestionCount = topics.reduce((sum, topic) => sum + grouped[year][topic].length, 0);
+      totalQuestions += yearQuestionCount;
+      
+      // Build topic sections for this year
       const topicSections = topics
         .map((topic, topicIndex) => {
           const questions = grouped[year][topic];
+          if (!questions || questions.length === 0) return "";
+          
           const count = questions.length;
           const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
+          
           return `
             <section class="topic-section secondary-section" style="--delay: ${topicDelay}ms">
               <div class="topic-header secondary-header">
-                <span class="topic-label">${topic}</span>
+                <span class="topic-label">${escapeHtml(topic)}</span>
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
               </div>
               <div class="topic-content">
                 <div class="questions-grid">
                   ${questions
                     .map((item, qIndex) => {
+                      if (!item) return "";
                       const cardHtml = buildCardHtml(item, questionIndex++);
                       const questionDelay = topicDelay + qIndex * 30;
                       return addCardAnimation(cardHtml, questionDelay, qIndex);
                     })
+                    .filter(html => html) // Remove empty strings
                     .join("")}
                 </div>
               </div>
             </section>
           `;
         })
+        .filter(html => html) // Remove empty topic sections
         .join("");
+
+      // If no topic sections, skip this year
+      if (!topicSections.trim()) {
+        return "";
+      }
 
       return `
         <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
           <div class="year-header hierarchical-year-header primary-header reveal">
             <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-              <span class="year-badge">${year}</span>
+              <span class="year-badge">${escapeHtml(year)}</span>
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
@@ -601,8 +624,20 @@ const renderFullHierarchyView = (items) => {
         </section>
       `;
     })
+    .filter(html => html) // Remove empty year sections
     .join("");
 
+  // Verify we rendered something
+  if (!grid.innerHTML.trim()) {
+    console.error("renderFullHierarchyView: No content generated despite having", items.length, "items");
+    console.error("Years found:", years);
+    console.error("Grouped data:", grouped);
+    grid.innerHTML = "";
+    return;
+  }
+
+  console.log("renderFullHierarchyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
+  
   initYearToggles();
   animateSections();
   restoreScrollPosition(scrollPosition);
@@ -906,8 +941,11 @@ const renderHierarchicalView = (items) => {
       state.year = "all";
       if (startYear) startYear.value = "all";
     }
+    // Ensure we have items to render
+    const itemsToRender = items && Array.isArray(items) ? items : [];
+    console.log("renderHierarchicalView: Rendering full hierarchy with", itemsToRender.length, "items");
     // Always render full hierarchy view, even if items is empty (will show empty state)
-    renderFullHierarchyView(items || []);
+    renderFullHierarchyView(itemsToRender);
     return;
   } 
   
