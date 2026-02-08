@@ -256,6 +256,12 @@ const updateActiveChips = () => {
 const filterData = () => {
   if (!state.data || !Array.isArray(state.data)) return [];
   
+  // If both topic and year are "all", and batch is "all", and no search query,
+  // we can return all items directly (optimization)
+  if (state.topic === "all" && state.year === "all" && state.batch === "all" && !state.search.trim()) {
+    return state.data;
+  }
+  
   return state.data.filter((item) => {
     if (!item) return false;
     
