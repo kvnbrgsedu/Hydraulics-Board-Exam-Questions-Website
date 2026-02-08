@@ -1298,9 +1298,9 @@ body.home-page .home-selects {
   right: 0;
   margin-top: 2px;
   border-radius: 12px;
-  background: #ffffff;
+  background: #f7fbfc;
   border: 1px solid rgba(9, 99, 126, 0.2);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -1314,7 +1314,7 @@ body.home-page .home-selects {
   isolation: isolate;
   pointer-events: none;
   -webkit-overflow-scrolling: touch;
-  padding: 6px 0;
+  padding: 0;
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f9fafb;
   /* Ensure menu is not clipped by any parent */
@@ -1377,7 +1377,7 @@ body.home-page .home-selects {
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  padding: 6px 0;
+  padding: 0;
   pointer-events: auto;
   visibility: visible;
   z-index: 10003;
@@ -1385,17 +1385,17 @@ body.home-page .home-selects {
 
 .home-select__option {
   width: 100%;
-  min-height: 48px;
-  padding: 14px 20px 14px 36px;
+  min-height: 40px;
+  padding: 10px 12px;
   background: transparent;
   border: none;
-  color: #09637e;
-  font-size: 15px;
+  color: #0b5a6f;
+  font-size: 14px;
   line-height: 1.5;
-  display: flex;
+  display: block;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
   pointer-events: auto;
   white-space: nowrap;
   overflow: hidden;
@@ -1410,43 +1410,24 @@ body.home-page .home-selects {
   overflow-wrap: break-word;
 }
 
-.home-select__option::before {
-  content: "➤";
-  position: absolute;
-  left: 14px;
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  color: #09637e;
-}
-
 .home-select__option:hover {
-  background-color: rgba(9, 99, 126, 0.12);
-  color: #09637e;
-  transform: translateX(4px);
+  background-color: rgba(9, 99, 126, 0.08);
+  color: #0b5a6f;
 }
 
 .home-select__option:active {
   background-color: #e5e7eb;
 }
 
-.home-select__option:hover::before,
-.home-select__option:focus::before,
-.home-select__option:focus-visible::before {
-  opacity: 0.6;
-  transform: translateX(0);
-}
-
 .home-select__option:focus-visible {
-  outline: none;
-  background: rgba(9, 99, 126, 0.15);
+  outline: 2px solid rgba(9, 99, 126, 0.2);
   outline-offset: -2px;
 }
 
 .home-select__option.selected {
-  background-color: #09637e;
-  color: #ffffff;
-  font-weight: 600;
+  background-color: rgba(9, 99, 126, 0.12);
+  color: #0b5a6f;
+  font-weight: 500;
 }
 
 .home-select__icon {
