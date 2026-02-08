@@ -94,7 +94,7 @@
     "batch": "April",
     "topic": "Pipe Flow",
     "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the ff:<br><br>Volume flow rate in m^3/s and L/s<br>Mass flow rate in kg/s<br>Weight flow rate in N/s<br><br>Given:<br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br>Required:<br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
-    "solution": "<strong>Given:</strong><br>&emsp;Diameter, \\(d = 0.1\\,\\mathrm{m}\\)<br>&emsp;Velocity, \\(v = 4\\,\\mathrm{m/s}\\)<br><br><strong>Solution:</strong><br>&emsp;<strong>1. Area:</strong> &emsp; \\(A = \\frac{\\pi}{4} d^2 = \\frac{\\pi}{4} (0.1)^2 = 0.00785\\,\\mathrm{m}^2\\)<br><br>&emsp;<strong>2. Volume flow rate:</strong> &emsp; \\(Q = Av = 0.00785 \\times 4 = 0.031416\\,\\mathrm{m^3/s}\\)<br>&emsp;&emsp;\\(Q = 31.416\\,\\mathrm{L/s}\\)<br><br>&emsp;<strong>3. Mass flow rate:</strong> &emsp; \\(M = \\rho Q = 1000 \\times 0.031416 = 31.416\\,\\mathrm{kg/s}\\)<br><br>&emsp;<strong>4. Weight flow rate:</strong> &emsp; \\(W = \\gamma Q = 9810 \\times 0.031416 = 308.18\\,\\mathrm{N/s}\\)<br><br><strong>Final Answers:</strong><br>&emsp;<strong>Volume flow rate</strong>: \\(\\boxed{0.031416\\,\\mathrm{m^3/s}}\\), &nbsp;\\(\\boxed{31.416\\,\\mathrm{L/s}}\\)<br>&emsp;<strong>Mass flow rate</strong>: \\(\\boxed{31.416\\,\\mathrm{kg/s}}\\)<br>&emsp;<strong>Weight flow rate</strong>: \\(\\boxed{308.18\\,\\mathrm{N/s}}\\)",
+    "solution": "",
     "image": "",
     "solutionImage": ""
   },
