@@ -384,7 +384,7 @@ const buildCardHtml = (item, index = 0) => {
          <img src="${item.solutionImage}" alt="Solution figure" loading="lazy" />
          ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
        </div>`
-    : "";
+    : `<div class="card__image"></div>`;
   const finalAnswer = item.finalAnswer
     ? `<div class="final-answer">
          <span>Final Answer</span>
