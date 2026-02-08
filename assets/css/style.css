@@ -39,7 +39,7 @@ body.home-page .hero {
 body.home-page .content {
   overflow-x: hidden; /* Prevent horizontal scroll from full-width sections */
   position: relative;
-  padding: 0; /* Remove padding to allow full-width sections */
+  padding: 0 !important; /* Remove padding to allow full-width sections */
 }
 
 /* Ensure questions-section can break out of content container */
