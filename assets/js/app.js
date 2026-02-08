@@ -2316,12 +2316,11 @@ const bindEvents = () => {
     }
     
     // Update state to match final dropdown values (after forced all)
-    if (finalTopicValue !== state.topic) {
-      state.topic = finalTopicValue;
-    }
-    if (finalYearValue !== state.year) {
-      state.year = finalYearValue;
-    }
+    // Normalize "none" back to "choose" to avoid blocking filters
+    const normalizedTopic = finalTopicValue === "none" ? "choose" : finalTopicValue;
+    const normalizedYear = finalYearValue === "none" ? "choose" : finalYearValue;
+    state.topic = normalizedTopic;
+    state.year = normalizedYear;
     
     console.log("handleStartSelection: Final state - topic:", state.topic, "year:", state.year);
     
