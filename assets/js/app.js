@@ -547,7 +547,12 @@ const renderYearOnlyView = (items) => {
 
 // 3. Full Hierarchy View: Both "All Topics" AND "All Years" selected - Show BOTH year and topic headers
 const renderFullHierarchyView = (items) => {
-  if (!grid) return;
+  if (!grid) {
+    console.error("renderFullHierarchyView: grid element not found");
+    return;
+  }
+  
+  console.log("renderFullHierarchyView: Called with", items ? items.length : 0, "items");
   
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view", "full-hierarchy-view");
@@ -556,9 +561,12 @@ const renderFullHierarchyView = (items) => {
   
   // If no items, show empty state
   if (!items || items.length === 0) {
+    console.warn("renderFullHierarchyView: No items to render");
     grid.innerHTML = "";
     return;
   }
+  
+  console.log("renderFullHierarchyView: Processing", items.length, "items");
   
   // Group by year, then by topic - ensure ALL questions are included
   const grouped = items.reduce((acc, item) => {
@@ -584,10 +592,13 @@ const renderFullHierarchyView = (items) => {
   
   // If no years after grouping, show empty
   if (years.length === 0) {
-    console.warn("No years found after grouping items");
+    console.warn("renderFullHierarchyView: No years found after grouping", items.length, "items");
+    console.warn("renderFullHierarchyView: Sample items:", items.slice(0, 3));
     grid.innerHTML = "";
     return;
   }
+  
+  console.log("renderFullHierarchyView: Found", years.length, "years:", years);
   
   let questionIndex = 0;
   let totalQuestions = 0;
@@ -660,21 +671,39 @@ const renderFullHierarchyView = (items) => {
 
   // Verify we rendered something
   if (!grid.innerHTML.trim()) {
+    console.error("renderFullHierarchyView: No HTML generated despite having", items.length, "items and", years.length, "years");
+    console.error("renderFullHierarchyView: Grouped data sample:", years.slice(0, 3).map(year => ({
+      year,
+      topics: Object.keys(grouped[year]),
+      questionCount: Object.values(grouped[year]).reduce((sum, arr) => sum + arr.length, 0)
+    })));
     grid.innerHTML = "";
     return;
   }
-
+  
+  console.log("renderFullHierarchyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
   
   // Immediately mark all topic sections as visible for full hierarchy view
   requestAnimationFrame(() => {
     const topicSections = grid.querySelectorAll('.topic-section');
+    console.log("renderFullHierarchyView: Found", topicSections.length, "topic sections in DOM");
     topicSections.forEach(section => {
       section.classList.add('is-visible');
     });
     
     // Also ensure topic headers are visible
     const topicHeaders = grid.querySelectorAll('.topic-header');
+    console.log("renderFullHierarchyView: Found", topicHeaders.length, "topic headers in DOM");
     topicHeaders.forEach(header => {
+      header.style.display = 'flex';
+      header.style.visibility = 'visible';
+      header.style.opacity = '1';
+    });
+    
+    // Ensure year headers are visible
+    const yearHeaders = grid.querySelectorAll('.hierarchical-year-header');
+    console.log("renderFullHierarchyView: Found", yearHeaders.length, "year headers in DOM");
+    yearHeaders.forEach(header => {
       header.style.display = 'flex';
       header.style.visibility = 'visible';
       header.style.opacity = '1';
@@ -1001,6 +1030,9 @@ const renderHierarchicalView = (items) => {
     }
     // Ensure we have items to render
     const itemsToRender = items && Array.isArray(items) ? items : [];
+    console.log("renderHierarchicalView: Rendering full hierarchy with", itemsToRender.length, "items");
+    console.log("renderHierarchicalView: State - topic:", state.topic, "year:", state.year);
+    console.log("renderHierarchicalView: Dropdown - topic:", topicValue, "year:", yearValue);
     // Always render full hierarchy view, even if items is empty (will show empty state)
     renderFullHierarchyView(itemsToRender);
     return;
@@ -1266,6 +1298,10 @@ const applyFilters = () => {
       state.year = dropdownValue;
     }
   }
+  
+  console.log("applyFilters: State after sync - topic:", state.topic, "year:", state.year);
+  const filtered = filterData();
+  console.log("applyFilters: Filtered", filtered.length, "items (total:", state.data ? state.data.length : 0, ")");
   
   renderCards();
   updateHomeLock();
