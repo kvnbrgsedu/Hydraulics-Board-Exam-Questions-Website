@@ -22,6 +22,12 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body.home-page {
@@ -2807,6 +2813,9 @@ mark {
 /* ========== COMPREHENSIVE MOBILE RESPONSIVE STYLES ========== */
 
 @media (max-width: 600px) {
+  * {
+    max-width: 100%;
+  }
   /* Navigation */
   .top-nav {
     padding: 0 16px;
@@ -2984,8 +2993,8 @@ mark {
   .questions-grid .card,
   .grid .card {
     width: 100%;
-    max-width: 520px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
   }
 
   /* Buttons */
