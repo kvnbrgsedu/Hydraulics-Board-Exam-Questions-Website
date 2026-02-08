@@ -1731,12 +1731,14 @@ body.home-page .results-info {
 /* ========== HIERARCHICAL VIEW (Year → Topic → Questions) ========== */
 
 .hierarchical-view {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   gap: 48px;
   max-width: 1100px;
   margin: 0 auto;
   padding: 40px 20px;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Full Hierarchy View: Both year and topic headers visible */
@@ -2222,12 +2224,12 @@ body.home-page .results-info {
   width: 100%;
 }
 
-#question-grid.hierarchical-view,
-#questions-grid.hierarchical-view {
+#question-grid.hierarchical-view {
   transition: opacity 0.25s ease;
   width: 100%;
   display: block !important;
   visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Ensure hierarchical view content is properly centered */
