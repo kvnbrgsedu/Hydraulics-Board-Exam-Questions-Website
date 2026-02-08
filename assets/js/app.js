@@ -1225,8 +1225,10 @@ const restoreScrollPosition = (scrollPosition) => {
   }, 50);
 };
 
+let renderToken = 0;
 const renderCards = () => {
   if (!grid || !resultsInfo || !emptyState || !activeChips) return;
+  const currentToken = ++renderToken;
   const filtered = filterData();
   const isAllView =
     (state.year === "all" || state.topic === "all") &&
@@ -1265,6 +1267,7 @@ const renderCards = () => {
     grid.style.opacity = "0";
     grid.style.transition = "opacity 0.3s ease";
     setTimeout(() => {
+      if (currentToken !== renderToken) return;
     grid.innerHTML = "";
       grid.style.opacity = "1";
       grid.style.transition = "";
@@ -1281,6 +1284,7 @@ const renderCards = () => {
   grid.style.transition = "opacity 0.25s ease";
   
   setTimeout(() => {
+    if (currentToken !== renderToken) return;
     // Determine if we should use hierarchical view
     // CRITICAL: Always check dropdowns FIRST since they are the source of truth
     // This ensures that when user selects "All Topics" then "All Years" (or vice versa),
