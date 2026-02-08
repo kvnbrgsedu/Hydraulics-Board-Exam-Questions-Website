@@ -378,6 +378,9 @@ const renderHierarchicalView = (items) => {
   grid.classList.remove("grid");
   grid.classList.add("hierarchical-view");
   
+  // Preserve scroll position before rendering
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
   // Group by year, then by topic
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.year]) acc[item.year] = {};
@@ -394,11 +397,12 @@ const renderHierarchicalView = (items) => {
     .map((year, yearIndex) => {
       const topics = Object.keys(grouped[year]).sort();
       const topicSections = topics
-        .map((topic) => {
+        .map((topic, topicIndex) => {
           const questions = grouped[year][topic];
           const count = questions.length;
+          const topicDelay = yearIndex * 120 + topicIndex * 80 + 150;
           return `
-            <div class="topic-section" style="--delay: ${yearIndex * 50 + 100}ms">
+            <div class="topic-section" style="--delay: ${topicDelay}ms">
               <div class="topic-header">
                 <span class="topic-label">${topic}</span>
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
@@ -406,7 +410,22 @@ const renderHierarchicalView = (items) => {
               <div class="topic-content">
                 <div class="questions-grid">
                   ${questions
-                    .map((item) => buildCardHtml(item, questionIndex++))
+                    .map((item, qIndex) => {
+                      const cardHtml = buildCardHtml(item, questionIndex++);
+                      // Add animation delay to the card - replace existing style or add new one
+                      const questionDelay = topicDelay + qIndex * 30;
+                      if (cardHtml.includes('style="')) {
+                        return cardHtml.replace(
+                          'style="',
+                          `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms; `
+                        );
+                      } else {
+                        return cardHtml.replace(
+                          'class="card',
+                          `style="--question-index: ${qIndex}; animation-delay: ${questionDelay}ms;" class="card`
+                        );
+                      }
+                    })
                     .join("")}
                 </div>
               </div>
@@ -432,7 +451,7 @@ const renderHierarchicalView = (items) => {
     })
     .join("");
 
-  // Add collapsible functionality
+  // Add collapsible functionality with scroll preservation
   requestAnimationFrame(() => {
     document.querySelectorAll(".year-toggle").forEach((toggle) => {
       toggle.addEventListener("click", (e) => {
@@ -441,9 +460,36 @@ const renderHierarchicalView = (items) => {
         const content = section.querySelector(".year-content");
         const isOpen = content.classList.toggle("open");
         toggle.setAttribute("aria-expanded", isOpen);
-        toggle.querySelector(".year-toggle-icon").style.transform = isOpen ? "rotate(0deg)" : "rotate(-90deg)";
+        const icon = toggle.querySelector(".year-toggle-icon");
+        icon.style.transform = isOpen ? "rotate(0deg)" : "rotate(-90deg)";
+        
+        // Preserve scroll position when collapsing/expanding
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        requestAnimationFrame(() => {
+          window.scrollTo({
+            top: currentScroll,
+            behavior: "auto"
+          });
+        });
       });
     });
+    
+    // Animate topic sections with proper delays
+    document.querySelectorAll(".topic-section").forEach((section, index) => {
+      setTimeout(() => {
+        section.classList.add("is-visible");
+      }, 100 + index * 50);
+    });
+    
+    // Restore scroll position after a brief delay to allow layout
+    setTimeout(() => {
+      if (scrollPosition > 0) {
+        window.scrollTo({
+          top: scrollPosition,
+          behavior: "auto"
+        });
+      }
+    }, 50);
   });
 };
 
@@ -473,41 +519,57 @@ const renderCards = () => {
   emptyState.classList.toggle("hidden", filtered.length > 0);
 
   if (filtered.length === 0) {
-    grid.innerHTML = "";
+    // Fade out before clearing
+    grid.style.opacity = "0";
+    grid.style.transition = "opacity 0.3s ease";
+    setTimeout(() => {
+      grid.innerHTML = "";
+      grid.style.opacity = "1";
+      grid.style.transition = "";
+    }, 300);
     return;
   }
 
-  if (isFullHierarchicalView) {
-    renderHierarchicalView(filtered);
-  } else if (state.year === "all" && state.topic !== "all") {
-    // All years, specific topic - group by year
-    renderHierarchicalView(filtered);
-  } else if (state.topic === "all" && state.year !== "all") {
-    // Specific year, all topics - group by topic
-    renderHierarchicalView(filtered);
-  } else if (isAllView && (state.year === "all" || state.topic === "all")) {
-    renderHierarchicalView(filtered);
-  } else {
-    renderGrid(filtered);
-  }
+  // Fade out current content before rendering new content
+  const wasHierarchical = grid.classList.contains("hierarchical-view");
+  const currentOpacity = grid.style.opacity || "1";
+  grid.style.opacity = "0";
+  grid.style.transition = "opacity 0.25s ease";
+  
+  setTimeout(() => {
+    if (isFullHierarchicalView) {
+      renderHierarchicalView(filtered);
+    } else if (state.year === "all" && state.topic !== "all") {
+      // All years, specific topic - group by year
+      renderHierarchicalView(filtered);
+    } else if (state.topic === "all" && state.year !== "all") {
+      // Specific year, all topics - group by topic
+      renderHierarchicalView(filtered);
+    } else if (isAllView && (state.year === "all" || state.topic === "all")) {
+      renderHierarchicalView(filtered);
+    } else {
+      renderGrid(filtered);
+    }
 
-  typesetMath();
-  requestAnimationFrame(() => {
-    document.querySelectorAll(".year-header.reveal, .hierarchical-year-header.reveal").forEach((header) => {
-      if (!observer) {
-        header.classList.add("is-visible");
-        return;
-      }
-      observer.observe(header);
+    // Fade in new content
+    requestAnimationFrame(() => {
+      grid.style.opacity = "1";
+      
+      typesetMath();
+      
+      // Animate year headers
+      document.querySelectorAll(".year-header.reveal, .hierarchical-year-header.reveal").forEach((header) => {
+        if (!observer) {
+          header.classList.add("is-visible");
+          return;
+        }
+        observer.observe(header);
+      });
+      
+      // Animate topic sections with proper delays (handled in renderHierarchicalView)
+      // Questions animate automatically via CSS
     });
-    
-    // Animate topic sections
-    document.querySelectorAll(".topic-section").forEach((section, index) => {
-      setTimeout(() => {
-        section.classList.add("is-visible");
-      }, index * 30);
-    });
-  });
+  }, 250);
 };
 
 const getLoadErrorMessage = (label) => {
