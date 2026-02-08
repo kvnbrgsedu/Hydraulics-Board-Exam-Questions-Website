@@ -4,9 +4,9 @@ const QUIZ_URL = "assets/data/quiz.json";
 const QUIZ_STORAGE_KEY = "quizProgressV2";
 
 const state = {
-  year: "all",
+  year: "choose",
   batch: "all",
-  topic: "all",
+  topic: "choose",
   search: "",
   data: [],
   formulas: [],
@@ -236,9 +236,9 @@ const renderFilters = () => {
 
 const updateActiveChips = () => {
   const chips = [];
-  if (state.year !== "all") chips.push(`Year: ${state.year}`);
+  if (state.year !== "all" && state.year !== "choose") chips.push(`Year: ${state.year}`);
   if (state.batch !== "all") chips.push(`Batch: ${state.batch}`);
-  if (state.topic !== "all") chips.push(`Topic: ${state.topic}`);
+  if (state.topic !== "all" && state.topic !== "choose") chips.push(`Topic: ${state.topic}`);
   if (state.search.trim()) chips.push(`Search: "${state.search.trim()}"`);
 
   activeChips.innerHTML = chips
@@ -248,9 +248,10 @@ const updateActiveChips = () => {
 
 const filterData = () =>
   state.data.filter((item) => {
-    const matchesYear = state.year === "all" || item.year === state.year;
+    // "choose" means no selection, so don't match anything
+    const matchesYear = state.year === "choose" ? false : (state.year === "all" || item.year === state.year);
     const matchesBatch = state.batch === "all" || item.batch === state.batch;
-    const matchesTopic = state.topic === "all" || item.topic === state.topic;
+    const matchesTopic = state.topic === "choose" ? false : (state.topic === "all" || item.topic === state.topic);
     const query = state.search.trim().toLowerCase();
     const matchesSearch =
       !query ||
@@ -523,7 +524,8 @@ const initHomeDropdowns = () => {
     menu.setAttribute("role", "listbox");
 
     // Skip the first "choose" option, only show selectable options
-    Array.from(select.options).forEach((option, index) => {
+    let menuIndex = 0;
+    Array.from(select.options).forEach((option) => {
       // Skip the "choose" placeholder option
       if (option.value === "choose") return;
       
@@ -532,7 +534,8 @@ const initHomeDropdowns = () => {
       item.className = "home-select__option";
       item.setAttribute("role", "option");
       item.dataset.value = option.value;
-      item.style.setProperty("--delay", `${(index - 1) * 40}ms`);
+      item.style.setProperty("--delay", `${menuIndex * 40}ms`);
+      menuIndex++;
       item.innerHTML = `
         <span class="home-select__icon"></span>
         <span class="home-select__label-text">${option.text}</span>
