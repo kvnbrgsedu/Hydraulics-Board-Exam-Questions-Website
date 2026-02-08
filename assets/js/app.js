@@ -214,6 +214,7 @@ const renderFilters = () => {
   startTopic.innerHTML =
     `<option value="choose">Choose Topic</option>` +
     `<option value="all">All Topics</option>` +
+    `<option value="none">None</option>` +
     topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
   // Set to "choose" if no selection, otherwise use state value
   if (state.topic === "all" || state.topic === "choose" || !state.topic) {
@@ -225,6 +226,7 @@ const renderFilters = () => {
   startYear.innerHTML =
     `<option value="choose">Choose Year</option>` +
     `<option value="all">All Years</option>` +
+    `<option value="none">None</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
   // Set to "choose" if no selection, otherwise use state value
   if (state.year === "all" || state.year === "choose" || !state.year) {
@@ -422,8 +424,8 @@ const syncStartSelectCards = () => {
   startReviewCards.forEach((card) => {
     const select = card.querySelector("select");
     if (!select) return;
-    // Has selection if value is not "choose" or "all"
-    card.classList.toggle("has-selection", select.value !== "all" && select.value !== "choose");
+    // Has selection if value is not "choose", "all", or "none"
+    card.classList.toggle("has-selection", select.value !== "all" && select.value !== "choose" && select.value !== "none");
   });
 };
 
@@ -549,16 +551,27 @@ const initHomeDropdowns = () => {
     });
 
     const updateSelection = (value) => {
-      select.value = value;
-      trigger.querySelector(".home-select__value").textContent =
-        select.options[select.selectedIndex].text;
+      // If "none" is selected, convert to "choose" to show placeholder text
+      if (value === "none") {
+        select.value = "choose";
+        // Display the placeholder text ("Choose Topic" or "Choose Year")
+        const chooseOption = Array.from(select.options).find(opt => opt.value === "choose");
+        trigger.querySelector(".home-select__value").textContent = chooseOption ? chooseOption.text : "Choose";
+      } else {
+        select.value = value;
+        trigger.querySelector(".home-select__value").textContent =
+          select.options[select.selectedIndex].text;
+      }
+      
       menu.querySelectorAll(".home-select__option").forEach((item) => {
-        const isSelected = item.dataset.value === value;
+        // Check against actual select value (which may be "choose" if "none" was clicked)
+        const isSelected = item.dataset.value === select.value || (value === "none" && item.dataset.value === "none");
         item.classList.toggle("selected", isSelected);
         item.setAttribute("aria-selected", isSelected ? "true" : "false");
       });
-      // Has selection if value is not "choose" or "all"
-      group.classList.toggle("has-selection", value !== "all" && value !== "choose");
+      // Has selection if value is not "choose", "all", or "none"
+      const actualValue = select.value;
+      group.classList.toggle("has-selection", actualValue !== "all" && actualValue !== "choose" && actualValue !== "none");
     };
 
     trigger.addEventListener("click", (event) => {
@@ -899,16 +912,32 @@ const bindEvents = () => {
   const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
     
-    // Convert "choose" to "all" for filtering purposes
-    const topicValue = startTopic.value === "choose" ? "all" : startTopic.value;
-    const yearValue = startYear.value === "choose" ? "all" : startYear.value;
+    // Convert "none" to "choose", and "choose" to "all" for filtering purposes
+    let topicValue = startTopic.value;
+    let yearValue = startYear.value;
+    
+    if (topicValue === "none") {
+      topicValue = "choose";
+      startTopic.value = "choose";
+    }
+    if (yearValue === "none") {
+      yearValue = "choose";
+      startYear.value = "choose";
+    }
+    
+    // Convert "choose" to "all" for filtering (to show all when placeholder is selected)
+    topicValue = topicValue === "choose" ? "all" : topicValue;
+    yearValue = yearValue === "choose" ? "all" : yearValue;
     
     state.topic = topicValue;
     state.year = yearValue;
     
     // Sync with sidebar filters
-    if (yearValue !== "choose") yearSelect.value = yearValue;
-    if (topicValue !== "choose" && topicSelect) topicSelect.value = topicValue;
+    if (yearValue !== "choose" && yearValue !== "all") yearSelect.value = yearValue;
+    if (topicValue !== "choose" && topicValue !== "all" && topicSelect) topicSelect.value = topicValue;
+    
+    // Update dropdown visual state
+    syncStartSelectCards();
     
     // Apply filters and update home lock
     applyFilters();
