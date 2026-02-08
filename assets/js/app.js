@@ -505,8 +505,19 @@ const initHomeDropdowns = () => {
   if (!groups.length) return;
 
   const closeAll = () => {
-    groups.forEach((group) => group.classList.remove("open"));
+    groups.forEach((group) => {
+      group.classList.remove("open");
+      const trigger = group.querySelector(".home-select__trigger");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+    });
     document.body.classList.remove("home-select-open");
+    // Scroll back to top of home screen when dropdown closes
+    if (document.body.classList.contains("home-page")) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
   };
 
   groups.forEach((group) => {
@@ -583,18 +594,32 @@ const initHomeDropdowns = () => {
       const isOpen = group.classList.toggle("open");
       trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
       document.body.classList.toggle("home-select-open", isOpen);
+      
       if (!isOpen) {
+        // Dropdown is closing - scroll back to top
         menu.classList.remove("menu-upward");
+        if (document.body.classList.contains("home-page")) {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+        }
         return;
       }
+      
+      // Dropdown is opening - close other dropdowns
       groups.forEach((other) => {
-        if (other !== group) other.classList.remove("open");
+        if (other !== group) {
+          other.classList.remove("open");
+          const otherTrigger = other.querySelector(".home-select__trigger");
+          if (otherTrigger) otherTrigger.setAttribute("aria-expanded", "false");
+        }
       });
       
       // Always display below - remove upward positioning
       menu.classList.remove("menu-upward");
       
-      // Auto-scroll to ensure dropdown is visible
+      // Scroll down to show dropdown with extra space below
       requestAnimationFrame(() => {
         // Wait for menu to render
         setTimeout(() => {
@@ -603,25 +628,16 @@ const initHomeDropdowns = () => {
           const viewportHeight = window.innerHeight;
           const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
           
-          // Calculate the bottom position of the menu (relative to viewport)
-          const menuBottom = menuRect.bottom;
+          // Calculate target scroll position to show dropdown with extra space below
+          const menuBottom = triggerRect.bottom + menuRect.height;
+          const extraSpace = 100; // Extra space below dropdown
+          const targetScrollTop = currentScrollTop + (menuBottom - viewportHeight) + extraSpace;
           
-          // If menu extends below viewport, scroll down to show it
-          if (menuBottom > viewportHeight) {
-            const scrollAmount = menuBottom - viewportHeight + 20; // 20px padding
-            window.scrollBy({
-              top: scrollAmount,
-              behavior: "smooth"
-            });
-          }
-          // If trigger is above viewport, scroll to show it
-          else if (triggerRect.top < 0) {
-            const scrollAmount = triggerRect.top - 20; // 20px padding from top
-            window.scrollBy({
-              top: scrollAmount,
-              behavior: "smooth"
-            });
-          }
+          // Scroll to show dropdown with extra space
+          window.scrollTo({
+            top: Math.max(0, targetScrollTop),
+            behavior: "smooth"
+          });
         }, 100); // Small delay to ensure menu is fully rendered
       });
     });
@@ -633,6 +649,15 @@ const initHomeDropdowns = () => {
       group.classList.remove("open");
       trigger.setAttribute("aria-expanded", "false");
       document.body.classList.remove("home-select-open");
+      
+      // Scroll back to top when option is selected
+      if (document.body.classList.contains("home-page")) {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+      
       select.dispatchEvent(new Event("change", { bubbles: true }));
     });
 
