@@ -557,14 +557,35 @@ const initPageBackground = () => {
   if (document.body.classList.contains("home-page")) return;
   
   const bgContainer = document.getElementById("page-bg-animation");
-  if (bgContainer && window.lottie && !bgContainer.hasChildNodes()) {
-    lottie.loadAnimation({
-      container: bgContainer,
-      renderer: "svg",
-      loop: true,
-      autoplay: true,
-      path: "assets/images/Background01.json",
-    });
+  if (!bgContainer || bgContainer.hasChildNodes()) return;
+  
+  // Wait for Lottie library to load (it can be window.lottie or just lottie)
+  const loadAnimation = () => {
+    const lottieLib = window.lottie || window.bodymovin || (typeof lottie !== 'undefined' ? lottie : null);
+    
+    if (lottieLib) {
+      try {
+        lottieLib.loadAnimation({
+          container: bgContainer,
+          renderer: "svg",
+          loop: true,
+          autoplay: true,
+          path: "assets/images/Background01.json",
+        });
+      } catch (error) {
+        console.error("Failed to load background animation:", error);
+      }
+    } else {
+      // Retry after a short delay if Lottie isn't loaded yet
+      setTimeout(loadAnimation, 100);
+    }
+  };
+  
+  // Try immediately, then retry if needed
+  if (document.readyState === 'loading') {
+    window.addEventListener("DOMContentLoaded", loadAnimation);
+  } else {
+    loadAnimation();
   }
 };
 
