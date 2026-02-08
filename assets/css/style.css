@@ -477,24 +477,24 @@ body.home-page .home-selects {
 /* When dropdown is open, ensure it doesn't overlap with other dropdowns or content */
 .home-select-group.open .home-select__menu {
   position: absolute;
-  z-index: 1001;
+  z-index: 10000;
 }
 
 /* Stack dropdowns so first one appears above second when both are open */
 .home-select-group[data-select-group="topic"].open {
-  z-index: 1002;
+  z-index: 10001;
 }
 
 .home-select-group[data-select-group="year"].open {
-  z-index: 1001;
+  z-index: 10000;
 }
 
 .home-select-group[data-select-group="topic"].open .home-select__menu {
-  z-index: 1002;
+  z-index: 10001;
 }
 
 .home-select-group[data-select-group="year"].open .home-select__menu {
-  z-index: 1001;
+  z-index: 10000;
 }
 
 .hero::before {
@@ -1184,7 +1184,7 @@ body.home-page .home-selects {
 }
 
 .home-select-group.open {
-  z-index: 1001;
+  z-index: 10000;
 }
 
 .home-select-group:focus-within {
@@ -1276,7 +1276,7 @@ body.home-page .home-selects {
   transform: translateY(-4px);
   transition: max-height 0.2s ease, opacity 0.2s ease,
     transform 0.2s ease;
-  z-index: 1000;
+  z-index: 10000;
   scroll-behavior: smooth;
   isolation: isolate;
   pointer-events: none;
