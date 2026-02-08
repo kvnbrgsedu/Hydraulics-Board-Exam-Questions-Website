@@ -2305,14 +2305,17 @@ const bindEvents = () => {
     let finalTopicValue = startTopic.value;
     let finalYearValue = startYear.value;
     
-    // Force "all" selections to persist even if sync rebuilt options
-    if (requestedTopic === "all") {
-      startTopic.value = "all";
-      finalTopicValue = "all";
+    // Force user selection to persist even if sync rebuilt options
+    const topicExists = requestedTopic && Array.from(startTopic.options).some(opt => opt.value === requestedTopic);
+    const yearExists = requestedYear && Array.from(startYear.options).some(opt => opt.value === requestedYear);
+
+    if (requestedTopic === "all" || (requestedTopic && requestedTopic !== "choose" && requestedTopic !== "none" && topicExists)) {
+      startTopic.value = requestedTopic;
+      finalTopicValue = requestedTopic;
     }
-    if (requestedYear === "all") {
-      startYear.value = "all";
-      finalYearValue = "all";
+    if (requestedYear === "all" || (requestedYear && requestedYear !== "choose" && requestedYear !== "none" && yearExists)) {
+      startYear.value = requestedYear;
+      finalYearValue = requestedYear;
     }
     
     // Update state to match final dropdown values (after forced all)
