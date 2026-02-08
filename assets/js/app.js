@@ -1600,22 +1600,44 @@ const bindEvents = () => {
       startYear.value = "choose";
     }
     
-    // Set state - "all" means show all, "choose" means no selection
-    state.topic = topicValue;
-    state.year = yearValue;
+    // Preserve existing selections if the other dropdown hasn't changed
+    // This ensures that when user picks topic then year (or vice versa), both are preserved
+    if (topicValue !== "choose" && topicValue !== "none" && topicValue !== "all") {
+      state.topic = topicValue;
+    } else if (topicValue === "all") {
+      state.topic = "all";
+    } else {
+      // Only reset to "choose" if explicitly "choose" or "none"
+      state.topic = topicValue;
+    }
     
-    // Always sync dropdowns based on current selections (even if "choose")
+    if (yearValue !== "choose" && yearValue !== "none" && yearValue !== "all") {
+      state.year = yearValue;
+    } else if (yearValue === "all") {
+      state.year = "all";
+    } else {
+      // Only reset to "choose" if explicitly "choose" or "none"
+      state.year = yearValue;
+    }
+    
+    // Always sync dropdowns based on current state selections
+    // This updates available options based on current selections
     syncTopicDropdown();
     syncYearDropdown();
+    
+    // After syncing, ensure state values are preserved if they're still valid
+    // If sync functions changed the dropdowns, restore the state values
+    if (topicValue !== "choose" && topicValue !== "none") {
+      state.topic = topicValue;
+    }
+    if (yearValue !== "choose" && yearValue !== "none") {
+      state.year = yearValue;
+    }
     
     // Sync with sidebar filters - update sidebar dropdowns to match home dropdowns
     if (yearValue === "all" || (yearValue !== "choose" && yearValue !== "none")) {
       if (yearSelect) {
         yearSelect.value = yearValue;
-        // Trigger change event to ensure state is updated
-        if (yearSelect.value !== yearValue) {
-          yearSelect.value = yearValue;
-        }
       }
     } else if (yearValue === "choose" || yearValue === "none") {
       // Reset sidebar year filter to "all" when home dropdown is reset
@@ -1626,10 +1648,6 @@ const bindEvents = () => {
     if (topicValue === "all" || (topicValue !== "choose" && topicValue !== "none")) {
       if (topicSelect) {
         topicSelect.value = topicValue;
-        // Trigger change event to ensure state is updated
-        if (topicSelect.value !== topicValue) {
-          topicSelect.value = topicValue;
-        }
       }
     } else if (topicValue === "choose" || topicValue === "none") {
       // Reset sidebar topic filter to "all" when home dropdown is reset
@@ -1641,6 +1659,7 @@ const bindEvents = () => {
     syncStartSelectCards();
     
     // Apply filters and update home lock immediately
+    // This will filter based on current state.topic and state.year values
     applyFilters();
     updateHomeLock();
     
