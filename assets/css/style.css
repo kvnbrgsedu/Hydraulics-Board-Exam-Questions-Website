@@ -1568,6 +1568,49 @@ body.home-page .results-info {
   color: #088395;
 }
 
+/* Topics in Year View: All Topics + Specific Year */
+.topics-in-year-view .hierarchical-year {
+  display: block !important;
+}
+
+.topics-in-year-view .topic-section {
+  display: block !important;
+  padding-left: 24px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.topics-in-year-view .secondary-header {
+  margin-bottom: 16px;
+}
+
+.topics-in-year-view .secondary-header .topic-label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #088395;
+}
+
+/* Years with Topic View: All Years + Specific Topic */
+.years-with-topic-view .hierarchical-year {
+  display: block !important;
+}
+
+.years-with-topic-view .topic-section {
+  display: block !important;
+  padding-left: 24px;
+  margin-top: 16px;
+}
+
+.years-with-topic-view .secondary-header {
+  margin-bottom: 16px;
+}
+
+.years-with-topic-view .secondary-header .topic-label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #088395;
+}
+
 /* Primary headers (main category) - larger, bolder */
 .primary-header .year-badge,
 .primary-header .topic-label {

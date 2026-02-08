@@ -646,6 +646,144 @@ const renderSingleYearView = (items) => {
   restoreScrollPosition(scrollPosition);
 };
 
+// Render topics within a specific year (All Topics + Specific Year)
+const renderTopicsInYearView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view", "topics-in-year-view");
+  
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+
+  const year = items[0].year;
+  
+  // Group by topic within the year
+  const grouped = items.reduce((acc, item) => {
+    if (!acc[item.topic]) acc[item.topic] = [];
+    acc[item.topic].push(item);
+    return acc;
+  }, {});
+
+  const topics = Object.keys(grouped).sort();
+  let questionIndex = 0;
+  const yearDelay = 150;
+
+  grid.innerHTML = `
+    <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: 0">
+      <div class="year-header hierarchical-year-header primary-header reveal">
+        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
+          <span class="year-badge">${year}</span>
+          <span class="year-toggle-icon">⌄</span>
+        </button>
+        <div class="year-line"></div>
+      </div>
+      <div class="year-content open">
+        ${topics
+          .map((topic, topicIndex) => {
+            const questions = grouped[topic];
+            const count = questions.length;
+            const topicDelay = yearDelay + topicIndex * 80;
+            return `
+              <section class="topic-section secondary-section" style="--delay: ${topicDelay}ms">
+                <div class="topic-header secondary-header">
+                  <span class="topic-label">${topic}</span>
+                  <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
+                </div>
+                <div class="topic-content">
+                  <div class="questions-grid">
+                    ${questions
+                      .map((item, qIndex) => {
+                        const cardHtml = buildCardHtml(item, questionIndex++);
+                        const questionDelay = topicDelay + qIndex * 30;
+                        return addCardAnimation(cardHtml, questionDelay, qIndex);
+                      })
+                      .join("")}
+                  </div>
+                </div>
+              </section>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+
+  restoreScrollPosition(scrollPosition);
+  initYearToggles();
+  animateSections();
+};
+
+// Render years with a specific topic (All Years + Specific Topic)
+const renderYearsWithTopicView = (items) => {
+  grid.classList.remove("grid");
+  grid.classList.add("hierarchical-view", "years-with-topic-view");
+  
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    return;
+  }
+
+  const topic = items[0].topic;
+  
+  // Group by year
+  const grouped = items.reduce((acc, item) => {
+    if (!acc[item.year]) acc[item.year] = [];
+    acc[item.year].push(item);
+    return acc;
+  }, {});
+
+  const years = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
+  let questionIndex = 0;
+
+  grid.innerHTML = years
+    .map((year, yearIndex) => {
+      const questions = grouped[year];
+      const count = questions.length;
+      const yearDelay = yearIndex * 120 + 150;
+      
+      return `
+        <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
+          <div class="year-header hierarchical-year-header primary-header reveal">
+            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
+              <span class="year-badge">${year}</span>
+              <span class="year-toggle-icon">⌄</span>
+            </button>
+            <div class="year-line"></div>
+          </div>
+          <div class="year-content open">
+            <section class="topic-section secondary-section" style="--delay: ${yearDelay + 50}ms">
+              <div class="topic-header secondary-header">
+                <span class="topic-label">${topic}</span>
+                <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
+              </div>
+              <div class="topic-content">
+                <div class="questions-grid">
+                  ${questions
+                    .map((item, qIndex) => {
+                      const cardHtml = buildCardHtml(item, questionIndex++);
+                      const questionDelay = yearDelay + qIndex * 30;
+                      return addCardAnimation(cardHtml, questionDelay, qIndex);
+                    })
+                    .join("")}
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  initYearToggles();
+  animateSections();
+  restoreScrollPosition(scrollPosition);
+};
+
 // Main render function that detects state and calls appropriate renderer
 const renderTopicAndYearView = (items) => {
   grid.classList.remove("grid");
