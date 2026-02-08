@@ -1238,8 +1238,11 @@ const renderCards = () => {
     // Always use hierarchical view when appropriate, even if filtered is empty
     // The hierarchical view functions handle empty states internally
     if (shouldUseHierarchical) {
+      console.log("renderCards: Using hierarchical view with", filtered.length, "items");
+      console.log("renderCards: isAllTopics:", isAllTopics, "isAllYears:", isAllYears);
       renderHierarchicalView(filtered);
     } else {
+      console.log("renderCards: Using grid view with", filtered.length, "items");
       renderGrid(filtered);
     }
 
