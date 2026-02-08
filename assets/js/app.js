@@ -810,22 +810,30 @@ const bindEvents = () => {
   });
 
   addListener(clearFilters, "click", () => {
-    state.year = "all";
+    // Reset to "choose" state to lock the home screen
+    state.year = "choose";
     state.batch = "all";
-    state.topic = "all";
+    state.topic = "choose";
     state.search = "";
+    
+    // Reset sidebar dropdowns
     if (yearSelect) yearSelect.value = "all";
     if (batchSelect) batchSelect.value = "all";
     if (topicSelect) topicSelect.value = "all";
     if (searchInput) searchInput.value = "";
+    
+    // Reset home dropdowns to "choose" (placeholder state)
     if (startTopic) startTopic.value = "choose";
     if (startYear) startYear.value = "choose";
+    
+    // Clear the questions grid
+    if (grid) grid.innerHTML = "";
+    if (resultsInfo) resultsInfo.textContent = "";
     
     // Reset home dropdown visual state
     syncStartSelectCards();
     
-    // Apply filters and update home lock state
-    applyFilters();
+    // Update home lock state (will lock since state is "choose")
     updateHomeLock();
     
     // Scroll back to top if on home page
