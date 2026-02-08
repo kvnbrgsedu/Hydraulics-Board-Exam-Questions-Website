@@ -638,6 +638,22 @@ const renderFullHierarchyView = (items) => {
 
   console.log("renderFullHierarchyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
   
+  // Immediately mark all topic sections as visible for full hierarchy view
+  requestAnimationFrame(() => {
+    const topicSections = grid.querySelectorAll('.topic-section');
+    topicSections.forEach(section => {
+      section.classList.add('is-visible');
+    });
+    
+    // Also ensure topic headers are visible
+    const topicHeaders = grid.querySelectorAll('.topic-header');
+    topicHeaders.forEach(header => {
+      header.style.display = 'flex';
+      header.style.visibility = 'visible';
+      header.style.opacity = '1';
+    });
+  });
+  
   initYearToggles();
   animateSections();
   restoreScrollPosition(scrollPosition);

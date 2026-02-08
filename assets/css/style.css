@@ -1813,6 +1813,28 @@ body.home-page .results-info {
   visibility: visible !important;
 }
 
+/* Make topic headers more prominent in full hierarchy view */
+.full-hierarchy-view .topic-header.secondary-header {
+  background: rgba(122, 178, 178, 0.12) !important;
+  border-left: 4px solid #088395 !important;
+  padding: 14px 20px !important;
+  margin-bottom: 18px !important;
+  box-shadow: 0 2px 8px rgba(9, 99, 126, 0.1);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.full-hierarchy-view .topic-header.secondary-header:hover {
+  background: rgba(122, 178, 178, 0.16) !important;
+  transform: translateX(2px);
+}
+
+.full-hierarchy-view .secondary-header .topic-label {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: #088395 !important;
+  letter-spacing: 0.3px;
+}
+
 .full-hierarchy-view .year-content {
   display: block !important;
 }
