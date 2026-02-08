@@ -2276,6 +2276,8 @@ const bindEvents = () => {
     // Read current values from both dropdowns (source of truth)
     const topicValue = startTopic.value;
     const yearValue = startYear.value;
+    const requestedTopic = topicValue;
+    const requestedYear = yearValue;
     
     // Handle "none" selection - convert to "choose"
     if (topicValue === "none") {
@@ -2300,10 +2302,20 @@ const bindEvents = () => {
     
     // After syncing, preserve the user's selection
     // Re-read dropdown values to ensure they weren't changed by sync
-    const finalTopicValue = startTopic.value;
-    const finalYearValue = startYear.value;
+    let finalTopicValue = startTopic.value;
+    let finalYearValue = startYear.value;
     
-    // Update state to match final dropdown values
+    // Force "all" selections to persist even if sync rebuilt options
+    if (requestedTopic === "all") {
+      startTopic.value = "all";
+      finalTopicValue = "all";
+    }
+    if (requestedYear === "all") {
+      startYear.value = "all";
+      finalYearValue = "all";
+    }
+    
+    // Update state to match final dropdown values (after forced all)
     if (finalTopicValue !== state.topic) {
       state.topic = finalTopicValue;
     }
