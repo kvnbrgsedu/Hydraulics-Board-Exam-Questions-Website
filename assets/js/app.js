@@ -765,18 +765,30 @@ const renderCards = () => {
     resultsInfo.textContent = `${filtered.length} question${filtered.length === 1 ? "" : "s"} found.`;
   }
   
-  emptyState.classList.toggle("hidden", filtered.length > 0);
-
+  // Show/hide empty state based on results
   if (filtered.length === 0) {
+    emptyState.classList.remove("hidden");
+    // Update empty state message
+    const emptyTitle = emptyState.querySelector("h3");
+    const emptyMessage = emptyState.querySelector("p");
+    if (emptyTitle) {
+      emptyTitle.textContent = "No results found";
+    }
+    if (emptyMessage) {
+      emptyMessage.textContent = "Try adjusting your filters or search keywords.";
+    }
+    
     // Fade out before clearing
     grid.style.opacity = "0";
     grid.style.transition = "opacity 0.3s ease";
     setTimeout(() => {
-    grid.innerHTML = "";
+      grid.innerHTML = "";
       grid.style.opacity = "1";
       grid.style.transition = "";
     }, 300);
     return;
+  } else {
+    emptyState.classList.add("hidden");
   }
 
   // Fade out current content before rendering new content
@@ -1078,9 +1090,12 @@ const initHomeDropdowns = () => {
     });
 
     menu.addEventListener("click", (event) => {
+      event.stopPropagation(); // Prevent event from bubbling to document
       const item = event.target.closest(".home-select__option");
       if (!item) return;
-      updateSelection(item.dataset.value);
+      
+      const selectedValue = item.dataset.value;
+      updateSelection(selectedValue);
       group.classList.remove("open");
       trigger.setAttribute("aria-expanded", "false");
       document.body.classList.remove("home-select-open");
@@ -1093,15 +1108,64 @@ const initHomeDropdowns = () => {
         });
       }
       
+      // Trigger change event to update filters
       select.dispatchEvent(new Event("change", { bubbles: true }));
     });
 
     group.appendChild(trigger);
     group.appendChild(menu);
     updateSelection(select.value);
+    
+    // Store references for rebuilding menu when options change
+    group._select = select;
+    group._trigger = trigger;
+    group._menu = menu;
+    group._updateSelection = updateSelection;
+    
+    // Function to rebuild menu when options change
+    // Note: Click handler is already attached to menu element, so we don't need to re-attach it
+    const rebuildMenu = () => {
+      menu.innerHTML = "";
+      let menuIndex = 0;
+      Array.from(select.options).forEach((option) => {
+        // Skip the "choose" placeholder option
+        if (option.value === "choose") return;
+        
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "home-select__option";
+        item.setAttribute("role", "option");
+        item.dataset.value = option.value;
+        item.style.setProperty("--delay", `${menuIndex * 40}ms`);
+        menuIndex++;
+        item.innerHTML = `
+          <span class="home-select__icon"></span>
+          <span class="home-select__label-text">${option.text}</span>
+          <span class="home-select__check"></span>
+        `;
+        if (option.selected) {
+          item.classList.add("selected");
+          item.setAttribute("aria-selected", "true");
+        }
+        menu.appendChild(item);
+      });
+      
+      // Update selection display (click handler is already attached to menu, no need to re-attach)
+      updateSelection(select.value);
+    };
+    
+    // Store rebuild function
+    group._rebuildMenu = rebuildMenu;
   });
 
-  document.addEventListener("click", closeAll);
+  // Close dropdowns when clicking outside, but not when clicking inside the menu
+  document.addEventListener("click", (event) => {
+    const clickedInside = event.target.closest(".home-select-group");
+    if (!clickedInside) {
+      closeAll();
+    }
+  });
+  
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeAll();
   });
@@ -1360,6 +1424,12 @@ const bindEvents = () => {
         // Preserve "choose" or "none" if that was the previous value
         startTopic.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
       }
+      
+      // Rebuild custom dropdown menu if it exists
+      const topicGroup = document.querySelector('.home-select-group[data-select-group="topic"]');
+      if (topicGroup && topicGroup._rebuildMenu) {
+        topicGroup._rebuildMenu();
+      }
     }
   };
 
@@ -1442,6 +1512,12 @@ const bindEvents = () => {
       } else {
         // Preserve "choose" or "none" if that was the previous value
         startYear.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
+      }
+      
+      // Rebuild custom dropdown menu if it exists
+      const yearGroup = document.querySelector('.home-select-group[data-select-group="year"]');
+      if (yearGroup && yearGroup._rebuildMenu) {
+        yearGroup._rebuildMenu();
       }
     }
   };

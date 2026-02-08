@@ -1108,6 +1108,11 @@ body.home-page .home-selects {
   z-index: 1000;
   scroll-behavior: smooth;
   isolation: isolate;
+  pointer-events: none;
+}
+
+.home-select-group.open .home-select__menu {
+  pointer-events: auto;
 }
 
 /* Support for upward positioning */
@@ -1160,10 +1165,24 @@ body.home-page .home-selects {
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  z-index: 1;
 }
 
 .home-select__option:hover {
   background: rgba(9, 99, 126, 0.08);
+}
+
+.home-select__option:active {
+  background: rgba(9, 99, 126, 0.12);
+}
+
+.home-select__option.selected {
+  background: rgba(9, 99, 126, 0.1);
+  font-weight: 600;
 }
 
 .home-select__icon {
