@@ -1871,6 +1871,12 @@ body.home-page .results-info {
   margin-bottom: 24px;
 }
 
+.full-hierarchy-view .year-header {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 /* Ensure topic sections are visible immediately in full hierarchy view */
 .full-hierarchy-view .topic-section.is-visible,
 .full-hierarchy-view .topic-section {
