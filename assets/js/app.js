@@ -788,19 +788,18 @@ const renderCards = () => {
   grid.style.transition = "opacity 0.25s ease";
   
   setTimeout(() => {
-    if (isFullHierarchicalView) {
+    // Use hierarchical view for all cases where we have meaningful categorization
+    // renderHierarchicalView will detect the state and call the appropriate renderer
+    const shouldUseHierarchical = 
+      state.year === "all" || 
+      state.topic === "all" || 
+      (state.year !== "all" && state.year !== "choose" && state.topic !== "all" && state.topic !== "choose");
+    
+    if (shouldUseHierarchical) {
       renderHierarchicalView(filtered);
-    } else if (state.year === "all" && state.topic !== "all") {
-      // All years, specific topic - group by year
-      renderHierarchicalView(filtered);
-    } else if (state.topic === "all" && state.year !== "all") {
-      // Specific year, all topics - group by topic
-      renderHierarchicalView(filtered);
-    } else if (isAllView && (state.year === "all" || state.topic === "all")) {
-      renderHierarchicalView(filtered);
-  } else {
-    renderGrid(filtered);
-  }
+    } else {
+      renderGrid(filtered);
+    }
 
     // Fade in new content
   requestAnimationFrame(() => {

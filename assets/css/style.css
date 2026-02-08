@@ -1571,6 +1571,13 @@ body.home-page .results-info {
   text-align: left;
   position: relative;
   display: inline-block;
+  transition: font-size 0.3s ease, padding 0.3s ease;
+}
+
+/* Primary year badge (when year is main category) */
+.primary-header .year-badge {
+  font-size: 28px;
+  padding: 12px 28px;
 }
 
 .hierarchical-year-header .year-badge::after {
@@ -1663,9 +1670,18 @@ body.home-page .results-info {
   background: rgba(122, 178, 178, 0.08);
   border-left: 3px solid #7AB2B2;
   border-radius: 6px;
-  transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+  transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease, padding 0.3s ease, margin-bottom 0.3s ease;
   position: relative;
   text-align: left;
+}
+
+/* Primary topic header (when topic is main category) */
+.topic-header.primary-header {
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  background: rgba(9, 99, 126, 0.1);
+  border-left: 4px solid #09637E;
+  border-radius: 8px;
 }
 
 .topic-header::before {
