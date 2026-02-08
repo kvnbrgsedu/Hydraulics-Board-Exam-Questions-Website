@@ -190,8 +190,6 @@ const renderSkeletons = () => {
 const renderFilters = () => {
   if (!yearSelect || !batchSelect || !topicSelect || !startTopic || !startYear) return;
   
-  console.log("renderFilters: Starting to populate dropdowns");
-  
   // Add "All Years" option to sidebar yearSelect
   yearSelect.innerHTML = '<option value="all">All Years</option>';
   yearRange.forEach((year) => {
@@ -225,8 +223,6 @@ const renderFilters = () => {
     `<option value="all">All Topics</option>` +
     allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
   
-  console.log(`renderFilters: startTopic populated with ${startTopic.options.length} options`);
-  
   // Set to "choose" if no selection, otherwise use state value
   if (state.topic === "all" || state.topic === "choose" || !state.topic) {
     startTopic.value = state.topic === "all" ? "all" : "choose";
@@ -240,16 +236,12 @@ const renderFilters = () => {
     `<option value="all">All Years</option>` +
     yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
   
-  console.log(`renderFilters: startYear populated with ${startYear.options.length} options`);
-  
   // Set to "choose" if no selection, otherwise use state value
   if (state.year === "all" || state.year === "choose" || !state.year) {
     startYear.value = state.year === "all" ? "all" : "choose";
   } else {
     startYear.value = state.year;
   }
-  
-  console.log("renderFilters: Complete");
 };
 
 const updateActiveChips = () => {
@@ -1520,12 +1512,7 @@ const initHomeBackground = () => {
 const initHomeDropdowns = () => {
   if (!document.body.classList.contains("home-page")) return;
   const groups = document.querySelectorAll(".home-select-group");
-  if (!groups.length) {
-    console.warn("initHomeDropdowns: No .home-select-group elements found");
-    return;
-  }
-
-  console.log("initHomeDropdowns: Found", groups.length, "dropdown groups");
+  if (!groups.length) return;
 
   const closeAll = () => {
     groups.forEach((group) => {
@@ -1543,19 +1530,10 @@ const initHomeDropdowns = () => {
     }
   };
 
-  groups.forEach((group, groupIndex) => {
-    if (group.querySelector(".home-select__trigger")) {
-      console.log(`initHomeDropdowns: Group ${groupIndex} already has trigger, skipping`);
-      return;
-    }
+  groups.forEach((group) => {
+    if (group.querySelector(".home-select__trigger")) return;
     const select = group.querySelector("select");
-    if (!select) {
-      console.warn(`initHomeDropdowns: Group ${groupIndex} has no select element`);
-      return;
-    }
-
-    console.log(`initHomeDropdowns: Initializing group ${groupIndex}, select has ${select.options.length} options`);
-    console.log(`initHomeDropdowns: Options:`, Array.from(select.options).map(o => `${o.value}:${o.text}`).join(", "));
+    if (!select) return;
 
     const trigger = document.createElement("button");
     trigger.type = "button";
@@ -1595,8 +1573,6 @@ const initHomeDropdowns = () => {
       }
       menu.appendChild(item);
     });
-
-    console.log(`initHomeDropdowns: Group ${groupIndex} menu built with ${menu.children.length} items`);
 
     const updateSelection = (value) => {
       // If "none" is selected, convert to "choose" to show placeholder text
@@ -1678,14 +1654,9 @@ const initHomeDropdowns = () => {
 
     menu.addEventListener("click", (event) => {
       event.stopPropagation(); // Prevent event from bubbling to document
-      console.log("Menu clicked:", event.target);
       const item = event.target.closest(".home-select__option");
-      if (!item) {
-        console.log("Click was not on a menu option");
-        return;
-      }
+      if (!item) return;
       
-      console.log("Menu option clicked:", item.dataset.value);
       const selectedValue = item.dataset.value;
       updateSelection(selectedValue);
       group.classList.remove("open");
