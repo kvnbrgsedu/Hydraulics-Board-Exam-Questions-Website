@@ -253,9 +253,10 @@ const updateActiveChips = () => {
 const filterData = () =>
   state.data.filter((item) => {
     // "choose" means no selection, so don't match anything
-    const matchesYear = state.year === "choose" ? false : (state.year === "all" || item.year === state.year);
-    const matchesBatch = state.batch === "all" || item.batch === state.batch;
-    const matchesTopic = state.topic === "choose" ? false : (state.topic === "all" || item.topic === state.topic);
+    // "all" means match everything for that filter
+    const matchesYear = state.year === "choose" ? false : (state.year === "all" ? true : item.year === state.year);
+    const matchesBatch = state.batch === "all" ? true : item.batch === state.batch;
+    const matchesTopic = state.topic === "choose" ? false : (state.topic === "all" ? true : item.topic === state.topic);
     const query = state.search.trim().toLowerCase();
     const matchesSearch =
       !query ||
@@ -1031,21 +1032,20 @@ const bindEvents = () => {
       startYear.value = "choose";
     }
     
-    // Set state - keep "choose" as "choose" (don't convert to "all")
-    // Only convert "choose" to "all" for filtering if it wasn't explicitly set to "choose"
+    // Set state - "all" means show all, "choose" means no selection
     state.topic = topicValue;
     state.year = yearValue;
     
-    // Sync with sidebar filters only if not "choose"
-    if (yearValue !== "choose" && yearValue !== "none") {
+    // Sync with sidebar filters
+    if (yearValue === "all" || (yearValue !== "choose" && yearValue !== "none")) {
       if (yearSelect) yearSelect.value = yearValue;
     } else if (yearValue === "choose") {
       // Reset sidebar year filter to "all" when home dropdown is reset
       if (yearSelect) yearSelect.value = "all";
     }
     
-    if (topicValue !== "choose" && topicValue !== "none" && topicSelect) {
-      topicSelect.value = topicValue;
+    if (topicValue === "all" || (topicValue !== "choose" && topicValue !== "none")) {
+      if (topicSelect) topicSelect.value = topicValue;
     } else if (topicValue === "choose") {
       // Reset sidebar topic filter to "all" when home dropdown is reset
       if (topicSelect) topicSelect.value = "all";
@@ -1054,13 +1054,8 @@ const bindEvents = () => {
     // Update dropdown visual state
     syncStartSelectCards();
     
-    // Clear questions if reset to "choose"
-    if (topicValue === "choose" || yearValue === "choose") {
-      const grid = document.getElementById("questions-grid");
-      const resultsInfo = document.getElementById("results-info");
-      if (grid) grid.innerHTML = "";
-      if (resultsInfo) resultsInfo.textContent = "";
-    }
+    // Don't manually clear - let applyFilters handle rendering
+    // The filterData function will return empty array if either is "choose"
     
     // Apply filters and update home lock
     applyFilters();
