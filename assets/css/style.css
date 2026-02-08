@@ -947,9 +947,16 @@ body.home-page .questions-section.is-active {
   opacity: 1;
   transform: translateY(0);
   max-height: none;
-  overflow: visible;
+  overflow: hidden;
   pointer-events: auto;
   padding: 60px 20px 80px;
+}
+
+/* Hard clamp horizontal overflow in question view */
+body.home-page .questions-section,
+body.home-page .questions-section * {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Content alignment within Question Viewing Zone */
