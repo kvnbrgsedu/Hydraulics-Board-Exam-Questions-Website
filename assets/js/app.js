@@ -684,31 +684,39 @@ const renderHierarchicalView = (items) => {
   // Full hierarchy: Year (Primary) → Topic (Secondary) → Questions
   if (isAllTopics && isAllYears) {
     renderFullHierarchyView(items);
+    return;
   } 
+  
   // Case 2: "All Topics" selected (regardless of year: "all", specific, or "choose")
   // Topic headers only - Year appears as metadata in cards
-  else if (isAllTopics) {
+  if (isAllTopics) {
     renderTopicOnlyView(items);
+    return;
   } 
+  
   // Case 3: "All Years" selected (regardless of topic: "all", specific, or "choose")
   // Year headers only - Topic appears in card headers
-  else if (isAllYears) {
+  if (isAllYears) {
     renderYearOnlyView(items);
+    return;
   } 
+  
   // Case 4: Specific topic selected (year can be "all", specific, or "choose")
   // Single topic view - Show topic header once, year as metadata
-  else if (isSpecificTopic) {
+  if (isSpecificTopic) {
     renderSingleTopicView(items);
+    return;
   } 
+  
   // Case 5: Specific year selected (topic can be "all", specific, or "choose")
   // Single year view - Show year header once, topic in cards
-  else if (isSpecificYear) {
+  if (isSpecificYear) {
     renderSingleYearView(items);
+    return;
   } 
+  
   // Case 6: Both are "choose" or "none" - Fallback to grid view
-  else {
-    renderGrid(items);
-  }
+  renderGrid(items);
 };
 
 // Helper functions for common functionality
