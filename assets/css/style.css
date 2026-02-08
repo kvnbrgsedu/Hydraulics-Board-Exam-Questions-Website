@@ -1048,26 +1048,26 @@ body.home-page .home-selects {
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: 10px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 18px 36px rgba(9, 99, 126, 0.28);
+  margin-top: 4px;
+  border-radius: 8px;
+  background: #f7fbfc;
+  border: 1px solid rgba(9, 99, 126, 0.2);
+  box-shadow: 0 4px 12px rgba(9, 99, 126, 0.15);
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transform: translateY(-6px);
-  transition: max-height 0.25s ease, opacity 0.25s ease,
-    transform 0.25s ease;
+  overflow-y: auto;
+  transform: translateY(-4px);
+  transition: max-height 0.2s ease, opacity 0.2s ease,
+    transform 0.2s ease;
   z-index: 1000;
 }
 
 .home-select-group.open .home-select__menu {
-  max-height: 320px;
+  max-height: min(320px, calc(100vh - 200px));
   opacity: 1;
   transform: translateY(0);
+  overflow-y: auto;
 }
 
 .home-select__option {
@@ -1075,66 +1075,27 @@ body.home-page .home-selects {
   padding: 10px 16px;
   background: transparent;
   border: none;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  color: #0b5a6f;
+  display: block;
+  text-align: left;
   cursor: pointer;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.2s ease, transform 0.2s ease,
-    background 0.2s ease;
-  transition-delay: var(--delay, 0ms);
-}
-
-.home-select-group.open .home-select__option {
-  opacity: 1;
-  transform: translateY(0);
+  transition: background 0.15s ease;
 }
 
 .home-select__option:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(9, 99, 126, 0.08);
 }
 
 .home-select__icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
-.home-select__option:hover .home-select__icon {
-  transform: scale(1.1) rotate(6deg);
+  display: none;
 }
 
 .home-select__label-text {
-  flex: 1;
-  text-align: left;
+  display: block;
 }
 
 .home-select__check {
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.home-select__check::after {
-  content: "✓";
-  font-size: 11px;
-}
-
-.home-select__option.selected .home-select__check {
-  opacity: 1;
-  transform: scale(1);
-  animation: pulseGlow 0.6s ease;
+  display: none;
 }
 
 body.home-page.home-select-open .home-bg {
