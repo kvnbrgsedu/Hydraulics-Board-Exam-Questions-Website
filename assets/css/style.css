@@ -435,6 +435,31 @@ body.home-page.home-locked .hero {
   padding: 110px 32px 40px 32px;
 }
 
+/* Ensure dropdowns don't overlap with content */
+body.home-page .home-selects {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+/* When dropdown is open, ensure it doesn't overlap with other dropdowns or content */
+.home-select-group.open .home-select__menu {
+  position: absolute;
+  z-index: 1001;
+}
+
+/* Ensure dropdowns are stacked correctly when multiple are open */
+.home-select-group {
+  position: relative;
+}
+
+.home-select-group:first-child.open {
+  z-index: 1002;
+}
+
+.home-select-group:last-child.open {
+  z-index: 1001;
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -939,8 +964,11 @@ body.home-page .start-review__controls {
 
 body.home-page .home-selects {
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  gap: 20px;
+  position: relative;
+  z-index: 10;
 }
 
 @media (max-width: 768px) {
@@ -960,6 +988,7 @@ body.home-page .home-selects {
     right: 16px;
     width: auto;
     max-width: calc(100vw - 32px);
+    z-index: 1002;
   }
 }
 
@@ -969,6 +998,11 @@ body.home-page .home-selects {
   text-align: left;
   transition: transform 0.2s ease;
   flex-shrink: 0;
+  z-index: 10;
+}
+
+.home-select-group.open {
+  z-index: 1001;
 }
 
 .home-select-group:focus-within {
@@ -1062,6 +1096,7 @@ body.home-page .home-selects {
     transform 0.2s ease;
   z-index: 1000;
   scroll-behavior: smooth;
+  isolation: isolate;
 }
 
 /* Support for upward positioning */
