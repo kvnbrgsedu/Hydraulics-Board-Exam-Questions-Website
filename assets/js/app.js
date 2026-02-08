@@ -189,6 +189,8 @@ const renderSkeletons = () => {
 
 const renderFilters = () => {
   if (!yearSelect || !batchSelect || !topicSelect || !startTopic || !startYear) return;
+  // Add "All Years" option to sidebar yearSelect
+  yearSelect.innerHTML = '<option value="all">All Years</option>';
   yearRange.forEach((year) => {
     const option = document.createElement("option");
     option.value = String(year);
@@ -431,9 +433,10 @@ const syncStartSelectCards = () => {
 
 const updateHomeLock = () => {
   if (!document.body.classList.contains("home-page")) return;
-  // Has selection if topic or year is not "all" or "choose"
-  const hasSelection = (state.topic !== "all" && state.topic !== "choose") || 
-                       (state.year !== "all" && state.year !== "choose");
+  // Has selection if topic or year is "all" or a specific value (but not "choose")
+  // "all" is a valid selection that should unlock the home screen
+  const hasSelection = (state.topic === "all" || (state.topic !== "choose" && state.topic)) || 
+                       (state.year === "all" || (state.year !== "choose" && state.year));
   const shouldLock = !hasSelection && !document.body.classList.contains("home-show-all");
   document.body.classList.toggle("home-locked", shouldLock);
   syncStartSelectCards();
@@ -778,7 +781,10 @@ const loadFormulaData = async () => {
 const bindEvents = () => {
   addListener(yearSelect, "change", (event) => {
     state.year = event.target.value;
-    if (startYear) startYear.value = state.year;
+    // Sync with home dropdown (including "all" values)
+    if (startYear) {
+      startYear.value = state.year === "all" ? "all" : state.year;
+    }
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -791,7 +797,10 @@ const bindEvents = () => {
 
   addListener(topicSelect, "change", (event) => {
     state.topic = event.target.value;
-    if (startTopic) startTopic.value = state.topic;
+    // Sync with home dropdown (including "all" values)
+    if (startTopic) {
+      startTopic.value = state.topic === "all" ? "all" : state.topic;
+    }
     applyFilters();
     closeSidebarIfAutoHide();
   });
@@ -932,9 +941,13 @@ const bindEvents = () => {
     state.topic = topicValue;
     state.year = yearValue;
     
-    // Sync with sidebar filters
-    if (yearValue !== "choose" && yearValue !== "all") yearSelect.value = yearValue;
-    if (topicValue !== "choose" && topicValue !== "all" && topicSelect) topicSelect.value = topicValue;
+    // Sync with sidebar filters (including "all" values)
+    if (yearValue !== "choose") {
+      if (yearSelect) yearSelect.value = yearValue;
+    }
+    if (topicValue !== "choose" && topicSelect) {
+      topicSelect.value = topicValue;
+    }
     
     // Update dropdown visual state
     syncStartSelectCards();
