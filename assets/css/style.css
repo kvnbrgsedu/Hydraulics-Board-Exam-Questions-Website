@@ -2222,9 +2222,12 @@ body.home-page .results-info {
   width: 100%;
 }
 
+#question-grid.hierarchical-view,
 #questions-grid.hierarchical-view {
   transition: opacity 0.25s ease;
   width: 100%;
+  display: block !important;
+  visibility: visible !important;
 }
 
 /* Ensure hierarchical view content is properly centered */

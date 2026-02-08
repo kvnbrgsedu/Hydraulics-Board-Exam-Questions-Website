@@ -254,15 +254,37 @@ const updateActiveChips = () => {
 };
 
 const filterData = () => {
-  if (!state.data || !Array.isArray(state.data)) return [];
+  if (!state.data || !Array.isArray(state.data)) {
+    console.warn("filterData: No data available");
+    return [];
+  }
+  
+  // CRITICAL: Always check dropdowns as fallback to ensure we have the latest values
+  // This is important when user selects "All Topics" then "All Years" (or vice versa)
+  const topicValue = startTopic ? startTopic.value : state.topic;
+  const yearValue = startYear ? startYear.value : state.year;
+  
+  // Sync state from dropdowns if they differ (defensive)
+  if (topicValue === "all" && state.topic !== "all") {
+    state.topic = "all";
+  } else if (topicValue !== "choose" && topicValue !== "none" && topicValue !== state.topic) {
+    state.topic = topicValue;
+  }
+  
+  if (yearValue === "all" && state.year !== "all") {
+    state.year = "all";
+  } else if (yearValue !== "choose" && yearValue !== "none" && yearValue !== state.year) {
+    state.year = yearValue;
+  }
   
   // If both topic and year are "all", and batch is "all", and no search query,
   // we can return all items directly (optimization)
   if (state.topic === "all" && state.year === "all" && state.batch === "all" && !state.search.trim()) {
+    console.log("filterData: Returning all", state.data.length, "items (both filters are 'all')");
     return state.data;
   }
   
-  return state.data.filter((item) => {
+  const filtered = state.data.filter((item) => {
     if (!item) return false;
     
     // "choose" means no specific selection, so treat it as "all" (match everything for that filter)
@@ -279,6 +301,9 @@ const filterData = () => {
       `${item.year || ""} ${item.batch || ""}`.toLowerCase().includes(query);
     return matchesYear && matchesBatch && matchesTopic && matchesSearch;
   });
+  
+  console.log("filterData: Filtered", filtered.length, "items from", state.data.length, "total (topic:", state.topic, "year:", state.year, ")");
+  return filtered;
 };
 
 const buildCardHtml = (item, index = 0) => {
@@ -677,11 +702,16 @@ const renderFullHierarchyView = (items) => {
       topics: Object.keys(grouped[year]),
       questionCount: Object.values(grouped[year]).reduce((sum, arr) => sum + arr.length, 0)
     })));
-    grid.innerHTML = "";
+    grid.innerHTML = '<div class="empty-state-message">No questions found. Please check your filters.</div>';
     return;
   }
   
   console.log("renderFullHierarchyView: Successfully rendered", years.length, "years with", totalQuestions, "total questions");
+  
+  // Ensure grid is visible
+  grid.style.display = "block";
+  grid.style.visibility = "visible";
+  grid.style.opacity = "1";
   
   // Immediately mark all topic sections as visible for full hierarchy view
   requestAnimationFrame(() => {
