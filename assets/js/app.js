@@ -422,7 +422,8 @@ const syncStartSelectCards = () => {
   startReviewCards.forEach((card) => {
     const select = card.querySelector("select");
     if (!select) return;
-    card.classList.toggle("has-selection", select.value !== "all");
+    // Has selection if value is not "choose" or "all"
+    card.classList.toggle("has-selection", select.value !== "all" && select.value !== "choose");
   });
 };
 
@@ -558,9 +559,9 @@ const initHomeDropdowns = () => {
         <span class="home-select__label-text">${option.text}</span>
         <span class="home-select__check"></span>
       `;
-      // Check if this option matches the current value (accounting for skipped first option)
+      // Check if this option matches the current value
       const currentValue = select.value;
-      const isSelected = option.value === currentValue || (currentValue === "all" && option.value === "all" && option.text !== "Choose Topic" && option.text !== "Choose Year");
+      const isSelected = option.value === currentValue;
       if (isSelected) {
         item.classList.add("selected");
         item.setAttribute("aria-selected", "true");
@@ -569,31 +570,29 @@ const initHomeDropdowns = () => {
     });
 
     const updateSelection = (value) => {
-      // Find the option with this value (skip first "Choose..." option)
+      // Find the option with this value
       const options = Array.from(select.options);
-      const targetOption = options.find(opt => opt.value === value && opt.text !== "Choose Topic" && opt.text !== "Choose Year");
+      const targetOption = options.find(opt => opt.value === value);
+      
       if (targetOption) {
         select.selectedIndex = targetOption.index;
-      } else {
-        // If value is "all", set to first "Choose..." option
+      } else if (value === "choose") {
+        // If value is "choose", set to first "Choose..." option
         select.selectedIndex = 0;
       }
       
-      // Update trigger text - show "Choose..." if all, otherwise show selected text
+      // Update trigger text - show selected option text
       const selectedOption = select.options[select.selectedIndex];
-      if (value === "all" && (selectedOption.text === "Choose Topic" || selectedOption.text === "Choose Year")) {
-        trigger.querySelector(".home-select__value").textContent = selectedOption.text;
-      } else {
-        const displayOption = options.find(opt => opt.value === value && opt.text !== "Choose Topic" && opt.text !== "Choose Year");
-        trigger.querySelector(".home-select__value").textContent = displayOption ? displayOption.text : selectedOption.text;
-      }
+      const displayText = selectedOption.text;
+      trigger.querySelector(".home-select__value").textContent = displayText;
       
       menu.querySelectorAll(".home-select__option").forEach((item) => {
         const isSelected = item.dataset.value === value;
         item.classList.toggle("selected", isSelected);
         item.setAttribute("aria-selected", isSelected ? "true" : "false");
       });
-      group.classList.toggle("has-selection", value !== "all");
+      // Has selection if value is not "choose" or "all"
+      group.classList.toggle("has-selection", value !== "choose" && value !== "all");
     };
 
     trigger.addEventListener("click", (event) => {
@@ -933,14 +932,22 @@ const bindEvents = () => {
 
   const handleStartSelection = () => {
     if (!startTopic || !startYear || !yearSelect) return;
-    // Convert "choose" to "all" for filtering
+    // Convert "choose" to "all" for filtering, otherwise use the selected value
     const topicValue = startTopic.value === "choose" ? "all" : startTopic.value;
     const yearValue = startYear.value === "choose" ? "all" : startYear.value;
+    
+    // Update state immediately
     state.topic = topicValue;
     state.year = yearValue;
+    
+    // Sync with sidebar filters
     yearSelect.value = state.year;
     if (topicSelect) topicSelect.value = state.topic;
+    
+    // Apply filters immediately - this will show all questions if "all" is selected
     applyFilters();
+    
+    // Scroll to questions section if not locked
     const questionsSection = document.getElementById("questions");
     if (questionsSection && !document.body.classList.contains("home-locked")) {
       questionsSection.scrollIntoView({ behavior: "smooth" });
