@@ -395,7 +395,6 @@ const buildCardHtml = (item, index = 0) => {
   return `
     <article class="card question-card" style="--stagger: ${index * 40}ms;">
       <div class="card__header">
-        <span>Question ${item.number}</span>
         <span>${item.topic}</span>
       </div>
       <div class="card__meta">${item.year} • ${item.batch}</div>
