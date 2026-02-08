@@ -1344,24 +1344,14 @@ const loadFormulaData = async () => {
 let syncTopicDropdown, syncYearDropdown;
 
 const bindEvents = () => {
-  // Function to sync topic dropdown based on selected year
+  // Function to sync topic dropdown - ALWAYS show all topics from entire dataset
   syncTopicDropdown = () => {
     if (!state.data.length) return;
     
-    let availableTopics;
-    if (state.year === "all" || state.year === "choose" || state.year === "none") {
-      // Show all topics
-      availableTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
-    } else {
-      // Show only topics available in selected year
-      availableTopics = Array.from(
-        new Set(
-          state.data
-            .filter((item) => item.year === state.year)
-            .map((item) => item.topic)
-        )
-      ).sort();
-    }
+    // ALWAYS show all topics from entire dataset, regardless of current selection
+    // This allows users to select any topic even if it doesn't exist in the selected year
+    // The filtering will happen when displaying results, not when showing dropdown options
+    const availableTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
     
     // Get current selections from dropdowns (not state) to preserve user's actual selections
     const currentTopicFromState = state.topic;
@@ -1433,24 +1423,14 @@ const bindEvents = () => {
     }
   };
 
-  // Function to sync year dropdown based on selected topic
+  // Function to sync year dropdown - ALWAYS show all years from entire dataset
   syncYearDropdown = () => {
     if (!state.data.length) return;
     
-    let availableYears;
-    if (state.topic === "all" || state.topic === "choose" || state.topic === "none") {
-      // Show all years
-      availableYears = Array.from(new Set(state.data.map((item) => item.year))).sort((a, b) => parseInt(a) - parseInt(b));
-    } else {
-      // Show only years where selected topic exists
-      availableYears = Array.from(
-        new Set(
-          state.data
-            .filter((item) => item.topic === state.topic)
-            .map((item) => item.year)
-        )
-      ).sort((a, b) => parseInt(a) - parseInt(b));
-    }
+    // ALWAYS show all years from entire dataset, regardless of current selection
+    // This allows users to select any year even if it doesn't have the selected topic
+    // The filtering will happen when displaying results, not when showing dropdown options
+    const availableYears = Array.from(new Set(state.data.map((item) => item.year))).sort((a, b) => parseInt(a) - parseInt(b));
     
     // Get current selections from dropdowns (not state) to preserve user's actual selections
     const currentYearFromState = state.year;

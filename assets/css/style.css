@@ -2084,6 +2084,25 @@ mark {
   margin: 40px auto;
   text-align: center;
   color: var(--muted);
+  padding: 40px 20px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.empty:not(.hidden) {
+  display: block;
+  opacity: 1;
+  animation: fadeInEmpty 0.4s ease forwards;
+}
+
+@keyframes fadeInEmpty {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .empty__bubble {
