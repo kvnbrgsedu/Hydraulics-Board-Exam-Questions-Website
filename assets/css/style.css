@@ -1734,6 +1734,7 @@ body.home-page .results-info {
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
 }
 
 .year-header.is-visible {
@@ -2084,6 +2085,13 @@ body.home-page .results-info {
   position: relative;
   text-align: left;
   width: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+.hierarchical-year-header::-webkit-scrollbar,
+.year-header::-webkit-scrollbar {
+  display: none;
 }
 
 .hierarchical-year-header .year-toggle {
