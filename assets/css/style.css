@@ -2338,23 +2338,11 @@ body.home-page .results-info {
   transform: translateY(12px);
   animation: questionReveal 0.45s ease forwards;
   animation-delay: var(--stagger, 0ms);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  will-change: transform;
 }
 
-.question-card:hover {
-  transform: translateY(-6px) scale(1.02);
+.card:hover {
+  transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .question-card {
-    transition: none;
-  }
-
-  .question-card:hover {
-    transform: none;
-  }
 }
 
 .card__header {
