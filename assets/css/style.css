@@ -923,14 +923,14 @@ body.home-page .questions-section {
   position: relative;
   background: #ffffff;
   min-height: 100vh;
-  width: 100vw;
-  left: 50%;
+  width: 100%;
+  max-width: 100%;
   padding: 60px 20px 80px;
   margin: 0;
   margin-top: 0;
   overflow-x: hidden;
   opacity: 0;
-  transform: translateX(-50%) translateY(50px);
+  transform: translateY(50px);
   max-height: 0;
   overflow: hidden;
   transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
@@ -945,7 +945,7 @@ body.home-page .questions-section {
 /* Question Viewing Zone - Active State */
 body.home-page .questions-section.is-active {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
   max-height: none;
   overflow: visible;
   pointer-events: auto;
@@ -2288,6 +2288,7 @@ body.home-page .results-info {
   margin-top: 16px;
   perspective: 1400px;
   justify-items: center;
+  max-width: 100%;
 }
 
 .questions-grid .card {
@@ -2348,6 +2349,23 @@ body.home-page .results-info {
   max-width: 560px;
   width: 100%;
   margin: 0 auto;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.card * {
+  max-width: 100%;
+}
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+mjx-container {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .card::before {
