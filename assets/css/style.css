@@ -1730,11 +1730,27 @@ body.home-page .results-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  padding: 10px 14px 10px 20px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(9, 99, 126, 0.18), rgba(9, 99, 126, 0.04));
+  box-shadow: 0 10px 22px rgba(9, 99, 126, 0.12);
+  position: relative;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
   overflow: hidden;
+}
+
+.year-header::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
 }
 
 .year-header.is-visible {
@@ -1743,19 +1759,18 @@ body.home-page .results-info {
 }
 
 .year-badge {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  padding: 6px 16px;
-  border-radius: 14px;
-  box-shadow: var(--shadow);
+  font-family: "Poppins", inherit;
+  color: var(--primary);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .year-line {
-  flex: 1;
-  height: 2px;
-  background: linear-gradient(90deg, var(--secondary), transparent);
+  display: none;
 }
 
 .batch-section {
@@ -2081,12 +2096,35 @@ body.home-page .results-info {
   display: flex;
   align-items: center;
   gap: 0;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  padding: 10px 14px 10px 20px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(9, 99, 126, 0.18), rgba(9, 99, 126, 0.04));
+  box-shadow: 0 10px 22px rgba(9, 99, 126, 0.12);
   position: relative;
   text-align: left;
   width: 100%;
   overflow: hidden;
   scrollbar-width: none;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.hierarchical-year-header::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+}
+
+.hierarchical-year-header.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hierarchical-year-header::-webkit-scrollbar,
@@ -2118,25 +2156,26 @@ body.home-page .results-info {
 }
 
 .hierarchical-year-header .year-badge {
-  font-size: 22px;
-  font-weight: 700;
-  color: #ffffff;
-  background: #09637E;
-  padding: 8px 20px;
-  border-radius: 999px;
-  box-shadow: 0 6px 16px rgba(9, 99, 126, 0.2);
+  font-size: 28px;
+  font-weight: 600;
+  font-family: "Poppins", inherit;
+  color: var(--primary);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
   letter-spacing: 0.3px;
   text-align: left;
   position: relative;
   display: inline-block;
   max-width: 100%;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 /* Primary year badge (when year is main category) */
 .primary-header .year-badge {
-  font-size: 28px;
-  padding: 12px 28px;
+  font-size: 30px;
+  padding: 0;
 }
 
 .hierarchical-year-header .year-toggle-icon {

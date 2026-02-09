@@ -457,7 +457,7 @@ const renderTimeline = (items) => {
       return `
         <section class="year-section">
           <div class="year-header reveal">
-            <span class="year-badge">${year}</span>
+            <span class="year-badge" data-year="${escapeHtml(year)}">${escapeHtml(year)}</span>
             <div class="year-line"></div>
           </div>
           ${batchSections}
