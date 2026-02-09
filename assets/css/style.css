@@ -1730,12 +1730,11 @@ body.home-page .results-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
-  position: relative;
+  margin-bottom: 12px;
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  overflow: visible;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
 }
 
 .year-header.is-visible {
@@ -1744,75 +1743,19 @@ body.home-page .results-info {
 }
 
 .year-badge {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
-  font-family: "Poppins", inherit;
-  color: var(--primary);
-  background: linear-gradient(135deg, rgba(9, 99, 126, 0.18), rgba(9, 99, 126, 0.32));
-  padding: 14px 26px;
-  border-radius: 999px;
-  box-shadow:
-    0 12px 24px rgba(9, 99, 126, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(6px);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-  z-index: 1;
-  white-space: nowrap;
-}
-
-.year-badge::before {
-  content: "";
-  width: 4px;
-  height: 22px;
-  border-radius: 999px;
-  background: var(--secondary);
-  display: inline-block;
-}
-
-.year-badge::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-  opacity: 0;
-  transform: translateX(-60%);
-}
-
-.year-header.is-visible .year-badge::after {
-  animation: pillSweep 0.7s ease-out 1;
-}
-
-@keyframes pillSweep {
-  0% {
-    opacity: 0;
-    transform: translateX(-60%);
-  }
-  30% {
-    opacity: 0.6;
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(60%);
-  }
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 6px 16px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
 }
 
 .year-line {
   flex: 1;
   height: 2px;
-  background: linear-gradient(90deg, rgba(9, 99, 126, 0.6), rgba(9, 99, 126, 0));
-  transform-origin: left;
-  transform: scaleX(0);
-  opacity: 0;
-  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
-}
-
-.year-header.is-visible .year-line {
-  transform: scaleX(1);
-  opacity: 1;
+  background: linear-gradient(90deg, var(--secondary), transparent);
 }
 
 .batch-section {
@@ -2137,21 +2080,13 @@ body.home-page .results-info {
 .hierarchical-year-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 0;
+  margin-bottom: 20px;
   position: relative;
   text-align: left;
   width: 100%;
-  overflow: visible;
+  overflow: hidden;
   scrollbar-width: none;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.hierarchical-year-header.is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .hierarchical-year-header::-webkit-scrollbar,
@@ -2183,33 +2118,25 @@ body.home-page .results-info {
 }
 
 .hierarchical-year-header .year-badge {
-  font-size: 24px;
-  font-weight: 600;
-  font-family: "Poppins", inherit;
-  color: var(--primary);
-  background: linear-gradient(135deg, rgba(9, 99, 126, 0.18), rgba(9, 99, 126, 0.32));
-  padding: 14px 26px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #09637E;
+  padding: 8px 20px;
   border-radius: 999px;
-  box-shadow:
-    0 12px 24px rgba(9, 99, 126, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(6px);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(9, 99, 126, 0.2);
   letter-spacing: 0.3px;
   text-align: left;
   position: relative;
   display: inline-block;
   max-width: 100%;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Primary year badge (when year is main category) */
 .primary-header .year-badge {
-  font-size: 26px;
-  padding: 16px 28px;
+  font-size: 28px;
+  padding: 12px 28px;
 }
 
 .hierarchical-year-header .year-toggle-icon {
@@ -2605,7 +2532,6 @@ mjx-container {
 .final-answer p {
   margin-top: 6px;
   color: var(--primary);
-  font-weight: 600;
 }
 
 mark {
@@ -3154,12 +3080,11 @@ mark {
     position: sticky;
     top: 64px;
     z-index: 5;
-    padding: 0;
   }
 
   .year-badge {
-    font-size: 20px;
-    padding: 12px 22px;
+    font-size: 18px;
+    padding: 5px 12px;
   }
 
   /* Timeline */
@@ -3174,13 +3099,13 @@ mark {
   }
 
   .hierarchical-year-header .year-badge {
-    font-size: 20px;
-    padding: 12px 22px;
+    font-size: 18px;
+    padding: 8px 16px;
   }
 
   .hierarchical-year-header .year-toggle {
-    min-width: 0;
-    padding: 0;
+    min-width: 100px;
+    padding: 8px 0;
   }
 
   .topic-header {
@@ -3324,12 +3249,12 @@ mark {
   }
 
   .hierarchical-year-header .year-badge {
-    font-size: 18px;
-    padding: 12px 20px;
+    font-size: 16px;
+    padding: 6px 12px;
   }
 
   .hierarchical-year-header .year-toggle {
-    min-width: 0;
+    min-width: 90px;
   }
 
   .topic-label {
