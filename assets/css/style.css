@@ -3119,11 +3119,12 @@ mark {
     position: sticky;
     top: 64px;
     z-index: 5;
+    padding: 8px 12px 8px 18px;
   }
 
   .year-badge {
-    font-size: 18px;
-    padding: 5px 12px;
+    font-size: 22px;
+    padding: 0;
   }
 
   /* Timeline */

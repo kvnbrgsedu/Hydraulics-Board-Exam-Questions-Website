@@ -162,6 +162,31 @@ const typesetMath = () => {
   }
 };
 
+const animateYearCount = (header) => {
+  if (!header || header.dataset.counted === "true") return;
+  const badge = header.querySelector(".year-badge");
+  if (!badge) return;
+  const rawYear = badge.getAttribute("data-year") || badge.textContent.trim();
+  if (!/^\d{4}$/.test(rawYear)) return;
+  const year = parseInt(rawYear, 10);
+  if (!Number.isFinite(year)) return;
+  header.dataset.counted = "true";
+  const startYear = year - 1;
+  const duration = 380;
+  const startTime = performance.now();
+  const tick = (now) => {
+    const progress = Math.min(1, (now - startTime) / duration);
+    const current = Math.round(startYear + (year - startYear) * progress);
+    badge.textContent = current.toString();
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      badge.textContent = rawYear;
+    }
+  };
+  requestAnimationFrame(tick);
+};
+
 const observer =
   "IntersectionObserver" in window
     ? new IntersectionObserver(
@@ -169,6 +194,7 @@ const observer =
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.classList.add("is-visible");
+              animateYearCount(entry.target);
               observer.unobserve(entry.target);
             }
           });
@@ -616,7 +642,7 @@ const renderYearOnlyView = (items) => {
         <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(year)}" style="--year-index: ${yearIndex}">
           <div class="year-header hierarchical-year-header primary-header reveal">
             <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(year)} questions">
-              <span class="year-badge">${escapeHtml(year)}</span>
+              <span class="year-badge" data-year="${escapeHtml(year)}">${escapeHtml(year)}</span>
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
@@ -725,7 +751,7 @@ const renderFullHierarchyView = (items) => {
         <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(yearEntry.year)}" style="--year-index: ${yearIndex}">
           <div class="year-header hierarchical-year-header primary-header reveal">
             <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(yearEntry.year)} questions">
-              <span class="year-badge">${escapeHtml(yearEntry.year)}</span>
+              <span class="year-badge" data-year="${escapeHtml(yearEntry.year)}">${escapeHtml(yearEntry.year)}</span>
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
@@ -847,10 +873,10 @@ const renderSingleYearView = (items) => {
   const yearDelay = 150;
 
   grid.innerHTML = `
-    <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: 0">
+    <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(year)}" style="--year-index: 0">
       <div class="year-header hierarchical-year-header primary-header reveal">
-        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-          <span class="year-badge">${year}</span>
+        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(year)} questions">
+          <span class="year-badge" data-year="${escapeHtml(year)}">${escapeHtml(year)}</span>
           <span class="year-toggle-icon">⌄</span>
         </button>
         <div class="year-line"></div>
@@ -900,10 +926,10 @@ const renderTopicsInYearView = (items) => {
   const yearDelay = 150;
 
   grid.innerHTML = `
-    <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: 0">
+    <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(year)}" style="--year-index: 0">
       <div class="year-header hierarchical-year-header primary-header reveal">
-        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-          <span class="year-badge">${year}</span>
+        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(year)} questions">
+          <span class="year-badge" data-year="${escapeHtml(year)}">${escapeHtml(year)}</span>
           <span class="year-toggle-icon">⌄</span>
         </button>
         <div class="year-line"></div>
@@ -975,10 +1001,10 @@ const renderYearsWithTopicView = (items) => {
       const yearDelay = yearIndex * 120 + 150;
       
       return `
-        <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: ${yearIndex}">
+        <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(year)}" style="--year-index: ${yearIndex}">
           <div class="year-header hierarchical-year-header primary-header reveal">
-            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-              <span class="year-badge">${year}</span>
+            <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(year)} questions">
+              <span class="year-badge" data-year="${escapeHtml(year)}">${escapeHtml(year)}</span>
               <span class="year-toggle-icon">⌄</span>
             </button>
             <div class="year-line"></div>
@@ -1031,10 +1057,10 @@ const renderTopicAndYearView = (items) => {
   const topicDelay = 200;
 
   grid.innerHTML = `
-    <section class="year-section hierarchical-year primary-section" data-year="${year}" style="--year-index: 0">
+    <section class="year-section hierarchical-year primary-section" data-year="${escapeHtml(year)}" style="--year-index: 0">
       <div class="year-header hierarchical-year-header primary-header reveal">
-        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${year} questions">
-          <span class="year-badge">${year}</span>
+        <button class="year-toggle" aria-expanded="true" aria-label="Toggle ${escapeHtml(year)} questions">
+          <span class="year-badge" data-year="${escapeHtml(year)}">${escapeHtml(year)}</span>
           <span class="year-toggle-icon">⌄</span>
         </button>
         <div class="year-line"></div>
