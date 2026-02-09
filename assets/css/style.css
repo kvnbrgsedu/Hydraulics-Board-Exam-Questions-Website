@@ -2372,7 +2372,7 @@ body.home-page .results-info {
   transform-style: preserve-3d;
   background-clip: padding-box;
   border: 1px solid rgba(9, 99, 126, 0.1);
-  max-width: 560px;
+  max-width: 620px;
   width: 100%;
   margin: 0 auto;
   overflow-wrap: break-word;
