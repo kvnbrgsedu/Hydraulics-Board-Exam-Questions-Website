@@ -93,7 +93,7 @@
     "year": "2024",
     "batch": "April",
     "topic": "Pipe Flow",
-    "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the ff:<br><br>Volume flow rate in \\(m^3/s\\) and L/s<br>Mass flow rate in kg/s<br>Weight flow rate in N/s<br><br>Given:<br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br>Required:<br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
+    "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the following:<br><br>• Volume flow rate in \\( \\text{m}^3/\\text{s} \\) and \\( \\text{L}/\\text{s} \\)<br>• Mass flow rate in \\( \\text{kg}/\\text{s} \\)<br>• Weight flow rate in \\( \\text{N}/\\text{s} \\)<br><br><b>Given:</b><br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br><b>Required:</b><br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
     "solution": "Solution:<br><br>a. Volume flow rate (Q):<br>\\[Q = Av = \\frac{\\pi}{4}d^2 v\\]<br>\\[= \\frac{\\pi}{4}(0.1\\,\\mathrm{m})^2(4\\,\\mathrm{m/s})\\]<br>\\[Q = 0.0314\\,\\mathrm{m}^3/\\mathrm{s}\\]<br>\\[Q = 31.4\\,\\mathrm{L}/\\mathrm{s}\\]<br><br>b. Mass flow rate (M):<br>\\[M = \\rho Q\\]<br>\\[= 1000\\,\\mathrm{kg}/\\mathrm{m}^3 \\times 0.0314\\,\\mathrm{m}^3/\\mathrm{s}\\]<br>\\[M = 31.4\\,\\mathrm{kg}/\\mathrm{s}\\]<br><br>c. Weight flow rate (W):<br>\\[W = \\gamma Q = \\rho g Q\\]<br>\\[= 9810\\,\\mathrm{N}/\\mathrm{m}^3 \\times 0.0314\\,\\mathrm{m}^3/\\mathrm{s}\\]<br>\\[W = 308\\,\\mathrm{N}/\\mathrm{s}\\]",
     "image": "",
     "solutionImage": ""
