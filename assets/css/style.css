@@ -2377,6 +2377,7 @@ body.home-page .results-info {
   margin: 0 auto;
   overflow-wrap: break-word;
   word-break: break-word;
+  overflow: hidden;
 }
 
 .card * {
@@ -2564,11 +2565,11 @@ body.home-page .questions-section mjx-container * {
 }
 
 .solution.open {
-  max-height: 50000px;
+  max-height: 800px;
   opacity: 1;
   padding: 14px;
   transform: translateY(0);
-  overflow: visible;
+  overflow-y: auto;
 }
 
 .solution.open,
