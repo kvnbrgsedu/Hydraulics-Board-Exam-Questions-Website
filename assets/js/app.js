@@ -1345,6 +1345,7 @@ const renderCards = () => {
       state.topic = "all";
       state.year = "all";
       renderFullHierarchyView(state.hierarchy && state.hierarchy.length ? state.hierarchy : state.data);
+      typesetMath();
       return;
     }
 
@@ -2164,6 +2165,9 @@ const bindEvents = () => {
       const isOpen = solution.classList.toggle("open");
       button.textContent = isOpen ? "Hide Solution" : "Show Solution";
       button.setAttribute("aria-expanded", String(isOpen));
+      if (isOpen) {
+        typesetMath();
+      }
     }
 
     if (event.target.classList.contains("tag")) {
