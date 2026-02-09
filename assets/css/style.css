@@ -2519,7 +2519,7 @@ body.home-page .questions-section mjx-container * {
 
 .card__image img {
   width: 100%;
-  max-width: 420px;
+  max-width: 320px;
   display: block;
   border-radius: 12px;
 }
