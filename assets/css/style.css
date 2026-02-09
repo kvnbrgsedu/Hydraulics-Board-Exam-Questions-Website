@@ -25,6 +25,10 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 *::before,
 *::after {
   box-sizing: border-box;
@@ -2310,6 +2314,7 @@ body.home-page .results-info {
   perspective: 1400px;
   justify-items: center;
   max-width: 100%;
+  overflow-x: hidden;
 }
 
 .questions-grid .card {
