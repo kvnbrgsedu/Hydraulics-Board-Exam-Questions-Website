@@ -2565,11 +2565,11 @@ body.home-page .questions-section mjx-container * {
 }
 
 .solution.open {
-  max-height: 800px;
+  max-height: none;
   opacity: 1;
   padding: 14px;
   transform: translateY(0);
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .solution.open,
