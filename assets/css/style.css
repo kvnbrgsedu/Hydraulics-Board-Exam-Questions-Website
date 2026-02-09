@@ -2463,10 +2463,35 @@ body.home-page .questions-section mjx-container * {
   color: var(--text);
   white-space: normal;
   overflow: visible;
+  line-height: 1.6;
 }
 
 .card__question * {
   overflow: visible;
+}
+
+.card__question mjx-container,
+.card__question mjx-container[display="true"] {
+  display: inline !important;
+  overflow: visible !important;
+  vertical-align: middle;
+}
+
+.question,
+.question * {
+  overflow: visible !important;
+}
+
+.question {
+  white-space: normal;
+  line-height: 1.6;
+}
+
+.question mjx-container,
+.question mjx-container[display="true"] {
+  display: inline !important;
+  overflow: visible !important;
+  vertical-align: middle;
 }
 
 .card__image {
