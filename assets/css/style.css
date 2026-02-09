@@ -1740,6 +1740,14 @@ body.home-page .results-info {
   overflow: hidden;
 }
 
+.year-header::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(9, 99, 126, 0.35), transparent);
+  align-self: center;
+}
+
 .year-header.is-visible {
   opacity: 1;
   transform: translateY(0);
@@ -2092,6 +2100,15 @@ body.home-page .results-info {
   width: 100%;
   overflow: hidden;
   scrollbar-width: none;
+}
+
+.hierarchical-year-header::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(9, 99, 126, 0.35), transparent);
+  align-self: center;
+  margin-left: 12px;
 }
 
 .hierarchical-year-header::-webkit-scrollbar,
