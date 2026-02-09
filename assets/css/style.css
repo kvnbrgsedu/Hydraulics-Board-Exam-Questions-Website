@@ -2451,6 +2451,12 @@ mjx-container[display="true"] {
 .card__question {
   font-size: 15px;
   color: var(--text);
+  white-space: normal;
+  overflow: visible;
+}
+
+.card__question * {
+  overflow: visible;
 }
 
 .card__image {
