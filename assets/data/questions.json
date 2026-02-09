@@ -5,7 +5,7 @@
     "year": "2011",
     "batch": "April",
     "topic": "Fluid Properties",
-    "question": "Determine the specific gravity of a liquid if 6.5 kN of force is required to lift a 0.25 m^2 plate from the surface.",
+    "question": "Determine the specific gravity of a liquid if 6.5 kN of force is required to lift a 0.25 \\(m^2\\) plate from the surface.",
     "solution": "Use \\[F = SG \\cdot \\gamma_w \\cdot A\\]. Solve for \\[SG = \\frac{F}{\\gamma_w A}\\], with \\[\\gamma_w = 9.81\\,\\text{kN/m}^3\\].",
     "image": "",
     "solutionImage": ""
@@ -93,7 +93,7 @@
     "year": "2024",
     "batch": "April",
     "topic": "Pipe Flow",
-    "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the ff:<br><br>Volume flow rate in m^3/s and L/s<br>Mass flow rate in kg/s<br>Weight flow rate in N/s<br><br>Given:<br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br>Required:<br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
+    "question": "Situation 1 – Water flows through a 100 mm diameter pipe at a velocity of 4 m/s. Compute for the ff:<br><br>Volume flow rate in \\(m^3/s\\) and L/s<br>Mass flow rate in kg/s<br>Weight flow rate in N/s<br><br>Given:<br>Diameter (d) = 100 mm<br>Velocity (v) = 4 m/s<br><br>Required:<br>Volume flow rate (Q)<br>Mass flow rate (M)<br>Weight flow rate (W)",
     "solution": "Solution:<br><br>a. Volume flow rate (Q):<br>\\[Q = Av = \\frac{\\pi}{4}d^2 v\\]<br>\\[= \\frac{\\pi}{4}(0.1\\,\\mathrm{m})^2(4\\,\\mathrm{m/s})\\]<br>\\[Q = 0.0314\\,\\mathrm{m}^3/\\mathrm{s}\\]<br>\\[Q = 31.4\\,\\mathrm{L}/\\mathrm{s}\\]<br><br>b. Mass flow rate (M):<br>\\[M = \\rho Q\\]<br>\\[= 1000\\,\\mathrm{kg}/\\mathrm{m}^3 \\times 0.0314\\,\\mathrm{m}^3/\\mathrm{s}\\]<br>\\[M = 31.4\\,\\mathrm{kg}/\\mathrm{s}\\]<br><br>c. Weight flow rate (W):<br>\\[W = \\gamma Q = \\rho g Q\\]<br>\\[= 9810\\,\\mathrm{N}/\\mathrm{m}^3 \\times 0.0314\\,\\mathrm{m}^3/\\mathrm{s}\\]<br>\\[W = 308\\,\\mathrm{N}/\\mathrm{s}\\]",
     "image": "",
     "solutionImage": ""
@@ -126,7 +126,7 @@
     "year": "2024",
     "batch": "April",
     "topic": "Pipe Flow",
-    "question": "Situation 4 – Air is moving through a square 500 mm by 500 mm duct at 200 m^3/min. What is its mean velocity?<br><br>Given:<br>Base (b) & height (h) = 500 mm<br>Flow rate (Q) = 200 m^3/min<br><br>Required:<br>Velocity (v)",
+    "question": "Situation 4 – Air is moving through a square 500 mm by 500 mm duct at 200 \\(m^3/min.\\) What is its mean velocity?<br><br>Given:<br>Base (b) & height (h) = 500 mm<br>Flow rate (Q) = 200 \\(m^3/min\\)<br><br>Required:<br>Velocity (v)",
     "solution": "Solution:<br><br>\\[Q = Av\\]<br>\\[200\\,m^3/min\\,(\\frac{1\\,min}{60\\,s})=(0.5\\,m)^2(v)\\]<br>\\[v = 13.333\\,m/s\\]",
     "image": "",
     "solutionImage": ""
