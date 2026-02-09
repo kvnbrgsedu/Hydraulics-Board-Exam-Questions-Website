@@ -1730,7 +1730,10 @@ body.home-page .results-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+  position: relative;
+  z-index: 2;
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -2081,8 +2084,10 @@ body.home-page .results-info {
   display: flex;
   align-items: center;
   gap: 0;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 6px;
   position: relative;
+  z-index: 2;
   text-align: left;
   width: 100%;
   overflow: hidden;
@@ -2161,7 +2166,7 @@ body.home-page .results-info {
 .hierarchical-year .year-content.open {
   max-height: 50000px;
   opacity: 1;
-  margin-top: 20px;
+  margin-top: 28px;
 }
 
 .topic-section {
