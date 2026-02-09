@@ -2386,12 +2386,14 @@ body.home-page .results-info {
 
 mjx-container {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible !important;
   display: block;
 }
 
 mjx-container[display="true"] {
-  text-align: right;
+  display: block;
+  margin: 0.75em auto;
+  text-align: center;
 }
 
 .card::before {
@@ -2512,13 +2514,20 @@ mjx-container[display="true"] {
   border-radius: 14px;
   padding: 0 14px;
   will-change: max-height, opacity, transform;
+  white-space: normal;
 }
 
 .solution.open {
-  max-height: 800px;
+  max-height: 50000px;
   opacity: 1;
   padding: 14px;
   transform: translateY(0);
+  overflow: visible;
+}
+
+.solution.open,
+.solution.open * {
+  overflow: visible !important;
 }
 
 .solution-content {
