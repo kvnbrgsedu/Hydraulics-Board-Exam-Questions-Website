@@ -2396,6 +2396,16 @@ mjx-container[display="true"] {
   text-align: center;
 }
 
+body.home-page .questions-section mjx-container,
+body.home-page .questions-section mjx-container * {
+  overflow: visible !important;
+}
+
+.card__question mjx-container,
+.card__question mjx-container * {
+  overflow: visible !important;
+}
+
 .card::before {
   content: "";
   position: absolute;
