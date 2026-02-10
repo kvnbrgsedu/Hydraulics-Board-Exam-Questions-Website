@@ -3048,6 +3048,21 @@ mark {
     padding: 32px 12px 50px;
   }
 
+  /* Prevent horizontal drift in the home question view */
+  body.home-page .questions-section,
+  body.home-page .questions-section .hierarchical-view,
+  body.home-page .questions-section .year-section,
+  body.home-page .questions-section .topic-section,
+  body.home-page .questions-section .topic-content,
+  body.home-page .questions-section .questions-grid,
+  body.home-page .questions-section .card,
+  body.home-page .questions-section .card__question,
+  body.home-page .questions-section .card__solution {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+
   /* Cards */
   .card {
     padding: 14px;
@@ -3292,6 +3307,31 @@ mark {
 
   .about-card {
     padding: 16px;
+  }
+}
+
+/* Portrait screens: clamp any horizontal overflow in question view */
+@media (orientation: portrait) {
+  body.home-page .questions-section,
+  body.home-page .questions-section.is-active {
+    overflow-x: hidden;
+  }
+
+  body.home-page .questions-section .active-filters,
+  body.home-page .questions-section .results-info,
+  body.home-page .questions-section #question-grid,
+  body.home-page .questions-section .empty,
+  body.home-page .questions-section .hierarchical-view,
+  body.home-page .questions-section .year-section,
+  body.home-page .questions-section .topic-section,
+  body.home-page .questions-section .topic-content,
+  body.home-page .questions-section .questions-grid,
+  body.home-page .questions-section .card,
+  body.home-page .questions-section .card__question,
+  body.home-page .questions-section .card__solution {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
   }
 }
 

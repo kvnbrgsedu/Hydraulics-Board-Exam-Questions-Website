@@ -397,7 +397,12 @@ const buildCardHtml = (item, index = 0) => {
       <div class="card__header">
         <span>${item.topic}</span>
       </div>
-      <div class="card__meta">${item.year} • ${item.batch}</div>
+      <div class="tags">
+        <span class="tag" data-year="${item.year}" data-batch="${
+    item.batch
+  }">${yearTag}</span>
+        <span class="tag" data-topic="${item.topic}">${item.topic}</span>
+      </div>
       <div class="card__question">${question}</div>
       ${questionImage}
       <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Solution</button>
@@ -405,12 +410,6 @@ const buildCardHtml = (item, index = 0) => {
         <div class="solution-content">${solution}</div>
         ${solutionImage}
         ${finalAnswer}
-      </div>
-      <div class="tags">
-        <span class="tag" data-year="${item.year}" data-batch="${
-    item.batch
-  }">${yearTag}</span>
-        <span class="tag" data-topic="${item.topic}">${item.topic}</span>
       </div>
     </article>
   `;
@@ -1345,7 +1344,7 @@ const renderCards = () => {
       state.topic = "all";
       state.year = "all";
       renderFullHierarchyView(state.hierarchy && state.hierarchy.length ? state.hierarchy : state.data);
-      typesetMath();
+  typesetMath();
       return;
     }
 
