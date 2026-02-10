@@ -88,10 +88,15 @@ const parseNumericInput = (value) => {
 };
 
 const setSidebarOpen = (open) => {
-  sidebar.classList.toggle("open", open);
-  hamburger.classList.toggle("open", open);
+  if (!sidebar && !hamburger) {
+    // Sidebar removed from markup — still toggle body state for compatibility
+    document.body.classList.toggle("sidebar-open", open);
+    return;
+  }
+  if (sidebar) sidebar.classList.toggle("open", open);
+  if (hamburger) hamburger.classList.toggle("open", open);
   document.body.classList.toggle("sidebar-open", open);
-  hamburger.setAttribute("aria-expanded", open ? "true" : "false");
+  if (hamburger) hamburger.setAttribute("aria-expanded", open ? "true" : "false");
 };
 
 const loadPinnedPreference = () => false;
@@ -102,11 +107,7 @@ const syncPinToggle = () => {
   pinToggle.disabled = !isDesktop();
 };
 
-const closeSidebarIfAutoHide = () => {
-  if (!isPinned || !isDesktop()) {
-    setSidebarOpen(false);
-  }
-};
+const closeSidebarIfAutoHide = () => {};
 
 const escapeHtml = (value) =>
   value.replace(/[&<>"']/g, (match) => {
@@ -2207,38 +2208,7 @@ const bindEvents = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  addListener(hamburger, "click", () => {
-    if (sidebar) setSidebarOpen(!sidebar.classList.contains("open"));
-  });
-
-  addListener(hideSidebarButton, "click", () => {
-    isPinned = false;
-    localStorage.setItem(SIDEBAR_PIN_KEY, "false");
-    syncPinToggle();
-    setSidebarOpen(false);
-  });
-
-  addListener(pinToggle, "change", (event) => {
-    isPinned = event.target.checked;
-    localStorage.setItem(SIDEBAR_PIN_KEY, String(isPinned));
-    if (isPinned && isDesktop()) {
-      setSidebarOpen(true);
-    } else if (!isPinned) {
-      setSidebarOpen(false);
-    }
-  });
-
-  addListener(sidebar, "click", (event) => {
-    if (event.target.tagName === "A") {
-      closeSidebarIfAutoHide();
-    }
-  });
-
-  addListener(document, "keydown", (event) => {
-    if (event.key === "Escape") {
-      setSidebarOpen(false);
-    }
-  });
+  // Sidebar and its controls were removed from the UI; related listeners dropped.
 
   const handleStartSelection = (event) => {
     if (!startTopic || !startYear) return;

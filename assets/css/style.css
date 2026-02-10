@@ -10,6 +10,34 @@
   --shadow-hover: 0 30px 60px rgba(9, 99, 126, 0.2);
 }
 
+/* ===== Sidebar removal overrides =====
+   The original stylesheet contained many sidebar/hamburger rules.
+   Hide any remaining sidebar markup and ensure header links remain visible.
+========================================*/
+
+.sidebar,
+.sidebar *,
+.hamburger,
+.hamburger * {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body.sidebar-open .content,
+body.sidebar-open .hero,
+body.home-page.sidebar-open .content,
+body.home-page.sidebar-open .hero {
+  transform: none !important;
+}
+
+.top-nav__links {
+  display: flex !important;
+}
+
+/* Keep quick-navigation links styling available if used elsewhere */
+.sidebar__nav { display: none !important; }
+
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -221,9 +249,6 @@ body.home-locked {
   color: #f7fdff;
 }
 
-.top-nav__brand .hamburger {
-  margin-right: 4px;
-}
 
 .top-nav__right {
   display: flex;
@@ -329,9 +354,7 @@ body.home-locked {
   color: var(--accent);
 }
 
-.top-nav.scrolled .hamburger span {
-  background: #f7fdff;
-}
+
 
 .icon-btn {
   border: none;
@@ -429,14 +452,7 @@ body.home-page .icon-btn {
   text-shadow: 0 6px 18px rgba(6, 39, 48, 0.35);
 }
 
-body.home-page .hamburger span {
-  background: #f7fdff;
-}
-
-body.home-page .sidebar {
-  box-shadow: 14px 0 30px rgba(9, 99, 126, 0.12);
-  z-index: 80;
-}
+/* hamburger and sidebar styles removed for a simpler layout */
 
 body.home-page .sidebar .title,
 body.home-page .sidebar .subtitle,
@@ -448,9 +464,6 @@ body.home-page .toggle__subtitle {
   text-shadow: 0 6px 18px rgba(6, 39, 48, 0.35);
 }
 
-.top-nav .hamburger {
-  display: flex;
-}
 
 .global-search__results.show {
   display: block;
@@ -637,84 +650,9 @@ body.home-page .hero__content::before {
   animation-delay: 0.12s;
 }
 
-.hamburger {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
+/* hamburger removed */
 
-.hamburger span {
-  width: 26px;
-  height: 3px;
-  background: #f7fdff;
-  border-radius: 99px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.hamburger.open span:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.open span:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 300px;
-  background: var(--primary);
-  border-right: none;
-  padding: 88px 22px 28px;
-  overflow-y: auto;
-  z-index: 50;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 14px 0 30px rgba(9, 99, 126, 0.08);
-  transform: translateX(-100%);
-}
-
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar__brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #fff;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-  box-shadow: var(--shadow);
-}
-
-.sidebar .title {
-  font-weight: 700;
-  color: #f7fdff;
-}
-
-.sidebar .subtitle {
-  font-size: 12px;
-  color: rgba(247, 253, 255, 0.7);
-}
+/* sidebar removed */
 
 .filter-block {
   margin: 18px 0;

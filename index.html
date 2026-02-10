@@ -51,17 +51,6 @@
 
     <header class="top-nav" id="top-nav">
       <div class="top-nav__brand">
-        <button
-          class="hamburger"
-          id="hamburger"
-          aria-label="Toggle sidebar"
-          aria-expanded="false"
-          aria-controls="sidebar"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
         <span>Hydraulics Review (PH)</span>
       </div>
       <div class="top-nav__right">
@@ -118,60 +107,7 @@
       </div>
     </header>
 
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar__brand">
-        <div>
-          <p class="title">Hydraulics QBank</p>
-          <p class="subtitle">Official Board Exams</p>
-        </div>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="search-input">Search</label>
-        <div class="search">
-          <input
-            id="search-input"
-            type="text"
-            placeholder="Search questions, topics, years..."
-          />
-          <span class="search-icon">⌕</span>
-        </div>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="year-select">Year</label>
-        <select id="year-select">
-          <option value="all">All Years</option>
-        </select>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="batch-select">Exam Batch</label>
-        <select id="batch-select">
-          <option value="all">All Batches</option>
-        </select>
-      </div>
-
-      <div class="filter-block">
-        <label class="filter-label" for="topic-select">Topics</label>
-        <select id="topic-select">
-          <option value="all">All Topics</option>
-        </select>
-      </div>
-
-      <div class="filter-block">
-        <p class="filter-label">Quick Navigation</p>
-        <nav class="sidebar__nav">
-          <a href="quiz.html">Interactive Quiz</a>
-          <a href="formula.html">Formula Sheet</a>
-          <a href="#results-info">Results Summary</a>
-        </nav>
-      </div>
-
-      <button class="btn btn--ghost sidebar__hide" id="hide-sidebar">
-        Hide Sidebar
-      </button>
-    </aside>
+    <!-- Sidebar removed -->
 
     <main class="content">
       <section id="questions" class="questions-section">
