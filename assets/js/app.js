@@ -2968,11 +2968,7 @@ const bindQuizEvents = () => {
     clearQuizProgress();
   });
   addListener(quizElements.pageBack, "click", () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = "index.html#questions";
-    }
+    window.location.href = "index.html#home";
   });
   addListener(quizElements.resumeBtn, "click", () => {
     const saved = loadQuizProgress();
