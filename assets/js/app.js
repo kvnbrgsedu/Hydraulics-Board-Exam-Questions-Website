@@ -187,41 +187,35 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  if (!yearSelect || !batchSelect || !topicSelect || !startTopic || !startYear) return;
-  
-  // Add "All Years" option to sidebar yearSelect
-  yearSelect.innerHTML = '<option value="all">All Years</option>';
-  yearRange.forEach((year) => {
-    const option = document.createElement("option");
-    option.value = String(year);
-    option.textContent = year;
-    yearSelect.appendChild(option);
-  });
+  // Ensure home selects exist
+  if (!startTopic || !startYear) return;
 
-  const batches = Array.from(
-    new Set(state.data.map((item) => item.batch))
-  ).sort();
-  batches.forEach((batch) => {
-    const option = document.createElement("option");
-    option.value = batch;
-    option.textContent = batch;
-    batchSelect.appendChild(option);
-  });
+  // Build topic/year lists from loaded data
+  const allTopics = Array.from(new Set((state.data || []).map((item) => item.topic))).filter(Boolean).sort();
+  const allYears = Array.from(new Set((state.data || []).map((item) => item.year))).filter(Boolean).sort((a, b) => parseInt(a) - parseInt(b));
 
-  // Get available topics and years for synchronization
-  const allTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
-  const allYears = Array.from(new Set(state.data.map((item) => item.year))).sort((a, b) => parseInt(a) - parseInt(b));
-  
-  topicSelect.innerHTML =
-    `<option value="all">All Topics</option>` +
-    allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  // Populate sidebar selects if present (optional)
+  if (yearSelect) {
+    yearSelect.innerHTML = '<option value="all">All Years</option>' +
+      (allYears.length ? allYears.map((y) => `<option value="${y}">${y}</option>`).join("") : yearRange.map((y) => `<option value="${y}">${y}</option>`).join(""));
+  }
 
+  if (batchSelect) {
+    const batches = Array.from(new Set((state.data || []).map((item) => item.batch))).sort();
+    batchSelect.innerHTML = `<option value="all">All Batches</option>` + batches.map((b) => `<option value="${b}">${b}</option>`).join("");
+  }
+
+  if (topicSelect) {
+    topicSelect.innerHTML = `<option value="all">All Topics</option>` + allTopics.map((t) => `<option value="${t}">${t}</option>`).join("");
+  }
+
+  // Populate home (start) selects
   startTopic.innerHTML =
     `<option value="choose">Choose Topic</option>` +
     `<option value="none">None</option>` +
     `<option value="all">All Topics</option>` +
     allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
-  
+
   // Set to "choose" if no selection, otherwise use state value
   if (state.topic === "all" || state.topic === "choose" || !state.topic) {
     startTopic.value = state.topic === "all" ? "all" : "choose";
@@ -233,8 +227,8 @@ const renderFilters = () => {
     `<option value="choose">Choose Year</option>` +
     `<option value="none">None</option>` +
     `<option value="all">All Years</option>` +
-    yearRange.map((year) => `<option value="${year}">${year}</option>`).join("");
-  
+    (allYears.length ? allYears.map((year) => `<option value="${year}">${year}</option>`).join("") : yearRange.map((year) => `<option value="${year}">${year}</option>`).join(""));
+
   // Set to "choose" if no selection, otherwise use state value
   if (state.year === "all" || state.year === "choose" || !state.year) {
     startYear.value = state.year === "all" ? "all" : "choose";
@@ -1043,11 +1037,12 @@ const renderTopicAndYearView = (items) => {
             <span class="topic-meta">${items.length} question${items.length === 1 ? "" : "s"}</span>
           </div>
           <div class="topic-content">
-            <div class="questions-grid">
+            <div class="questions-list">
               ${items
                 .map((item, qIndex) => {
                   const cardHtml = buildCardHtml(item, questionIndex++);
                   const questionDelay = topicDelay + qIndex * 30;
+                  // keep animation helper but render as stacked list
                   return addCardAnimation(cardHtml, questionDelay, qIndex);
                 })
                 .join("")}

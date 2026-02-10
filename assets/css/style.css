@@ -1203,6 +1203,32 @@ body.home-page .home-selects {
   pointer-events: auto;
 }
 
+/* Ensure native selects in the hero are visible and usable after sidebar removal */
+.home-select {
+  background: #ffffff;
+  color: #073236;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(9,99,126,0.12);
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 9999;
+}
+
+/* Strong override to ensure selects are visible and clickable */
+body.home-page .home-select {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  width: 260px !important;
+  text-align: left !important;
+}
+
+body.home-page .home-select-group {
+  z-index: 10010 !important;
+}
+
 /* Home dropdown now uses native select list (same as sidebar) */
 .home-select__trigger,
 .home-select__menu {
@@ -2254,6 +2280,21 @@ body.home-page .results-info {
   justify-items: center;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+/* Sequential list layout used when a specific topic AND year are selected */
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.questions-list .card {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .questions-grid .card {
