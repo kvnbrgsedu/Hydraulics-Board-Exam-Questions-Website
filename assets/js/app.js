@@ -55,7 +55,7 @@ const globalSearchResults = document.getElementById("global-search-results");
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
 const BATCH_STATE_KEY = "batchState";
-let isPinned = true;
+let isPinned = false;
 
 const isDesktop = () => window.matchMedia("(min-width: 1025px)").matches;
 const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
@@ -94,13 +94,10 @@ const setSidebarOpen = (open) => {
   hamburger.setAttribute("aria-expanded", open ? "true" : "false");
 };
 
-const loadPinnedPreference = () => {
-  const stored = localStorage.getItem(SIDEBAR_PIN_KEY);
-  if (stored === null) return true;
-  return stored === "true";
-};
+const loadPinnedPreference = () => false;
 
 const syncPinToggle = () => {
+  if (!pinToggle) return;
   pinToggle.checked = isPinned;
   pinToggle.disabled = !isDesktop();
 };
@@ -3072,12 +3069,9 @@ const init = async () => {
     }
   }
 
-  isPinned = loadPinnedPreference();
-  if (!isDesktop()) {
-    isPinned = false;
-  }
+  isPinned = false;
   syncPinToggle();
-  setSidebarOpen(isPinned && isDesktop());
+  setSidebarOpen(false);
 
   bindEvents();
   
