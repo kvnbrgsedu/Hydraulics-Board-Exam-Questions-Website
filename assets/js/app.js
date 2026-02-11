@@ -366,17 +366,17 @@ const buildCardHtml = (item, index = 0) => {
   const solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
   const questionImage = item.image
-    ? `<div class="card__image show">
+    ? `<div class="question-figure">
          <img src="${item.image}" alt="Question figure" loading="lazy" />
          ${item.imageCaption ? `<span class="image-caption">${item.imageCaption}</span>` : ""}
        </div>`
-    : `<div class="card__image"></div>`;
+    : "";
   const solutionImage = item.solutionImage
-    ? `<div class="card__image show">
+    ? `<div class="solution-figure">
          <img src="${item.solutionImage}" alt="Solution figure" loading="lazy" />
          ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
        </div>`
-    : `<div class="card__image"></div>`;
+    : "";
   const finalAnswer = item.finalAnswer
     ? `<div class="final-answer">
          <span>Final Answer</span>
@@ -395,9 +395,9 @@ const buildCardHtml = (item, index = 0) => {
   }">${yearTag}</span>
         <span class="tag" data-topic="${item.topic}">${item.topic}</span>
       </div>
-      <div class="card__question">${question}</div>
+      <div class="question-content card__question">${question}</div>
       ${questionImage}
-      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Solution</button>
+      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Answer</button>
       <div class="solution">
         <div class="solution-content">${solution}</div>
         ${solutionImage}
