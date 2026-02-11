@@ -2303,6 +2303,33 @@ body.home-page .results-info {
   animation: questionReveal 0.4s ease forwards;
 }
 
+/* Ensure sequential (stacked) layout for views that should present questions vertically.
+   This overrides any remaining .questions-grid usage inside the listed hierarchical
+   view containers so selections show questions one after another. */
+#question-grid.topic-only-view .questions-grid,
+#question-grid.single-topic-view .questions-grid,
+#question-grid.single-year-view .questions-grid,
+#question-grid.topic-year-view .questions-grid,
+#question-grid.topics-in-year-view .questions-grid,
+#question-grid.years-with-topic-view .questions-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  margin-top: 16px !important;
+}
+
+#question-grid.topic-only-view .questions-grid .card,
+#question-grid.single-topic-view .questions-grid .card,
+#question-grid.single-year-view .questions-grid .card,
+#question-grid.topic-year-view .questions-grid .card,
+#question-grid.topics-in-year-view .questions-grid .card,
+#question-grid.years-with-topic-view .questions-grid .card {
+  width: 100% !important;
+  max-width: 960px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
 @keyframes questionReveal {
   to {
     opacity: 1;
@@ -4595,6 +4622,36 @@ mark {
   .quiz-nav-buttons {
     grid-template-columns: 1fr;
   }
+
+/* --- Force sequential (stacked) layout for question results globally --- */
+/* This makes the main results container present question cards one after another
+   instead of a multi-column grid. It overrides earlier .grid rules. */
+#question-grid,
+#question-grid.grid {
+  display: block !important;
+}
+
+#question-grid .card,
+#question-grid .questions-grid .card,
+#question-grid .questions-list .card {
+  width: 100% !important;
+  max-width: 960px !important;
+  margin: 0 auto 18px auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Make sure any internal questions-grid used by renderers becomes a vertical list */
+#question-grid .questions-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+}
+
+/* Remove column gaps that might force multi-column behavior */
+.grid {
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+}
 
   .quiz-page__header {
     gap: 8px;

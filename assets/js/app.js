@@ -535,7 +535,7 @@ const renderTopicOnlyView = (items) => {
             <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
           </div>
           <div class="topic-content">
-            <div class="questions-grid">
+            <div class="questions-list">
               ${questions
                 .map((item, qIndex) => {
                   const cardHtml = buildCardHtml(item, questionIndex++);
@@ -694,7 +694,7 @@ const renderFullHierarchyView = (items) => {
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
               </div>
               <div class="topic-content">
-                <div class="questions-grid">
+                <div class="questions-list">
                   ${questions
                     .map((item, qIndex) => {
                       const cardHtml = buildCardHtml(item, questionIndex++);
@@ -804,7 +804,7 @@ const renderSingleTopicView = (items) => {
         <span class="topic-meta">${items.length} question${items.length === 1 ? "" : "s"}</span>
       </div>
       <div class="topic-content">
-        <div class="questions-grid">
+        <div class="questions-list">
           ${items
             .map((item, qIndex) => {
               const cardHtml = buildCardHtml(item, questionIndex++);
@@ -847,7 +847,7 @@ const renderSingleYearView = (items) => {
         <div class="year-line"></div>
       </div>
       <div class="year-content open">
-        <div class="questions-grid">
+        <div class="questions-list">
           ${items
             .map((item, qIndex) => {
               const cardHtml = buildCardHtml(item, questionIndex++);
@@ -912,7 +912,7 @@ const renderTopicsInYearView = (items) => {
                   <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
                 </div>
                 <div class="topic-content">
-                  <div class="questions-grid">
+                  <div class="questions-list">
                     ${questions
                       .map((item, qIndex) => {
                         const cardHtml = buildCardHtml(item, questionIndex++);
@@ -981,7 +981,7 @@ const renderYearsWithTopicView = (items) => {
                 <span class="topic-meta">${count} question${count === 1 ? "" : "s"}</span>
               </div>
               <div class="topic-content">
-                <div class="questions-grid">
+                <div class="questions-list">
                   ${questions
                     .map((item, qIndex) => {
                       const cardHtml = buildCardHtml(item, questionIndex++);
