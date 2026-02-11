@@ -187,12 +187,44 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  // Ensure home selects exist
-  if (!startTopic || !startYear) return;
-
-  // Build topic/year lists from loaded data
-  const allTopics = Array.from(new Set((state.data || []).map((item) => item.topic))).filter(Boolean).sort();
+  // Hardcoded topic list
+  const allTopics = ["Fluid Properties", "Pressure", "Dams", "Plane Gates", "Curved Gates", "Buoyancy", "Stability of Rigid Bodies", "Rectilinear Translation", "Rotational Vessel", "Fundamentals of Fluid Flow", "Orifice", "Pipes"];
+  
+  // Build year lists from loaded data
   const allYears = Array.from(new Set((state.data || []).map((item) => item.year))).filter(Boolean).sort((a, b) => parseInt(a) - parseInt(b));
+
+  // Ensure home selects exist
+  if (startTopic) {
+    // Populate home (start) topic select
+    startTopic.innerHTML =
+      `<option value="choose">Choose Topic</option>` +
+      `<option value="none">None</option>` +
+      `<option value="all">All Topics</option>` +
+      allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+
+    // Set to "choose" if no selection, otherwise use state value
+    if (state.topic === "all" || state.topic === "choose" || !state.topic) {
+      startTopic.value = state.topic === "all" ? "all" : "choose";
+    } else {
+      startTopic.value = state.topic;
+    }
+  }
+
+  if (startYear) {
+    // Populate home (start) year select
+    startYear.innerHTML =
+      `<option value="choose">Choose Year</option>` +
+      `<option value="none">None</option>` +
+      `<option value="all">All Years</option>` +
+      (allYears.length ? allYears.map((year) => `<option value="${year}">${year}</option>`).join("") : yearRange.map((year) => `<option value="${year}">${year}</option>`).join(""));
+
+    // Set to "choose" if no selection, otherwise use state value
+    if (state.year === "all" || state.year === "choose" || !state.year) {
+      startYear.value = state.year === "all" ? "all" : "choose";
+    } else {
+      startYear.value = state.year;
+    }
+  }
 
   // Populate sidebar selects if present (optional)
   if (yearSelect) {
@@ -207,33 +239,6 @@ const renderFilters = () => {
 
   if (topicSelect) {
     topicSelect.innerHTML = `<option value="all">All Topics</option>` + allTopics.map((t) => `<option value="${t}">${t}</option>`).join("");
-  }
-
-  // Populate home (start) selects
-  startTopic.innerHTML =
-    `<option value="choose">Choose Topic</option>` +
-    `<option value="none">None</option>` +
-    `<option value="all">All Topics</option>` +
-    allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
-
-  // Set to "choose" if no selection, otherwise use state value
-  if (state.topic === "all" || state.topic === "choose" || !state.topic) {
-    startTopic.value = state.topic === "all" ? "all" : "choose";
-  } else {
-    startTopic.value = state.topic;
-  }
-
-  startYear.innerHTML =
-    `<option value="choose">Choose Year</option>` +
-    `<option value="none">None</option>` +
-    `<option value="all">All Years</option>` +
-    (allYears.length ? allYears.map((year) => `<option value="${year}">${year}</option>`).join("") : yearRange.map((year) => `<option value="${year}">${year}</option>`).join(""));
-
-  // Set to "choose" if no selection, otherwise use state value
-  if (state.year === "all" || state.year === "choose" || !state.year) {
-    startYear.value = state.year === "all" ? "all" : "choose";
-  } else {
-    startYear.value = state.year;
   }
 };
 
@@ -366,17 +371,17 @@ const buildCardHtml = (item, index = 0) => {
   const solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
   const questionImage = item.image
-    ? `<div class="question-figure">
+    ? `<div class="card__image show">
          <img src="${item.image}" alt="Question figure" loading="lazy" />
          ${item.imageCaption ? `<span class="image-caption">${item.imageCaption}</span>` : ""}
        </div>`
-    : "";
+    : `<div class="card__image"></div>`;
   const solutionImage = item.solutionImage
-    ? `<div class="solution-figure">
+    ? `<div class="card__image show">
          <img src="${item.solutionImage}" alt="Solution figure" loading="lazy" />
          ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
        </div>`
-    : "";
+    : `<div class="card__image"></div>`;
   const finalAnswer = item.finalAnswer
     ? `<div class="final-answer">
          <span>Final Answer</span>
@@ -395,9 +400,9 @@ const buildCardHtml = (item, index = 0) => {
   }">${yearTag}</span>
         <span class="tag" data-topic="${item.topic}">${item.topic}</span>
       </div>
-      <div class="question-content card__question">${question}</div>
+      <div class="card__question">${question}</div>
       ${questionImage}
-      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Answer</button>
+      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Solution</button>
       <div class="solution">
         <div class="solution-content">${solution}</div>
         ${solutionImage}
@@ -2962,8 +2967,13 @@ const init = async () => {
 
   if (hasQuestionUI) {
     try {
+    // Populate filters immediately with hardcoded topics
+    renderFilters();
+    
+    // Then load data in background
     renderSkeletons();
       await loadQuestionsData();
+    // Update filters with loaded data (years, batches, etc)
     renderFilters();
       // Sync dropdowns after data loads
       if (syncTopicDropdown && syncYearDropdown) {
