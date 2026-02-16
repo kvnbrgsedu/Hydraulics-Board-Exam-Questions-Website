@@ -8,6 +8,7 @@
   --card: #f9fdff;
   --shadow: 0 20px 45px rgba(9, 99, 126, 0.15);
   --shadow-hover: 0 30px 60px rgba(9, 99, 126, 0.2);
+  --header-height: 72px;
 }
 
 /* ===== Sidebar removal overrides =====
@@ -51,6 +52,7 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  padding-top: var(--header-height);
 }
 
 html {
@@ -219,11 +221,12 @@ body.home-locked {
   top: 0;
   left: 0;
   right: 0;
-  height: 72px;
+  height: auto;
+  min-height: var(--header-height);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
+  justify-content: center;
+  padding: 0;
   background-color: rgba(6, 56, 72, 0.9);
   background-image: linear-gradient(
     120deg,
@@ -239,12 +242,26 @@ body.home-locked {
   transition: height 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   animation: navEntrance 0.6s ease;
   opacity: 1;
+  background-clip: padding-box;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.top-nav__container {
+  width: calc(100% - 16px);
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 2px 6px;
+  margin: 4px auto;
 }
 
 .top-nav__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   font-weight: 600;
   color: #f7fdff;
 }
@@ -260,7 +277,7 @@ body.home-locked {
 
 .top-nav__links {
   display: flex;
-  gap: 20px;
+  gap: 12px;
   margin-left: auto;
 }
 
@@ -269,7 +286,7 @@ body.home-locked {
   color: #f7fdff;
   font-weight: 500;
   position: relative;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   transition: color 0.2s ease;
 }
 
@@ -326,11 +343,11 @@ body.home-locked {
 .top-nav__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .top-nav.compact {
-  height: 60px;
+  min-height: 60px;
   box-shadow: 0 10px 24px rgba(9, 99, 126, 0.12);
 }
 
@@ -343,6 +360,11 @@ body.home-locked {
     rgba(8, 131, 149, 0.82)
   );
   border-bottom-color: rgba(9, 99, 126, 0.08);
+  min-height: 60px;
+}
+
+.top-nav.scrolled .top-nav__container {
+  padding: 2px 16px;
 }
 
 .top-nav.scrolled .top-nav__brand,
@@ -359,12 +381,12 @@ body.home-locked {
 .icon-btn {
   border: none;
   background: rgba(255, 255, 255, 0.16);
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   border-radius: 12px;
   cursor: pointer;
   color: #f7fdff;
-  font-size: 18px;
+  font-size: 16px;
   box-shadow: 0 8px 18px rgba(9, 99, 126, 0.12);
   transition: transform 0.2s ease;
 }
@@ -391,7 +413,7 @@ body.home-locked {
 
 .global-search input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: 12px;
   border: 1px solid rgba(9, 99, 126, 0.2);
   background: #f7fbfc;
@@ -481,11 +503,12 @@ body.home-page .toggle__subtitle {
 }
 
 .hero {
-  padding: 100px 100px 32px;
+  padding: 80px 40px 56px;
   position: relative;
   color: #f8feff;
   overflow: hidden;
   transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
 }
 
 /* On home page, allow dropdowns to overflow hero container */
@@ -494,7 +517,7 @@ body.home-page .hero {
 }
 
 body.home-page.home-locked .hero {
-  padding: 90px 100px 32px;
+  padding: 72px 40px 56px;
 }
 
 /* Ensure dropdowns don't overlap with content */
@@ -842,7 +865,7 @@ select option {
 }
 
 body:not(.home-page) .content {
-  padding-top: 72px;
+  padding-top: 0;
 }
 
 body.home-page.home-locked .content {
@@ -985,6 +1008,74 @@ body.home-page.content-zone-active .home-bg {
 
 /* Responsive adjustments for mobile */
 @media (max-width: 768px) {
+  .top-nav__container {
+    padding: 6px 12px;
+  }
+  body {
+    padding-top: 112px;
+  }
+  .top-nav {
+    height: auto;
+    padding: 6px 0 10px;
+  }
+
+  .top-nav__container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand actions"
+      "links links";
+    row-gap: 10px;
+    column-gap: 10px;
+    padding: 6px 12px;
+  }
+
+  .top-nav__right {
+    display: contents;
+  }
+
+  .top-nav__brand {
+    grid-area: brand;
+  }
+
+  .top-nav__actions {
+    grid-area: actions;
+    justify-self: end;
+  }
+
+  .top-nav__links {
+    grid-area: links;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 6px;
+    margin-left: 0;
+    padding: 0 10px;
+    width: 100%;
+    max-width: 520px;
+    margin-inline: auto;
+  }
+
+  .top-nav__links a {
+    text-align: center;
+    padding: 4px 6px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .global-search {
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(10px);
+  }
+
+  .top-nav.search-open .global-search {
+    width: min(220px, 52vw);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
   body.home-page .questions-section {
     padding: 36px 14px 50px;
   }
@@ -1001,6 +1092,15 @@ body.home-page.content-zone-active .home-bg {
   body.home-page .hero__content {
     max-width: 100%;
     padding: 0 8px;
+  }
+
+  body.home-page .home-select-group {
+    display: flex;
+    justify-content: center;
+  }
+
+  body.home-page .home-select {
+    width: min(92vw, 360px) !important;
   }
   /* Scale down large home typography and controls on small screens */
   .hero h1 {
@@ -1150,9 +1250,10 @@ body.home-page .start-review__controls {
 
 body.home-page .home-selects {
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 28px;
+  flex-wrap: nowrap;
   position: relative;
   z-index: 10;
   /* Ensure dropdowns are not clipped */
@@ -1165,12 +1266,15 @@ body.home-page .home-selects {
     gap: 14px;
     width: 100%;
     max-width: 100%;
+    align-items: center;
   }
   
   .home-select-group {
     width: 100%;
     min-width: auto;
     max-width: 100%;
+    text-align: center;
+    align-items: center;
   }
 
   .home-select__trigger {
@@ -1194,13 +1298,17 @@ body.home-page .home-selects {
 .home-select-group {
   position: relative;
   min-width: 240px;
-  text-align: left;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   transition: transform 0.2s ease;
   flex-shrink: 0;
   z-index: 10;
   /* Ensure dropdown menu is not clipped by parent containers */
   overflow: visible;
 }
+
 
 .home-select-group.open {
   z-index: 10000;
@@ -1226,18 +1334,55 @@ body.home-page .home-selects {
   height: auto;
   opacity: 1;
   pointer-events: auto;
-}
-
-/* Ensure native selects in the hero are visible and usable after sidebar removal */
-.home-select {
-  background: #ffffff;
-  color: #073236;
-  border-radius: 12px;
-  padding: 10px 12px;
-  border: 1px solid rgba(9,99,126,0.12);
+  background: rgba(255, 255, 255, 0.18);
+  color: #f7fdff;
+  border-radius: 20px;
+  padding: 12px 44px 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-align: center;
+  text-align-last: center;
+  font-weight: 400;
+  text-shadow: 0 1px 6px rgba(6, 39, 48, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   -webkit-appearance: none;
   appearance: none;
   z-index: 9999;
+}
+
+.home-select:hover {
+  background: rgba(255, 255, 255, 0.24);
+  color: #eaf7fb;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.home-select:focus,
+.home-select:focus-visible {
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(6, 39, 48, 0.55);
+}
+
+.home-select:active {
+  transform: scale(0.98);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+}
+
+.home-select:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.28);
 }
 
 /* Strong override to ensure selects are visible and clickable */
@@ -1246,7 +1391,7 @@ body.home-page .home-select {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
-  width: 260px !important;
+  width: clamp(240px, 30vw, 360px) !important;
   text-align: left !important;
 }
 
@@ -1721,6 +1866,11 @@ body.home-page .results-info {
   padding-left: 12px;
 }
 
+.year-only-view .year-section {
+  padding-left: 0;
+  margin-bottom: 32px;
+}
+
 .year-header {
   display: flex;
   align-items: center;
@@ -1733,6 +1883,11 @@ body.home-page .results-info {
   transform: translateY(12px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   overflow: hidden;
+}
+
+.year-only-view .year-header {
+  margin-bottom: 18px;
+  padding: 6px 0;
 }
 
 .year-header::after {
@@ -2181,6 +2336,11 @@ body.home-page .results-info {
   margin-top: 28px;
 }
 
+.year-only-view .year-content.open {
+  margin-top: 12px;
+  padding-top: 6px;
+}
+
 .topic-section {
   margin-bottom: 36px;
   padding-left: 32px;
@@ -2334,6 +2494,7 @@ body.home-page .results-info {
    view containers so selections show questions one after another. */
 #question-grid.topic-only-view .questions-grid,
 #question-grid.single-topic-view .questions-grid,
+#question-grid.year-only-view .questions-grid,
 #question-grid.single-year-view .questions-grid,
 #question-grid.topic-year-view .questions-grid,
 #question-grid.topics-in-year-view .questions-grid,
@@ -2346,6 +2507,7 @@ body.home-page .results-info {
 
 #question-grid.topic-only-view .questions-grid .card,
 #question-grid.single-topic-view .questions-grid .card,
+#question-grid.year-only-view .questions-grid .card,
 #question-grid.single-year-view .questions-grid .card,
 #question-grid.topic-year-view .questions-grid .card,
 #question-grid.topics-in-year-view .questions-grid .card,
@@ -2555,6 +2717,30 @@ body.home-page .questions-section mjx-container * {
   max-width: 320px;
   display: block;
   border-radius: 12px;
+}
+
+.question-image-section,
+.solution-image-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 16px 0;
+  padding: 12px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+}
+
+.question-image-section img,
+.solution-image-section img {
+  max-width: 75%;
+  max-height: 260px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .image-caption {
@@ -2929,7 +3115,9 @@ mark {
   }
 
   .top-nav__links {
-    display: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
   .top-nav__right {
@@ -2951,13 +3139,19 @@ mark {
 /* ========== COMPREHENSIVE MOBILE RESPONSIVE STYLES ========== */
 
 @media (max-width: 600px) {
+  .top-nav__container {
+    padding: 6px 10px;
+  }
+  body {
+    padding-top: 104px;
+  }
   * {
     max-width: 100%;
   }
   /* Navigation */
   .top-nav {
-    padding: 0 16px;
-    height: 64px;
+    height: auto;
+    padding: 6px 0 10px;
   }
 
   .top-nav__brand {
@@ -2970,35 +3164,40 @@ mark {
   }
 
   .icon-btn {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     font-size: 16px;
   }
 
   .global-search {
     width: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(10px);
   }
 
   .top-nav.search-open .global-search {
-    width: 240px;
+    width: min(240px, 70vw);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
   }
 
   /* Hero Section */
   .hero {
-    padding: 100px 16px 32px;
+    padding: 84px 16px 28px;
   }
 
   body.home-page .hero {
-    padding: 90px 16px 32px;
+    padding: 76px 16px 28px;
   }
 
   .hero h1 {
-    font-size: 200px;
-    font-weight: 700;
-    margin: 6px 10 6px;
-    line-height: 1.02;
-    white-space: nowrap;
-    text-wrap: normal;
+    font-size: 32px;
+    margin: 6px 0 6px;
+    line-height: 1.12;
+    white-space: normal;
+    text-wrap: balance;
     -webkit-font-smoothing: antialiased;
   }
   .hero__subtitle {
@@ -3134,6 +3333,12 @@ mark {
   .card__question {
     font-size: 14px;
     line-height: 1.6;
+  }
+
+  .question-image-section img,
+  .solution-image-section img {
+    max-width: 85%;
+    max-height: 200px;
   }
 
   /* Grid */

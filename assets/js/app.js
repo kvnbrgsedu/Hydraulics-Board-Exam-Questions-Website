@@ -371,17 +371,17 @@ const buildCardHtml = (item, index = 0) => {
   const solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
   const questionImage = item.image
-    ? `<div class="card__image show">
-         <img src="${item.image}" alt="Question figure" loading="lazy" />
+    ? `<div class="question-image-section">
+         <img src="${item.image}" alt="Question image" loading="lazy" />
          ${item.imageCaption ? `<span class="image-caption">${item.imageCaption}</span>` : ""}
        </div>`
-    : `<div class="card__image"></div>`;
+    : "";
   const solutionImage = item.solutionImage
-    ? `<div class="card__image show">
-         <img src="${item.solutionImage}" alt="Solution figure" loading="lazy" />
+    ? `<div class="solution-image-section">
+         <img src="${item.solutionImage}" alt="Solution image" loading="lazy" />
          ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
        </div>`
-    : `<div class="card__image"></div>`;
+    : "";
   const finalAnswer = item.finalAnswer
     ? `<div class="final-answer">
          <span>Final Answer</span>
@@ -400,11 +400,11 @@ const buildCardHtml = (item, index = 0) => {
   }">${yearTag}</span>
         <span class="tag" data-topic="${item.topic}">${item.topic}</span>
       </div>
-      <div class="card__question">${question}</div>
+      <div class="question-content card__question">${question}</div>
       ${questionImage}
-      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Solution</button>
+      <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Answer</button>
       <div class="solution">
-        <div class="solution-content">${solution}</div>
+        <div class="solution-section solution-content">${solution}</div>
         ${solutionImage}
         ${finalAnswer}
       </div>
@@ -2160,7 +2160,7 @@ const bindEvents = () => {
       const button = solutionButton;
       const solution = button.nextElementSibling;
       const isOpen = solution.classList.toggle("open");
-      button.textContent = isOpen ? "Hide Solution" : "Show Solution";
+      button.textContent = isOpen ? "Hide Answer" : "Show Answer";
       button.setAttribute("aria-expanded", String(isOpen));
       if (isOpen) {
         typesetMath();
