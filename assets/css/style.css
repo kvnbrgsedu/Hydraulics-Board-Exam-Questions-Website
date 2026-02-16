@@ -8,6 +8,8 @@
   --card: #f9fdff;
   --shadow: 0 20px 45px rgba(9, 99, 126, 0.15);
   --shadow-hover: 0 30px 60px rgba(9, 99, 126, 0.2);
+  /* Base header height for desktop. On smaller screens this is overridden
+     via media queries so body padding always matches the real header size. */
   --header-height: 72px;
 }
 
@@ -1011,8 +1013,10 @@ body.home-page.content-zone-active .home-bg {
   .top-nav__container {
     padding: 6px 12px;
   }
-  body {
-    padding-top: 112px;
+  /* Make the logical header height larger on tablets so content
+     is pushed down far enough and never sits underneath the nav */
+  :root {
+    --header-height: 140px;
   }
   .top-nav {
     height: auto;
@@ -1653,6 +1657,13 @@ body.home-page.home-select-open .home-bg {
 
 section {
   scroll-margin-top: 90px;
+}
+
+/* Ensure that navigating to #home (from other pages or same page)
+   never hides the hero behind the fixed header. This uses the
+   header height variable so it stays correct at all breakpoints. */
+.hero {
+  scroll-margin-top: var(--header-height);
 }
 
 .formula-section,
@@ -3142,8 +3153,10 @@ mark {
   .top-nav__container {
     padding: 6px 10px;
   }
-  body {
-    padding-top: 104px;
+  /* Smaller screens: header can wrap to two lines, so reserve
+     a taller logical header height instead of hard-coding body padding */
+  :root {
+    --header-height: 128px;
   }
   * {
     max-width: 100%;
@@ -3579,6 +3592,11 @@ mark {
 
 /* Extra Small Devices */
 @media (max-width: 400px) {
+  /* Extra-small devices: use a slightly smaller but still safe
+     header height so hero text never overlaps the nav */
+  :root {
+    --header-height: 120px;
+  }
   .hero h1 {
     font-size: 24px;
     line-height: 1.3;

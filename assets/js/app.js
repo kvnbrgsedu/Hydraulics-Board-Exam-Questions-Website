@@ -52,6 +52,12 @@ const globalSearch = document.getElementById("global-search");
 const globalSearchInput = document.getElementById("global-search-input");
 const globalSearchResults = document.getElementById("global-search-results");
 
+const syncHeaderSpacing = () => {
+  if (!topNav) return;
+  const headerHeight = Math.ceil(topNav.getBoundingClientRect().height);
+  document.body.style.paddingTop = `${headerHeight}px`;
+};
+
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
 const BATCH_STATE_KEY = "batchState";
@@ -2343,6 +2349,7 @@ const bindEvents = () => {
   addListener(globalSearchToggle, "click", () => {
     if (!topNav) return;
     topNav.classList.toggle("search-open");
+    syncHeaderSpacing();
     if (topNav.classList.contains("search-open") && globalSearchInput) {
       globalSearchInput.focus();
       if (globalSearchInput.value.trim()) {
@@ -2412,7 +2419,10 @@ const bindEvents = () => {
       }
     }
     syncPinToggle();
+    syncHeaderSpacing();
   });
+
+  addListener(window, "pageshow", syncHeaderSpacing);
 };
 
 // ========== QUIZ FUNCTIONALITY ==========
@@ -3066,6 +3076,7 @@ const init = async () => {
   addListener(window, "hashchange", updateHomeViewFromHash);
   initHomeBackground();
   initPageBackground();
+  syncHeaderSpacing();
   // IMPORTANT: initHomeDropdowns MUST run AFTER renderFilters populates the select elements
   // Otherwise the custom dropdown menu will be empty on first load
   // It will be called after renderFilters() in the hasQuestionUI block
