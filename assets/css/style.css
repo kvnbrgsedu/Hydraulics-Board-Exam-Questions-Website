@@ -1136,7 +1136,9 @@ body.home-page:not(.home-show-all) #about {
 }
 
 body.quiz-page .content {
-  padding-top: 72px;
+  padding-top: 12px;
+  
+
   animation: fadeInUp 0.6s ease;
 }
 
