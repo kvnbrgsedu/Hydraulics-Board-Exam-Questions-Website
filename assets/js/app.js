@@ -3,6 +3,25 @@ const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
 const QUIZ_STORAGE_KEY = "quizProgressV2";
 
+// Canonical topic list: must match the "topic" field in questions.json for filtering
+const ALL_TOPICS = [
+  "Fluid Properties",
+  "Pressure",
+  "Dams",
+  "Plane Gates",
+  "Curved Gates",
+  "Buoyancy",
+  "Stability of Floating Bodies",
+  "Rectilinear Translation",
+  "Rotating Vessel",
+  "Fundamentals of Fluid Flow",
+  "Orifice",
+  "Pipes",
+  "Reservoir",
+  "Open Channels",
+  "Hydrodynamics"
+];
+
 const state = {
   year: "choose",
   batch: "all",
@@ -127,9 +146,13 @@ const escapeHtml = (value) =>
     return map[match];
   });
 
+// Allow safe HTML from JSON (admin-controlled content): bold, strong, br, lists, and newlines
 const allowBasicTags = (html) =>
   html
-    .replace(/&lt;br&gt;/gi, "<br>")
+    .replace(/\n/g, "<br>")
+    .replace(/&lt;br\s*\/?&gt;/gi, "<br>")
+    .replace(/&lt;b&gt;/gi, "<b>")
+    .replace(/&lt;\/b&gt;/gi, "</b>")
     .replace(/&lt;p&gt;/gi, "<p>")
     .replace(/&lt;\/p&gt;/gi, "</p>")
     .replace(/&lt;ul&gt;/gi, "<ul>")
@@ -193,20 +216,17 @@ const renderSkeletons = () => {
 };
 
 const renderFilters = () => {
-  // Hardcoded topic list
-  const allTopics = ["Fluid Properties", "Pressure", "Dams", "Plane Gates", "Curved Gates", "Buoyancy", "Stability of Rigid Bodies", "Rectilinear Translation", "Rotational Vessel", "Fundamentals of Fluid Flow", "Orifice", "Pipes"];
-  
   // Build year lists from loaded data
   const allYears = Array.from(new Set((state.data || []).map((item) => item.year))).filter(Boolean).sort((a, b) => parseInt(a) - parseInt(b));
 
-  // Ensure home selects exist
+  // Ensure home selects exist - use ALL_TOPICS so dropdown matches questions.json topic values
   if (startTopic) {
-    // Populate home (start) topic select
+    // Populate home (start) topic select from canonical list (same as in questions data)
     startTopic.innerHTML =
       `<option value="choose">Choose Topic</option>` +
       `<option value="none">None</option>` +
       `<option value="all">All Topics</option>` +
-      allTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+      ALL_TOPICS.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
 
     // Set to "choose" if no selection, otherwise use state value
     if (state.topic === "all" || state.topic === "choose" || !state.topic) {
@@ -244,7 +264,7 @@ const renderFilters = () => {
   }
 
   if (topicSelect) {
-    topicSelect.innerHTML = `<option value="all">All Topics</option>` + allTopics.map((t) => `<option value="${t}">${t}</option>`).join("");
+    topicSelect.innerHTML = `<option value="all">All Topics</option>` + ALL_TOPICS.map((t) => `<option value="${t}">${t}</option>`).join("");
   }
 };
 
@@ -374,7 +394,7 @@ const buildHierarchy = (items) => {
 
 const buildCardHtml = (item, index = 0) => {
   const question = buildHighlights(item.question, state.search);
-  const solution = buildHighlights(item.solution, state.search);
+  let solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
   const questionImage = item.image
     ? `<div class="question-image-section">
@@ -382,12 +402,35 @@ const buildCardHtml = (item, index = 0) => {
          ${item.imageCaption ? `<span class="image-caption">${item.imageCaption}</span>` : ""}
        </div>`
     : "";
-  const solutionImage = item.solutionImage
-    ? `<div class="solution-image-section">
-         <img src="${item.solutionImage}" alt="Solution image" loading="lazy" />
-         ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
+  
+  // Special handling for Situation 28 with multiple solution images
+  let solutionImage = "";
+  if (item.solutionImages && Array.isArray(item.solutionImages) && item.solutionImages.length > 0) {
+    // Create image tags for each solution part
+    const imageTags = item.solutionImages.map((img, idx) => 
+      `<div class="solution-image-section">
+         <img src="${img}" alt="Solution image ${idx + 1}" loading="lazy" />
        </div>`
-    : "";
+    );
+    
+    // Insert images below each numbered solution part (after "1.", "2.", "3.")
+    // Process in reverse order to avoid interfering with earlier replacements
+    for (let i = imageTags.length; i >= 1; i--) {
+      const pattern = new RegExp(`(${i}\\.\\s)`, 'g');
+      solution = solution.replace(pattern, (match, numPart) => {
+        return numPart + imageTags[i - 1];
+      });
+    }
+  } else {
+    // Regular single solution image handling
+    solutionImage = item.solutionImage
+      ? `<div class="solution-image-section">
+           <img src="${item.solutionImage}" alt="Solution image" loading="lazy" />
+           ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
+         </div>`
+      : "";
+  }
+  
   const finalAnswer = item.finalAnswer
     ? `<div class="final-answer">
          <span>Final Answer</span>
@@ -410,8 +453,8 @@ const buildCardHtml = (item, index = 0) => {
       ${questionImage}
       <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Answer</button>
       <div class="solution">
-        <div class="solution-section solution-content">${solution}</div>
         ${solutionImage}
+        <div class="solution-section solution-content">${solution}</div>
         ${finalAnswer}
       </div>
     </article>
@@ -1921,78 +1964,55 @@ const loadFormulaData = async () => {
 let syncTopicDropdown, syncYearDropdown;
 
 const bindEvents = () => {
-  // Function to sync topic dropdown - ALWAYS show all topics from entire dataset
+  // Function to sync topic dropdown - use ALL_TOPICS so options match questions.json "topic" field for filtering
   syncTopicDropdown = () => {
     if (!state.data.length) return;
     
-    // ALWAYS show all topics from entire dataset, regardless of current selection
-    // This allows users to select any topic even if it doesn't exist in the selected year
-    // The filtering will happen when displaying results, not when showing dropdown options
-    const availableTopics = Array.from(new Set(state.data.map((item) => item.topic))).sort();
-    
-    // Get current selections from dropdowns (not state) to preserve user's actual selections
+    // Use canonical topic list so dropdown values exactly match item.topic when filtering
     const currentTopicFromState = state.topic;
     const currentTopicFromDropdown = startTopic ? startTopic.value : (topicSelect ? topicSelect.value : currentTopicFromState);
-    
-    // Use the dropdown value if it's a specific topic, otherwise use state
-    const currentTopic = (currentTopicFromDropdown !== "choose" && currentTopicFromDropdown !== "none" && currentTopicFromDropdown !== "all") 
-      ? currentTopicFromDropdown 
+    const currentTopic = (currentTopicFromDropdown !== "choose" && currentTopicFromDropdown !== "none" && currentTopicFromDropdown !== "all")
+      ? currentTopicFromDropdown
       : currentTopicFromState;
     
     const topicOptions = `<option value="all">All Topics</option>` +
-      availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+      ALL_TOPICS.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
     
     if (topicSelect) {
       const previousValue = topicSelect.value;
       topicSelect.innerHTML = topicOptions;
-      // Restore selection if still available, otherwise keep "all"
-      // Don't modify state - state is managed by handleStartSelection and sidebar handlers
-      if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
+      if (currentTopic !== "all" && currentTopic !== "choose" && currentTopic !== "none" && ALL_TOPICS.includes(currentTopic)) {
         topicSelect.value = currentTopic;
       } else if (currentTopic === "all") {
         topicSelect.value = "all";
       } else {
-        // If current selection is not available, default to "all" for the dropdown
-        // But don't modify state - let the calling function handle state updates
         topicSelect.value = "all";
       }
     }
     
     if (startTopic) {
-      const startTopicOptions = 
+      const startTopicOptions =
         `<option value="choose">Choose Topic</option>` +
         `<option value="none">None</option>` +
         `<option value="all">All Topics</option>` +
-        availableTopics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+        ALL_TOPICS.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
       const previousValue = startTopic.value;
       startTopic.innerHTML = startTopicOptions;
-      // Restore selection if still available
-      // Prioritize preserving the user's actual selection from the dropdown
       if (previousValue === "all") {
         startTopic.value = "all";
-        // Preserve "all" in state
-        if (state.topic !== "all") {
-          state.topic = "all";
-        }
-      } else if (previousValue !== "choose" && previousValue !== "none" && availableTopics.includes(previousValue)) {
+        if (state.topic !== "all") state.topic = "all";
+      } else if (previousValue !== "choose" && previousValue !== "none" && ALL_TOPICS.includes(previousValue)) {
         startTopic.value = previousValue;
-        // Update state to match the preserved selection
-        if (state.topic !== previousValue) {
-          state.topic = previousValue;
-        }
+        if (state.topic !== previousValue) state.topic = previousValue;
       } else if (currentTopic === "all") {
         startTopic.value = "all";
-        if (state.topic !== "all") {
-          state.topic = "all";
-        }
-      } else if (currentTopic !== "choose" && currentTopic !== "none" && availableTopics.includes(currentTopic)) {
+        if (state.topic !== "all") state.topic = "all";
+      } else if (currentTopic !== "choose" && currentTopic !== "none" && ALL_TOPICS.includes(currentTopic)) {
         startTopic.value = currentTopic;
       } else {
-        // Preserve "choose" or "none" if that was the previous value
         startTopic.value = (previousValue === "choose" || previousValue === "none") ? previousValue : "choose";
       }
       
-      // Rebuild custom dropdown menu if it exists
       const topicGroup = document.querySelector('.home-select-group[data-select-group="topic"]');
       if (topicGroup && topicGroup._rebuildMenu) {
         topicGroup._rebuildMenu();
@@ -2843,8 +2863,7 @@ const showFeedback = (correct, message, detail = "") => {
 };
 
 const showSolution = (q) => {
-  quizElements.solutionContent.innerHTML = allowBasicTags(escapeHtml(q.solution))
-    .replace(/\\n/g, '<br>');
+  quizElements.solutionContent.innerHTML = allowBasicTags(escapeHtml(q.solution));
   
   const keyFormula = getKeyFormula(q);
   if (quizElements.keyFormula && quizElements.keyFormulaText) {
