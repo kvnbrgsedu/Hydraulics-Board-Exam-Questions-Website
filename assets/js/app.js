@@ -3,6 +3,15 @@ const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
 const QUIZ_STORAGE_KEY = "quizProgressV2";
 
+/** Resolve asset path so images work on GitHub Pages (site may be at /repo-name/) and locally */
+function getAssetUrl(path) {
+  if (!path) return path;
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("//")) return path;
+  const base = window.location.pathname.replace(/\/[^/]*$/, "") || "/";
+  const basePath = base.endsWith("/") ? base : base + "/";
+  return basePath + path.replace(/^\//, "");
+}
+
 // Canonical topic list: must match the "topic" field in questions.json for filtering
 const ALL_TOPICS = [
   "Fluid Properties",
@@ -398,7 +407,7 @@ const buildCardHtml = (item, index = 0) => {
   const yearTag = `${item.year} - ${item.batch}`;
   const questionImage = item.image
     ? `<div class="question-image-section">
-         <img src="${item.image}" alt="Question image" loading="lazy" />
+         <img src="${getAssetUrl(item.image)}" alt="Question image" loading="lazy" />
          ${item.imageCaption ? `<span class="image-caption">${item.imageCaption}</span>` : ""}
        </div>`
     : "";
@@ -409,7 +418,7 @@ const buildCardHtml = (item, index = 0) => {
     // Create image tags for each solution part
     const imageTags = item.solutionImages.map((img, idx) => 
       `<div class="solution-image-section">
-         <img src="${img}" alt="Solution image ${idx + 1}" loading="lazy" />
+         <img src="${getAssetUrl(img)}" alt="Solution image ${idx + 1}" loading="lazy" />
        </div>`
     );
     
@@ -425,7 +434,7 @@ const buildCardHtml = (item, index = 0) => {
     // Regular single solution image handling
     solutionImage = item.solutionImage
       ? `<div class="solution-image-section">
-           <img src="${item.solutionImage}" alt="Solution image" loading="lazy" />
+           <img src="${getAssetUrl(item.solutionImage)}" alt="Solution image" loading="lazy" />
            ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
          </div>`
       : "";
@@ -2783,7 +2792,7 @@ const loadQuestion = () => {
   
   // Handle images
   if (q.image) {
-    quizElements.image.src = q.image;
+    quizElements.image.src = getAssetUrl(q.image);
     quizElements.imageCaption.textContent = q.imageCaption || "";
     quizElements.imageContainer.classList.remove("hidden");
   }
@@ -2879,7 +2888,7 @@ const showSolution = (q) => {
   quizElements.finalAnswer.classList.remove("hidden");
   
   if (q.solutionImage) {
-    quizElements.solutionImage.src = q.solutionImage;
+    quizElements.solutionImage.src = getAssetUrl(q.solutionImage);
     quizElements.solutionImageCaption.textContent = q.solutionImageCaption || "";
     quizElements.solutionImageContainer.classList.remove("hidden");
   }
