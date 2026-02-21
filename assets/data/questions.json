@@ -834,7 +834,7 @@
     "question": "A vertical square plate \\(1.20\\,\\text{m}\\) in each side is submerged half in oil and half in water. If the top of the plate is flushed with the oil surface, what is the ratio of the force of water to oil. Specific gravity of oil is \\(0.80\\).",
     "solution": "<strong>Given:</strong><br>\\(L = 1.20\\,\\text{m}\\)<br>\\(\\text{Sg}_o = 0.80\\)<br><br><strong>Required:</strong><br>\\(R = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ F_o = P_{cg} A \\]<br>\\[ F_o = (9.81)(0.8)(0.6)(1.2)(0.3) \\]<br>\\[ F_o = 1.695\\,\\text{kN} \\]<br>In water:<br>\\[ P_{cg} = (9.81)(0.8)(0.6) + (9.81)(0.3) = 7.652\\,\\text{kPa} \\]<br>\\[ F_w = P_{cg} A = (7.652)(1.2)(0.6) = 5.509\\,\\text{kN} \\]<br>\\[ \\text{Ratio} = F_w/F_o = 5.509/1.695 = 3.25 \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/may2015-solution-sit76.png"
   },
   {
     "id": "2015-may-s77",
@@ -922,7 +922,7 @@
     "question": "A triangular canal of most efficient proportion has a depth of \\(3\\,\\text{m}\\). What is the hydraulic radius of this canal?",
     "solution": "<strong>Given:</strong><br>\\(d = 3\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(R = ?\\)<br><br><strong>Solution:</strong><br><br>The most efficient triangular section is the half-square on its apex.<br>\\[ A = d^2 = 9\\,\\text{m}^2 \\]<br>\\[ P = 2d\\sqrt{2} = 8.485\\,\\text{m} \\]<br>\\[ R = A/P = d/(2\\sqrt{2}) \\]<br>\\[ R = 1.061\\,\\text{m} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/may2015-solution-sit84.png"
   },
   {
     "id": "2015-may-s85",
@@ -944,7 +944,7 @@
     "question": "Water is issued vertically at the rate of \\(30\\) liters per second through a \\(50\\,\\text{mm}\\)-diameter nozzle. Neglecting losses, how high above the nozzle tip can the water jet support a load of \\(250\\,\\text{N}\\)?",
     "solution": "<strong>Given:</strong><br>\\(D_n = 50\\,\\text{mm}\\)<br>\\(W = 250\\,\\text{N}\\)<br>\\(Q = 30\\,\\text{L}/\\text{s}\\)<br><br><strong>Required:</strong><br>\\(h = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ v_E = Q/A = 0.03/(\\pi/4 (0.05)^2) \\]<br>\\[ v_E = 15.279\\,\\text{m}/\\text{s} \\]<br>Dynamic force:<br>\\[ F_D = (Q \\gamma_w)/g \\, v = W \\]<br>\\[ 0.03(9810)/9.81 \\, v = 250 \\]<br>\\[ v = 8.33\\,\\text{m}/\\text{s} \\]<br>\\[ v^2 = v_E^2 - 2gh \\]<br>\\[ 8.33^2 = 15.279^2 - 2(9.81)h \\]<br>\\[ h = 8.36\\,\\text{m} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/may2015-solution-sit86.png"
   },
   {
     "id": "2015-may-s87",
@@ -966,7 +966,7 @@
     "question": "A rectangular gate \\(3\\,\\text{m}\\) high and \\(1.2\\,\\text{m}\\) wide is hinged at the top. A force to keep the gate closed is applied at the bottom with an angle of \\(45°\\) with the vertical. Compute the magnitude of this force if:<br><br>1. The water surface is level with the top of the gate.<br>2. The water surface is \\(0.9\\,\\text{m}\\) above the top of the gate.<br>3. The water surface is \\(0.9\\,\\text{m}\\) below the top of the gate.",
     "solution": "<strong>Given:</strong><br>\\(h = 3\\,\\text{m}\\)<br>\\(w = 1.2\\,\\text{m}\\)<br>\\(\\theta = 45°\\)<br><br><strong>Required:</strong><br>1. \\(P\\) if ws is level with the top of the gate<br>2. \\(P\\) if ws is \\(0.9\\,\\text{m}\\) above the top of the gate<br>3. \\(P\\) if ws is \\(0.9\\,\\text{m}\\) below the top of the gate<br><br><strong>Solution:</strong><br>Part 1<br>\\[ F_h = \\gamma_w \\bar{h} A \\]<br>\\[ F_h = 9.81(1.5)(3)(1.2) \\]<br>\\[ F_h = 52.974\\,\\text{kN} \\]<br>\\[ \\sum M_o = 0 \\]<br>\\[ P \\sin\\theta \\times 3 = F_h (3-1) \\]<br>\\[ P \\sin(45) \\times 3 = 52.974(3-1) \\]<br>\\[ P = 49.94\\,\\text{kN} \\]<br>Part 2<br>\\[ F_h = 9.81(2.4)(3)(1.2) = 84.758\\,\\text{kN} \\]<br>\\[ e = I_g/(A\\bar{Y}) = (1.2(3)^3/12)/(1.2(3)(2.4)) = 0.313\\,\\text{m} \\]<br>\\[ P \\sin\\theta \\times 3 = F_h (1.5 + e) \\]<br>\\[ P \\sin(45) \\times 3 = 84.758(1.5 + 0.313) \\]<br>\\[ P = 72.42\\,\\text{kN} \\]<br>Part 3<br>\\[ F_h = 9.81(2.1/2)(2.1)(1.2) = 25.957\\,\\text{kN} \\]<br>\\[ P \\sin\\theta \\times 3 = F_h (3 - 0.7) \\]<br>\\[ P \\sin(45) \\times 3 = 25.957(3 - 0.7) \\]<br>\\[ P = 28.14\\,\\text{kN} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/may2015-solution-sit88.png"
   },
   {
     "id": "2015-may-s89",
@@ -976,8 +976,8 @@
     "topic": "Plane Gates",
     "question": "The gate shown in the figure is \\(2\\) meters wide.<br><br>1. What is the force exerted by water on the left side of the gate?<br>2. What is the force exerted by water on the right side of the gate?<br>3. What horizontal force at B is required to turn the gate about the hinge?",
     "solution": "<strong>Given:</strong><br>\\(h_1 = 6\\,\\text{m}\\)<br>\\(h_2 = 3\\,\\text{m}\\)<br>\\(b = 2\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(F_1\\)<br>\\(F_2\\)<br>\\(P\\)<br><br><strong>Solution:</strong><br><br>\\[ F_1 = \\gamma_w \\bar{h} A \\]<br>\\[ F_1 = 9.81(3)(6)(2) \\]<br>\\[ F_1 = 353.16\\,\\text{kN} \\]<br>\\[ F_2 = 9.81(1.5)(3)(2) \\]<br>\\[ F_2 = 88.29\\,\\text{kN} \\]<br>\\[ \\sum M_B = 0 \\]<br>\\[ P(3) = F_1(1) - F_2(2) \\]<br>\\[ 3P = 353.16(1) - 88.29(2) \\]<br>\\[ P = 58.86\\,\\text{kN} \\]",
-    "image": "",
-    "solutionImage": ""
+    "image": "assets/images/may2015-question-sit89.png",
+    "solutionImage": "assets/images/may2015-solution-sit89.png"
   },
   {
     "id": "2015-may-s90",
@@ -987,8 +987,8 @@
     "topic": "Dams",
     "question": "For the concrete gravity dam shown, \\(B = 4.20\\,\\text{m}\\), \\(b = 0.60\\,\\text{m}\\), \\(H = 7\\,\\text{m}\\), and \\(h = 6\\,\\text{m}\\). Unit weight of concrete is \\(24\\,\\text{kN}/\\text{m}^3\\). Considering \\(1\\text{-m}\\) length of dam, calculate the following:<br><br>1. The total force exerted by water on the dam.<br>2. The resisting moment.<br>3. The factor of safety against overturning.",
     "solution": "<strong>Given:</strong><br>\\(B = 4.2\\,\\text{m}\\)<br>\\(b = 0.6\\,\\text{m}\\)<br>\\(H = 7\\,\\text{m}\\)<br>\\(h = 6\\,\\text{m}\\)<br>\\(\\gamma = 24\\,\\text{kN}/\\text{m}^3\\)<br>\\(L = 1\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(F_H\\)<br>\\(RM\\)<br>\\(FS_o\\)<br><br><strong>Solution:</strong><br><br>\\[ F_H = \\gamma_w \\bar{h} A \\]<br>\\[ F_H = 9.81(4.2/2)(6)(1) \\]<br>\\[ F_H = 123.606\\,\\text{kN} \\]<br>\\[ OM = F_H \\times (h/3) = 123.606 \\times (6/3) = 247.212\\,\\text{kN}\\cdot\\text{m} \\]<br>\\[ RM = W_1 x_1 + W_2 x_2 \\]<br>\\[ RM = [24 \\times 1/2(4.2-0.6)(7)] \\times [(2/3)(4.2-0.6)] + [24 \\times (0.6 \\times 7)] \\times [4.2 - 0.6/2] \\]<br>\\[ RM = 1118.88\\,\\text{kN}\\cdot\\text{m} \\]<br>\\[ FS_o = RM/OM \\]<br>\\[ FS_o = 1118.88/247.212 \\]<br>\\[ FS_o = 4.526 \\]",
-    "image": "",
-    "solutionImage": ""
+    "image": "assets/images/may2015-question-sit90.png",
+    "solutionImage": "assets/images/may2015-solution-sit90.png"
   },
   {
     "id": "2015-may-s91",
@@ -998,8 +998,8 @@
     "topic": "Curved Gates",
     "question": "The \\(6\\text{-m}\\)-radius cylindrical gate shown in the figure is \\(10\\,\\text{m}\\) long into the paper. If \\(\\theta = 60°\\), determine the following:<br><br>1. The vertical component of the hydrostatic force.<br>2. The horizontal component of the hydrostatic force.<br>3. The location (from point O) of the vertical component of the hydrostatic force.",
     "solution": "<strong>Given:</strong><br>\\(R = 6\\,\\text{m}\\)<br>\\(L = 10\\,\\text{m}\\)<br>\\(\\theta = 60°\\)<br><br><strong>Required:</strong><br>\\(F_V\\)<br>\\(F_H\\)<br>\\(x\\)<br><br><strong>Solution:</strong><br><br>\\[ h = R \\sin\\theta \\]<br>\\[ h = 6 \\sin(60) \\]<br>\\[ h = 5.916\\,\\text{m} \\]<br>\\[ F_H = \\gamma_w \\bar{h} A \\]<br>\\[ F_H = 9.81(5.196/2)(5.196)(10) \\]<br>\\[ F_H = 1324.3\\,\\text{kN} \\]<br>\\[ F_v = \\gamma_w V_{ABC} \\]<br>\\[ V_{ABC} = A_{ABC} \\times L \\]<br>\\[ A_{ABC} = (R + BC)/2 \\times h - (\\pi R^2 \\theta)/(360°) \\]<br>\\[ A_{ABC} = 4.533\\,\\text{m}^2 \\]<br>\\[ V_{ABC} = 4.533 \\times 10 = 45.33\\,\\text{m}^3 \\]<br>\\[ F_v = 9.81(45.33) \\]<br>\\[ F_v = 444.7\\,\\text{kN} \\]<br>Since the total hydrostatic force on cylindrical sections passes through the center of the circle, the moment due to \\(F_H\\) and \\(F_v\\) about the center are equal.<br>\\[ F_v x = F_H (h/3) \\]<br>\\[ 444.7 x = 1324.3(5.916/3) \\]<br>\\[ x = 5.158\\,\\text{m} \\]",
-    "image": "",
-    "solutionImage": ""
+    "image": "assets/images/may2015-question-sit91.png",
+    "solutionImage": "assets/images/may2015-solution-sit91.png"
   },
   {
     "id": "2015-may-s92",
@@ -1010,7 +1010,7 @@
     "question": "An open cylindrical tank \\(1.70\\,\\text{m}\\) in diameter and \\(2.10\\,\\text{m}\\) tall is two-thirds full of water. The tank is rotated about its own vertical axis at the rate of \\(90\\,\\text{rpm}\\).<br><br>1. What is the height of the paraboloid?<br>2. Determine the volume of water spilled.<br>3. For the same depth of water of \\(1.4\\,\\text{m}\\), what height of the tank is required to avoid spilling any water?",
     "solution": "<strong>Given:</strong><br>\\(D = 1.7\\,\\text{m}\\)<br>\\(H = 2.1\\,\\text{m}\\)<br>\\(\\omega = 90\\,\\text{rpm} = 9.425\\,\\text{rad}/\\text{s}\\)<br>\\(h = 2/3 H\\)<br><br><strong>Required:</strong><br>\\(y\\)<br>\\(V_s\\)<br>\\(H\\)<br><br><strong>Solution:</strong><br>Part 1<br>\\[ y = (\\omega^2 r^2)/(2g) \\]<br>\\[ y = ((9.425)^2 (0.85)^2)/(2(9.81)) \\]<br>\\[ y = 3.271\\,\\text{m} \\]<br>Part 2<br>\\[ V_{\\text{air1}} = \\pi(0.85)^2 (2.1 - 1.4) = 1.5889\\,\\text{m}^3 \\]<br>\\[ V_{\\text{air2}} = \\pi g/\\omega^2 (y^2 - y_1^2) \\]<br>\\[ V_{\\text{air2}} = (\\pi(9.81))/(9.425)^2 ((3.271)^2 - (1.171)^2) \\]<br>\\[ V_{\\text{air2}} = 3.2365\\,\\text{m}^3 \\]<br>\\[ V_s = V_{\\text{air2}} - V_{\\text{air1}} \\]<br>\\[ V_s = 3.2365 - 1.5889 \\]<br>\\[ V_s = 1.648\\,\\text{m}^3 \\]<br>Part 3<br>\\[ H = \\sqrt{2hy} \\]<br>\\[ H = \\sqrt{2(1.4)(3.271)} \\]<br>\\[ H = 3.026\\,\\text{m} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/may2015-solution-sit92.png"
   },
   {
     "id": "2015-may-s93",
@@ -1020,7 +1020,7 @@
     "topic": "Orifice",
     "question": "A jet is issued from the side of a tank under a constant as shown. The side of the tank has an inclination of 1H to 1V. The total depth of water in the tank is \\(h_1 = 6.70\\,\\text{m}\\) and the orifice is located \\(h_2 = 3.7\\,\\text{m}\\) above the bottom of the tank. Neglecting air resistance and assuming \\(C_v = 1.0\\), determine the following:<br><br>1. The maximum height to which the jet will rise above the orifice.<br>2. The point \"x\" the jet will strike a horizontal plane \\(1.20\\,\\text{m}\\) below the bottom of the tank.<br>3. The time it takes for the jet to strike a horizontal plane \\(1.20\\,\\text{m}\\) below the bottom of the tank.",
     "solution": "<strong>Given:</strong><br>\\(h_1 = 6.7\\,\\text{m}\\)<br>\\(h_2 = 3.7\\,\\text{m}\\)<br>\\(h_3 = 1.2\\,\\text{m}\\)<br>\\(c_v = 1.0\\)<br><br><strong>Required:</strong><br>\\(y\\)<br>\\(x\\)<br>\\(t\\)<br><br><strong>Solution:</strong><br><br>\\[ H = h_1 - h_2 = 3\\,\\text{m} \\]<br>\\[ v_o = C_v \\sqrt{2gH} \\]<br>\\[ v_o = 1.0 \\sqrt{2(9.81)(3)} \\]<br>\\[ v_o = 7.672\\,\\text{m}/\\text{s} \\]<br>Part 1<br>\\[ y = v_{oy}^2/(2g) \\]<br>\\[ y = 7.672^2/(2(9.81)) \\]<br>\\[ y = 1.5\\,\\text{m} \\]<br>Part 2<br>\\[ y = -(h_2 + h_3) = -4.9\\,\\text{m} \\]<br>\\[ y = x \\tan\\theta - (g x^2)/(2 v_o^2 \\cos^2\\theta) \\]<br>\\[ -4.9 = x \\tan(45) - (9.81 x^2)/(2(7.672)^2 \\cos^2(45)) \\]<br>\\[ x = 9.197\\,\\text{m} \\]<br>Part 3<br>\\[ x = v_{ox} t \\]<br>\\[ 9.197 = 7.672 t \\]<br>\\[ t = 1.695\\,\\text{s} \\]",
-    "image": "",
+    "image": "assets/images/may2015-question-sit93.png",
     "solutionImage": ""
   },
   {
@@ -1032,7 +1032,7 @@
     "question": "A trapezoidal canal has bottom width of \\(5\\,\\text{m}\\) and side slopes of 2H to 1V. The flow is \\(30\\,\\text{m}^3/\\text{s}\\) when the depth of flow is \\(1.20\\,\\text{m}\\). Use \\(n = 0.013\\).<br><br>1. Calculate the specific energy of flow.<br>2. What is the slope of channel bed?<br>3. Calculate the boundary shearing stress.",
     "solution": "<strong>Given:</strong><br>\\(b = 5\\,\\text{m}\\)<br>side slope \\(= 2H\\) to \\(1V\\)<br>\\(Q = 30\\,\\text{m}^3/\\text{s}\\)<br>\\(d = 1.2\\,\\text{m}\\)<br>\\(n = 0.013\\)<br><br><strong>Required:</strong><br>\\(H\\)<br>\\(S\\)<br>\\(\\tau_o\\)<br><br><strong>Solution:</strong><br><br>\\[ \\theta = \\arctan(1/2) = 26.565° \\]<br>\\[ T = 5 + 2 \\times (1.2)(2) = 9.8\\,\\text{m} \\]<br>\\[ A = (5 + 9.8)/2 (1.2) = 8.88\\,\\text{m}^2 \\]<br>\\[ P = 5 + 2(1.2 \\csc\\theta) = 10.367\\,\\text{m} \\]<br>\\[ R = A/P = 8.88/10.367 = 0.857\\,\\text{m} \\]<br>\\[ v = Q/A = 30/8.88 = 3.378\\,\\text{m}/\\text{s} \\]<br>\\[ H = v^2/(2g) + d \\]<br>\\[ H = 3.378^2/(2(9.81)) + 1.2 \\]<br>\\[ H = 1.782\\,\\text{m} \\]<br>\\[ v = 1/n R^{2/3} S^{1/2} \\]<br>\\[ 3.378 = 1/0.013 (0.857)^{2/3} S^{1/2} \\]<br>\\[ S = 0.00237 \\]<br>\\[ \\tau_o = \\gamma_w R S \\]<br>\\[ \\tau_o = 9.81(0.857)(0.00237) \\]<br>\\[ \\tau_o = 19.925\\,\\text{Pa} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/may2015-solution-sit94.png"
   },
   {
     "id": "2015-may-s95",
@@ -1042,8 +1042,8 @@
     "topic": "Reservoir",
     "question": "Reservoir B in the figure receives \\(0.06\\,\\text{m}^3/\\text{s}\\) of flow. Determine the following:<br><br>1. The flow in line AD.<br>2. The flow in line DC.<br>3. The elevation of reservoir B.",
     "solution": "<strong>Given:</strong><br>\\(Q = 0.06\\,\\text{m}^3/\\text{s}\\)<br><br><strong>Required:</strong><br>1. The flow in line AD.<br>2. The flow in line DC.<br>3. The elevation of reservoir B.<br><br><strong>Solution:</strong><br><br>\\[ h_f = K Q^2 \\]<br>\\[ K = 0.0826 f L/D^5 \\]<br>\\[ K_{AD} = (0.0826(0.0225)(1500))/0.45^5 \\]<br>\\[ K_{AD} = 151.1 \\]<br>\\[ K_{DB} = (0.0826(0.0178)(500))/0.25^5 \\]<br>\\[ K_{DB} = 753 \\]<br>\\[ K_{DC} = (0.0826(0.0168)(750))/0.3^5 \\]<br>\\[ K_{DC} = 428.3 \\]<br>\\[ h_{f2} = K_{DB} Q_B^2 = 753(0.06)^2 = 2.711\\,\\text{m} \\]<br>\\[ Q_c = Q_A - Q_B = Q_A - 0.06 \\]<br>\\[ h_{f3} = K_{DC} Q_c^2 = 428.3(Q_A - 0.06)^2 \\]<br>\\[ h_{f1} = K_{AD} Q_A^2 = 151.1 Q_A^2 \\]<br>\\[ El_A - h_{f1} - h_{f3} = El_C \\]<br>\\[ 100 - 151.1 Q_A^2 - 428.3(Q_A - 0.06)^2 = 82 \\]<br>\\[ Q_A = 0.219\\,\\text{m}^3/\\text{s} \\]<br>\\[ Q_c = 0.219 - 0.06 = 0.159\\,\\text{m}^3/\\text{s} \\]<br>\\[ El_B = El_A - h_{f1} - h_{f2} \\]<br>\\[ El_B = 100 - 151.1(0.219)^2 - 2.711 \\]<br>\\[ El_B = 90.04\\,\\text{m} \\]",
-    "image": "",
-    "solutionImage": ""
+    "image": "assets/images/may2015-question-sit95.png",
+    "solutionImage": "assets/images/may2015-solution-sit95.png"
   },
   {
     "id": "2015-may-s96",
@@ -1053,8 +1053,8 @@
     "topic": "Reservoir",
     "question": "Reservoir A, the source of water for towns C and D, is at elevation \\(200\\,\\text{m}\\). The distribution reservoir at junction B is at elevation \\(91.56\\,\\text{m}\\) and \\(15{,}000\\,\\text{m}\\) from A. Town C with a population of \\(250{,}000\\) is at elevation \\(56\\,\\text{m}\\) and is \\(9{,}000\\,\\text{m}\\) from B. Town D with population of \\(300{,}000\\) is at elevation \\(15.21\\,\\text{m}\\) and is \\(6{,}000\\,\\text{m}\\) from B. The water demand is \\(150\\) liters per capita per day. Neglect all minor losses. Assume friction factor \\(f = 0.02\\) for all pipes.<br><br>1. Which of the following is nearest to the required diameter of line AB?<br>2. Which of the following is nearest to the required diameter of line BC?<br>3. Which of the following is nearest to the required diameter of line BD?",
     "solution": "<strong>Given:</strong><br>\\(El_A = 200\\,\\text{m}\\)<br>\\(El_B = 91.56\\,\\text{m}\\)<br>\\(El_C = 56\\,\\text{m}\\)<br>\\(L_1 = 15000\\,\\text{m}\\)<br>\\(L_2 = 9000\\,\\text{m}\\)<br>\\(L_3 = 6000\\,\\text{m}\\)<br>Population of C \\(= 250000\\)<br>Population of D \\(= 300000\\)<br>Demand per capita \\(= 150\\,\\text{lit}/\\text{day}\\)<br>\\(f = 0.02\\)<br><br><strong>Required:</strong><br>1. Required diameter of line AB<br>2. Required diameter of line BC<br>3. Required diameter of line BD<br><br><strong>Solution:</strong><br><br>\\[ Q_2 = 0.15 \\times 250000 = 37500\\,\\text{m}^3/\\text{day} \\]<br>\\[ Q_2 = 37500/(24 \\times 3600) = 0.434\\,\\text{m}^3/\\text{s} \\]<br>\\[ Q_3 = 0.15 \\times 300000 = 45000\\,\\text{m}^3/\\text{day} \\]<br>\\[ Q_3 = 45000/(24 \\times 3600) = 0.5208\\,\\text{m}^3/\\text{s} \\]<br>\\[ Q_1 = Q_2 + Q_3 = 0.9549\\,\\text{m}^3/\\text{s} \\]<br>\\[ h_{f1}: \\quad (0.0826 f L_1 Q_1^2)/D_1^5 = 200 - 91.56 \\]<br>\\[ (0.0826(0.02)(15000)(0.9459)^2)/D_1^5 = 200 - 91.56 \\]<br>\\[ D_1 = 0.73\\,\\text{m} \\]<br>\\[ h_{f2}: \\quad (0.0826 f L_2 Q_2^2)/D_2^5 = 91.56 - 56 \\]<br>\\[ (0.0826(0.02)(9000)(0.434)^2)/D_2^5 = 91.56 - 56 \\]<br>\\[ D_2 = 0.602\\,\\text{m} \\]<br>\\[ h_{f3}: \\quad (0.0826 f L_3 Q_3^2)/D_3^5 = 91.56 - 15.21 \\]<br>\\[ (0.0826(0.02)(6000)(0.5208)^2)/D_3^5 = 91.56 - 15.21 \\]<br>\\[ D_3 = 0.512\\,\\text{m} \\]",
-    "image": "",
-    "solutionImage": ""
+    "image": "assets/images/may2015-question-sit96.png",
+    "solutionImage": "assets/images/may2015-solution-sit96.png"
   },
   {
     "id": "2015-nov-s97",
@@ -1097,7 +1097,7 @@
     "topic": "Pressure",
     "question": "What is the pressure at A in the figure shown?",
     "solution": "<strong>Given:</strong><br>\\(\\text{Sg} = 10\\)<br><br><strong>Required:</strong><br>\\(p_A = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ p_C + 9.81(10)(0.45) - 9.81(0.6) = p_A \\]<br>\\[ p_A = 38.259\\,\\text{kPa} \\]",
-    "image": "",
+    "image": "assets/images/nov2015-question-sit100.png",
     "solutionImage": ""
   },
   {
@@ -1120,7 +1120,7 @@
     "question": "A \\(10\\text{-kN}\\) car is to be lifted by a hydraulic jack. If \\(400\\text{-N}\\) force is applied in a \\(25\\text{-mm}\\)-diameter plunger, find the required diameter of the piston.",
     "solution": "<strong>Given:</strong><br>\\(F_1 = 400\\,\\text{N}\\)<br>\\(F_2 = 10\\,\\text{kN}\\)<br>\\(D_1 = 25\\,\\text{mm}\\)<br><br><strong>Required:</strong><br>\\(D_2 = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ p_1 = p_2 \\]<br>\\[ F_1/A_1 = F_2/A_2 \\]<br>\\[ 400/(\\pi/4 (25)^2) = 10000/(\\pi/4 D_2^2) \\]<br>\\[ D_2 = 125\\,\\text{mm} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit102.png"
   },
   {
     "id": "2015-nov-s103",
@@ -1131,7 +1131,7 @@
     "question": "A vertical triangular plate has a base of \\(1.2\\,\\text{m}\\) and depth of \\(2.4\\,\\text{m}\\). The base is horizontal and flushed with the water surface. What is the distance of force of water below the centroid of the plate?",
     "solution": "<strong>Given:</strong><br>\\(b = 1.2\\,\\text{m}\\)<br>\\(d = 2.4\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(e = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ \\bar{h} = \\bar{Y} = h/3 \\]<br>\\[ A = 1/2 b h \\]<br>\\[ I_g = b h^3/36 \\]<br>\\[ e = I_g/(A \\bar{Y}) = ((b h^3)/36)/((1/2 b h)(h/3)) \\]<br>\\[ e = h/6 \\]<br>\\[ e = 2.4/6 \\]<br>\\[ e = 0.4\\,\\text{m} = 400\\,\\text{mm} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit103.png"
   },
   {
     "id": "2015-nov-s104",
@@ -1142,7 +1142,7 @@
     "question": "A rectangular gate \\(1.2\\,\\text{m}\\) by \\(3\\,\\text{m}\\) is inclined \\(60°\\) with the horizontal. The top of the gate is submerged at a depth of \\(2\\,\\text{m}\\), the longer side parallel to the water surface.<br><br>1. Find the total hydrostatic force in kN.<br>2. Find the location of total hydrostatic force from bottom of gate in meters.<br>3. If the gate is hinged at the top, find the force (kN) at the bottom normal to the gate required to open it.",
     "solution": "<strong>Given:</strong><br>\\(b = 3\\,\\text{m}\\)<br>\\(L = 1.2\\,\\text{m}\\)<br>\\(\\theta = 60°\\)<br>\\(h_1 = 2\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(F = ?\\)<br>\\(y_2 = ?\\)<br>\\(P = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ A = b L = 3.6\\,\\text{m}^2 \\]<br>\\[ I_g = (b L^3)/12 = 0.432\\,\\text{m}^4 \\]<br>\\[ \\bar{h} = h_1 + (L/2)\\sin\\theta \\]<br>\\[ \\bar{h} = 2 + (1.2/2)\\sin(60) = 2.5196\\,\\text{m} \\]<br>\\[ \\bar{Y} = \\bar{h}/\\sin\\theta = 2.909\\,\\text{m} \\]<br>\\[ F = \\gamma_w \\bar{h} A \\]<br>\\[ F = 9.81(2.5196)(3.6) \\]<br>\\[ F = 88.98\\,\\text{kN} \\]<br>\\[ e = I_g/(A \\bar{Y}) = 0.432/(3.6(2.909)) = 0.04125\\,\\text{m} \\]<br>\\[ y_2 = L/2 - e = 1.2/2 - 0.04125 = 0.559\\,\\text{m} \\]<br>\\[ y_1 = L/2 + e = 0.64125\\,\\text{m} \\]<br>\\[ \\sum M_o = 0 \\]<br>\\[ P \\times L = F \\times y_1 \\]<br>\\[ P(1.2) = 88.98(0.64125) \\]<br>\\[ P = 47.55\\,\\text{kN} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit104.png"
   },
   {
     "id": "2015-nov-s105",
@@ -1153,7 +1153,7 @@
     "question": "A vertical circular gate \\(0.90\\,\\text{m}\\) in diameter is immersed in molasses (\\(s = 1.4\\)). The top of the gate is \\(2.40\\,\\text{m}\\) below the surface of molasses. Determine the following:<br><br>1. Find the total force acting on the gate.<br>2. The location of the force from the bottom of the gate.<br>3. The horizontal force at the bottom required to keep the gate closed if it is hinged at the top.",
     "solution": "<strong>Given:</strong><br>\\(D = 0.9\\,\\text{m}\\)<br>\\(h_1 = 2.4\\,\\text{m}\\)<br>\\(s = 1.4\\)<br><br><strong>Required:</strong><br>\\(F = ?\\)<br>location of the force from the bottom \\(= ?\\)<br>\\(P = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ \\bar{h} = h_1 + (D/2) = 2.85\\,\\text{m} \\]<br>\\[ A = (\\pi/4)(0.9)^2 = 0.636\\,\\text{m}^2 \\]<br>\\[ I_g = (\\pi(0.9)^4)/64 = 0.032206\\,\\text{m}^4 \\]<br>\\[ \\bar{h} = \\bar{Y} = 2.85\\,\\text{m} \\]<br>\\[ F = \\gamma_w \\bar{h} A \\]<br>\\[ F = 9.81(1.4)(2.85)(0.636) \\]<br>\\[ F = 24.9\\,\\text{kN} \\]<br>\\[ e = I_g/(A \\bar{Y}) = 0.032206/(0.636(2.85)) = 0.0178\\,\\text{m} \\]<br>location of force from the bottom \\(= D/2 - e = 0.432\\,\\text{m}\\)<br>\\[ y_1 = D/2 + e = 0.4678\\,\\text{m} \\]<br>\\[ \\sum M_o = 0 \\]<br>\\[ P \\times D = F \\times y_1 \\]<br>\\[ P(0.9) = 24.9(0.4678) \\]<br>\\[ P = 12.94\\,\\text{kN} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit105.png"
   },
   {
     "id": "2015-nov-s106",
@@ -1164,7 +1164,7 @@
     "question": "A circular gate \\(1.5\\,\\text{m}\\) in diameter is inclined \\(45°\\) with the vertical. The center of the gate is \\(10\\,\\text{m}\\) below the water surface.<br><br>1. Calculate the total force on the gate.<br>2. Calculate the distance of the total force from the bottom of the gate.<br>3. If the gate is hinged at its top, find the normal force applied at the bottom required to open the gate.",
     "solution": "<strong>Given:</strong><br>\\(D = 1.5\\,\\text{m}\\)<br>\\(\\theta = 45°\\)<br>\\(\\bar{h} = 10\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(F = ?\\)<br>\\(y_1 = ?\\)<br>\\(P = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ A = (\\pi/4) D^2 = 9\\pi/16\\,\\text{m}^2 \\]<br>\\[ I_g = (\\pi D^4)/64 = 81\\pi/1024\\,\\text{m}^4 \\]<br>\\[ \\bar{Y} = \\bar{h}/\\sin\\theta = 14.142\\,\\text{m} \\]<br>\\[ F = \\gamma_w \\bar{h} A \\]<br>\\[ F = 9.81(10)(9\\pi/16) \\]<br>\\[ F = 173.357\\,\\text{kN} \\]<br>\\[ e = (81\\pi/1024)/(9\\pi/16(14.142)) = 0.009944 = 9.944\\,\\text{mm} \\]<br>\\[ y_1 = D/2 - e = 0.74\\,\\text{m} \\]<br>\\[ y_2 = D/2 + e = 0.76\\,\\text{m} \\]<br>\\[ \\sum M_o = 0 \\]<br>\\[ P \\times D = F \\times y_2 \\]<br>\\[ P(1.5) = 173.357(0.76) \\]<br>\\[ P = 87.83\\,\\text{kN} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit106.png"
   },
   {
     "id": "2015-nov-s107",
@@ -1186,7 +1186,7 @@
     "question": "A barge floating in a river, in the form of rectangular parallelepiped \\(10\\,\\text{m}\\) wide by \\(30\\,\\text{m}\\) long by \\(3\\,\\text{m}\\) high, is loaded with \\(4500\\,\\text{kN}\\) of sand. Its centroid is located \\(4\\,\\text{m}\\) from the barge bottom. Specific gravity of water is \\(1.01\\). Determine the following:<br><br>1. The draft of the barge.<br>2. The metacentric height for rotation along about its longest centerline or rolling.<br>3. The metacentric height for rotation along about its shortest centerline or pitching.",
     "solution": "<strong>Given:</strong><br>\\(w = 10\\,\\text{m}\\)<br>\\(L = 30\\,\\text{m}\\)<br>\\(h = 3\\,\\text{m}\\)<br>\\(W = 4500\\,\\text{kN}\\)<br>\\(d = 4\\,\\text{m}\\)<br>\\(s = 1.01\\)<br><br><strong>Required:</strong><br>\\(D = ?\\)<br>MG at rolling \\(= ?\\)<br>MG at pitching \\(= ?\\)<br><br><strong>Solution:</strong><br><br>\\[ W = BF \\]<br>\\[ 4500 = 9.908(10)(30)D \\]<br>\\[ D = 1.514\\,\\text{m} \\]<br>\\[ MB_o = B^2/(12D) \\]<br>\\[ MB_o = 10^2/(12(1.514)) = 5.504\\,\\text{m} \\]<br>\\[ GB_o = 4 - D/2 = 4 - 1.514/2 = 3.243\\,\\text{m} \\]<br>\\[ MG = MB_o - GB_o \\]<br>\\[ MG = 5.504 - 3.243 = 2.261\\,\\text{m} \\]<br>\\[ MB_o = L^2/(12D) \\]<br>\\[ MB_o = 30^2/(12(1.514)) = 49.538\\,\\text{m} \\]<br>\\[ MG = MB_o - GB_o \\]<br>\\[ MG = 49.538 - 3.243 = 46.295\\,\\text{m} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit108.png"
   },
   {
     "id": "2015-nov-s109",
@@ -1197,7 +1197,7 @@
     "question": "A rectangular tank filled with water is moving horizontally with acceleration of \\(\\frac{1}{2} g\\).<br><br>1. What is the angle of the water surface with the horizontal?<br>2. What is the angle of the water surface with the vertical?<br>3. If the tank is \\(4\\,\\text{m}\\) long what is the difference in pressure between the rear end and the front end of the tank?",
     "solution": "<strong>Given:</strong><br>\\(a = \\frac{1}{2} g\\)<br><br><strong>Required:</strong><br>\\(\\theta\\) (angle with horizontal) \\(= ?\\)<br>\\(\\theta\\) (angle with vertical) \\(= ?\\)<br>\\(\\Delta p = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ a = \\frac{1}{2} g = \\frac{1}{2}(9.81) = 4.905\\,\\text{m}/\\text{s}^2 \\]<br>\\[ \\tan\\theta = a/g \\]<br>\\[ \\tan\\theta = 4.905/9.81 \\]<br>\\[ \\theta = 26.57° \\]<br>\\[ L = 4\\,\\text{m} \\]<br>\\[ \\Delta h = L \\tan\\theta = 4 \\tan 26.57 = 2\\,\\text{m} \\]<br>\\[ \\Delta p = \\gamma_w \\Delta h = 9.81(2) = 19.62\\,\\text{kPa} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit109.png"
   },
   {
     "id": "2015-nov-s110",
@@ -1208,7 +1208,7 @@
     "question": "An open-top cylindrical tank \\(1\\,\\text{m}\\) in diameter and \\(2.5\\,\\text{m}\\) high is \\(\\frac{3}{5}\\) full of water. Determine the angular speed in rpm if:<br><br>1. The water will touch the rim.<br>2. The vortex will touch the bottom.<br>3. The base is uncovered within \\(20\\,\\text{cm}\\) from the vertical axis.",
     "solution": "<strong>Given:</strong><br>\\(D = 1\\,\\text{m}\\)<br>\\(H = 2.5\\,\\text{m}\\)<br>\\(h = 3/5 H = 1.5\\,\\text{m}\\)<br>\\(r = 0.5\\,\\text{m}\\)<br>\\(a = H - h = 1\\,\\text{m}\\)<br>\\(x = r = 0.5\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(\\omega\\) in rpm if: (1) water touches rim, (2) vortex touches bottom, (3) base uncovered within 20 cm from axis<br><br><strong>Solution:</strong><br>\\[ y = 2a = 2\\,\\text{m} \\]<br>\\[ y = (\\omega^2 x^2)/(2g) \\]<br>\\[ 2 = (\\omega^2 (0.5)^2)/(2(9.81)) \\]<br>\\[ \\omega = 12.528\\,\\text{rad}/\\text{s} \\]<br>\\[ \\omega = 119.64\\,\\text{rpm} \\]<br>\\[ y = H = 2.5\\,\\text{m} \\]<br>\\[ 2.5 = (\\omega^2 (0.5)^2)/(2(9.81)) \\]<br>\\[ \\omega = 14.007\\,\\text{rad}/\\text{s} \\]<br>\\[ \\omega = 133.74\\,\\text{rpm} \\]<br>\\[ x_1 = 20\\,\\text{cm} = 0.2\\,\\text{m} \\]<br>\\[ y - y_1 = H \\]<br>\\[ (\\omega^2 x^2)/(2g) - (\\omega^2 x_1^2)/(2g) = H \\]<br>\\[ \\omega^2/(2(9.81)) (0.5^2 - 0.2^2) = 2.5 \\]<br>\\[ \\omega = 15.28\\,\\text{rad}/\\text{s} \\]<br>\\[ \\omega = 145.9\\,\\text{rpm} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit110.png"
   },
   {
     "id": "2015-nov-s111",
@@ -1219,7 +1219,7 @@
     "question": "An open cylindrical tank \\(2\\) meters in diameter and \\(4\\) meters tall is half full of water. The tank is rotated about its vertical axis at constant angular speed.<br><br>1. Find the maximum \\(\\omega\\) (rpm) without spilling any water.<br>2. What is the height of water at the sides if the depth of water at the center is zero?<br>3. How much water is spilled (in liters) if the angular speed is \\(90\\,\\text{rpm}\\)?",
     "solution": "<strong>Given:</strong><br>\\(D = 2\\,\\text{m}\\)<br>\\(H = 4\\,\\text{m}\\)<br>\\(h = 1/2 H = 2\\,\\text{m}\\)<br>\\(x = 1\\,\\text{m}\\)<br>\\(a = H - h = 2\\,\\text{m}\\)<br><br><strong>Required:</strong><br>1. Maximum \\(\\omega\\) (rpm) without spilling<br>2. Height of water at sides when depth at center is zero<br>3. Water spilled (liters) if \\(\\omega = 90\\,\\text{rpm}\\)<br><br><strong>Solution:</strong><br><br>\\[ y = 2a = 4\\,\\text{m} \\]<br>\\[ y = (\\omega^2 x^2)/(2g) \\]<br>\\[ 4 = (\\omega^2 (1)^2)/(2(9.81)) \\]<br>\\[ \\omega = 8.857\\,\\text{rad}/\\text{s} \\]<br>\\[ \\omega = 84.58\\,\\text{rpm} \\]<br>Height of the water at the sides when the depth of water at center is zero \\(= 4\\,\\text{m}\\)<br>\\[ \\omega = 90\\,\\text{rpm} = 9.425\\,\\text{rad}/\\text{s} \\]<br>\\[ y = (9.425^2 (1)^2)/(2(9.81)) \\]<br>\\[ y = 4.529\\,\\text{m} \\]<br>\\[ y_1 = y - H = 0.529\\,\\text{m} \\]<br>volume of paraboloid \\(= \\pi g/\\omega^2 \\, y^2\\)<br>volume of air \\(= \\pi g/\\omega^2 (y^2 - y_1^2)\\)<br>\\[ \\text{volume of air} = \\pi g/\\omega^2 (4.529^2 - 0.529^2) = 7.0193\\,\\text{m}^3 \\]<br>\\[ V_s = \\text{final volume of air} - \\text{initial volume of air} \\]<br>\\[ V_s = 7.0193 - \\pi(1)^2(2) \\]<br>\\[ V_s = 0.736\\,\\text{m}^3 = 736\\,\\text{liters} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit111.png"
   },
   {
     "id": "2015-nov-s112",
@@ -1241,7 +1241,7 @@
     "question": "Water flows upward through a \\(200\\,\\text{mm}\\) pipe laid on a sloping ground inclined \\(10°\\) with the horizontal. Assuming steady flow of \\(75\\,\\text{L}/\\text{s}\\), what is the difference in pressure between a point B to a point A \\(500\\,\\text{m}\\) up the slope? Assume \\(f = 0.015\\).",
     "solution": "<strong>Given:</strong><br>\\(Q = 75\\,\\text{L}/\\text{s} = 0.075\\,\\text{m}^3/\\text{s}\\)<br>\\(D = 200\\,\\text{mm} = 0.2\\,\\text{m}\\)<br>\\(h = 500 \\sin 10 = 86.824\\,\\text{m}\\)<br>\\(f = 0.015\\)<br><br><strong>Required:</strong><br>\\(p_B - p_A = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ H_L = (0.0826 f L Q^2)/D^5 \\]<br>\\[ H_L = (0.0826(0.015)(500)(0.075)^2)/(0.2)^5 \\]<br>\\[ H_L = 10.9\\,\\text{m} \\]<br>\\[ E_B - H_L = E_A \\]<br>\\[ v_B^2/(2g) + p_B/\\gamma + z_B - H_L = v_A^2/(2g) + p_A/\\gamma + z_A \\]<br>\\[ p_B/\\gamma - p_A/\\gamma = z_A - z_B + H_L = h + H_L \\]<br>\\[ (p_B - p_A)/9.81 = 86.82 + 10.9 \\]<br>\\[ p_B - p_A = 958.6\\,\\text{kPa} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit113.png"
   },
   {
     "id": "2015-nov-s114",
@@ -1285,7 +1285,7 @@
     "question": "A \\(150\\text{-mm}\\)-diameter penstock supplies water to a turbine under a constant head of \\(30\\) meters.<br><br>1. Calculate the theoretical velocity of flow (m/s) through the penstock.<br>2. Calculate the theoretical discharge in \\(\\text{m}^3/\\text{s}\\).<br>3. Calculate the power (kW) delivered by the turbine if the system efficiency is \\(70\\%\\).",
     "solution": "<strong>Given:</strong><br>\\(D = 150\\,\\text{mm}\\)<br>\\(H = 30\\,\\text{m}\\)<br><br><strong>Required:</strong><br>\\(v_t = ?\\)<br>\\(Q_t = ?\\)<br>\\(P_o = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ v_t = \\sqrt{2gH} = \\sqrt{2(9.81)(30)} \\]<br>\\[ v_t = 24.26\\,\\text{m}/\\text{s} \\]<br>\\[ Q_t = A v_t = \\pi/4 (0.15)^2 (24.26) \\]<br>\\[ Q_t = 0.429\\,\\text{m}^3/\\text{s} \\]<br>\\[ P_I = Q \\gamma_w H = 0.429(9.81)(30) = 126.2\\,\\text{kW} \\]<br>\\[ P_o = P_I \\times \\text{eff} = 126.2(0.7) = 88.3\\,\\text{kW} \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit117.png"
   },
   {
     "id": "2015-nov-s118",
@@ -1296,7 +1296,7 @@
     "question": "A rectangular channel \\(8\\)-meter wide has constant specific energy of \\(2.20\\) meters.<br><br>1. What is the critical depth of flow in meters.<br>2. Calculate the critical velocity in m/s.<br>3. Calculate the critical slope assuming \\(n = 0.013\\).",
     "solution": "<strong>Given:</strong><br>\\(b = 8\\,\\text{m}\\)<br>\\(H = 2.2\\,\\text{m}\\)<br>\\(n = 0.013\\)<br><br><strong>Required:</strong><br>\\(d_c = ?\\)<br>\\(v_c = ?\\)<br>\\(S = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ d_c = 2H/3 = 2(2.2)/3 = 1.47\\,\\text{m} \\]<br>\\[ d_c = \\sqrt{q^2/g} \\]<br>\\[ 1.47 = \\sqrt{q^2/9.81} \\]<br>\\[ q = 5.56\\,\\text{m}^3/\\text{s}\\) per meter<br>\\[ q = v d \\]<br>\\[ 5.56 = v_c (1.47) \\]<br>\\[ v_c = 3.782\\,\\text{m}/\\text{s} \\]<br>\\[ A = b d = 8(1.47) = 11.76\\,\\text{m}^2 \\]<br>\\[ R = A/P = 11.76/(8 + 2 \\times 1.47) = 1.075\\,\\text{m} \\]<br>\\[ v = 1/n R^{2/3} S^{1/2} \\]<br>\\[ 3.782 = 1/0.013 (1.075)^{2/3} S^{1/2} \\]<br>\\[ S = 0.0022 \\]",
     "image": "",
-    "solutionImage": ""
+    "solutionImage": "assets/images/nov2015-solution-sit118.png"
   },
   {
     "id": "2015-nov-s119",
@@ -1306,7 +1306,7 @@
     "topic": "Pipes",
     "question": "The flow rate of water through the pipe system shown in the figure is \\(50\\,\\text{L}/\\text{s}\\) under head loss of \\(9.0\\,\\text{m}\\). Assume a C coefficient of \\(120\\) for all pipes.<br><br>1. Calculate the flow through line B in L/s.<br>2. Calculate the head loss in line B in meters.<br>3. Determine the diameter of line C in mm.",
     "solution": "<strong>Given:</strong><br>\\(Q = 0.05\\,\\text{m}^3/\\text{s}\\)<br>\\(H_L = 9\\,\\text{m}\\)<br>\\(C = 120\\)<br><br><strong>Required:</strong><br>\\(Q_B = ?\\)<br>\\(HL_B = ?\\)<br>\\(D_C = ?\\)<br><br><strong>Solution:</strong><br><br>\\[ Q_A = Q_D = 0.05\\,\\text{m}^3/\\text{s} \\]<br>\\[ H_L = (10.67 L Q^{1.85})/(C_1^{1.85} D^{4.87}) \\]<br>\\[ HL_A = (10.67(300)(0.05)^{1.85})/((120)^{1.85} (0.2)^{4.87}) = 4.53\\,\\text{m} \\]<br>\\[ HL_B = (10.67(266) Q_B^{1.85})/((120)^{1.85} (0.16)^{4.87}) = 3037.36 Q_B^{1.85}\\,\\text{m} \\]<br>\\[ HL_C = (10.67(190) Q_c^{1.85})/((120)^{1.85} D_c^{4.87}) = 0.2887/D_c^{4.87} Q_c^{1.85}\\,\\text{m} \\]<br>\\[ HL_D = (10.67(510)(0.05)^{1.85})/((120)^{1.85} (0.25)^{4.87}) = 2.6\\,\\text{m} \\]<br>\\[ H_L = hf_A + hf_B + hf_D \\]<br>\\[ 9 = 4.53 + hf_B + 2.6 \\]<br>\\[ hf_B = 1.87\\,\\text{m} \\]<br>\\[ HL_B = 3037.36 Q_B^{1.85} \\]<br>\\[ 1.87 = 3037.36 Q_B^{1.85} \\]<br>\\[ Q_B = 18.5\\,\\text{L}/\\text{s} \\]<br>\\[ Q_B + Q_C = 0.05 \\]<br>\\[ Q_C = 0.05 - 0.0185 = 0.0315\\,\\text{m}^3/\\text{s} \\]<br>\\[ HL_C = HL_B \\]<br>\\[ 0.2887/D_c^{4.87} Q_c^{1.85} = 1.87 \\]<br>\\[ D_c = 0.1831 = 183.1\\,\\text{mm} \\]",
-    "image": "",
+    "image": "assets/images/nov2015-question-sit119.png",
     "solutionImage": ""
   }
 ]
