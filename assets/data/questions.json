@@ -1316,7 +1316,7 @@
     "batch": "May",
     "topic": "Pressure",
     "question": "Determine the pressure in a vessel of mercury at a point \\(200\\,\\text{mm}\\) below the liquid surface, expressing the answer in kPa absolute.",
-    "solution": "Given:\\n h = 200mmHg\\n\\nRequired:\\n P = ?\\n\\nSolution:\\n P = \\gamma h + 101.325\\n P = 9.81\\left(13.6\\right)\\left(0.2\\right) + 101.325\\n P = 128.008\\,\\text{kPa (absolute)}",
+    "solution": "<strong>Given:</strong><br>h = 200mmHg<br><br><strong>Required:</strong><br>P = ?<br><br><strong>Solution:</strong><br>P = \\gamma h + 101.325<br>P = 9.81\\left(13.6\\right)\\left(0.2\\right) + 101.325<br>P = 128.008\\,\\text{kPa (absolute)}",
     "image": "",
     "solutionImage": ""
   },
@@ -1327,7 +1327,7 @@
     "batch": "May",
     "topic": "Pressure",
     "question": "For the tank shown in the figure, obtain the depth \\(d\\), in meters, of the oil if its specific gravity is \\(0.84\\). Given: \\(H_1 = 3\\,\\text{m}\\) and \\(H_2 = 4\\,\\text{m}\\).",
-    "solution": "Given:\\n s = 0.84\\n H_1 = 3m\\n H_2 = 4m\\n\\nRequired:\\n d = ?\\n\\nSolution:\\n P_1 = P_2\\n \\gamma_{oil} d = \\gamma_{water} (H_1 - H_2)\\n d = \\dfrac{9.81(4 - 3)}{9.81(0.84)}\\n d = 1.786\\,\\text{m}",
+    "solution": "<strong>Given:</strong><br>s = 0.84<br>H_1 = 3m<br>H_2 = 4m<br><br><strong>Required:</strong><br>d = ?<br><br><strong>Solution:</strong><br>P_1 = P_2<br>\\gamma_{oil} d = \\gamma_{water} (H_1 - H_2)<br>d = \\dfrac{9.81(4 - 3)}{9.81(0.84)}<br>d = 1.786\\,\\text{m}",
     "image": "",
     "solutionImage": ""
   },
@@ -1338,7 +1338,7 @@
     "batch": "May",
     "topic": "Pressure",
     "question": "A vertical rectangular gate \\(1.5\\,\\text{m}\\) wide and \\(3\\,\\text{m}\\) high is submerged in water with its top edge horizontal and \\(2\\,\\text{m}\\) below the water surface.\\n\\n1. Evaluate the total force acting on one side of the gate, in kN.\\n2. Obtain the location of the force from the center of gravity of the plate, in meters.\\n3. Obtain the location of the force from the liquid surface, in meters.",
-    "solution": "Given:\\n L = 1.5m\\n h = 3m\\n\\nRequired:\\n F_H = ?\\n e = ?\\n D = ?\\n\\nSolution:\\n F_H = \\gamma \\bar{h} A\\n F_H = 9.81\\left(3.5\\right)\\left(1.5\\right)\\left(3\\right)\\n F_H = 154.508\\,\\text{kN}\\n\\n e = \\dfrac{I_g}{A\\bar{h}}\\n e = \\dfrac{1.5\\left(3\\right)^3/12}{\\left(1.5\\right)\\left(3\\right)\\left(3.5\\right)}\\n e = 0.214\\,\\text{m}\\n\\n D = 2 + 1.5 + 0.214\\n D = 3.714\\,\\text{m}",
+    "solution": "<strong>Given:</strong><br>L = 1.5m<br>h = 3m<br><br><strong>Required:</strong><br>F_H = ?<br>e = ?<br>D = ?<br><br><strong>Solution:</strong><br>F_H = \\gamma \\bar{h} A<br>F_H = 9.81\\left(3.5\\right)\\left(1.5\\right)\\left(3\\right)<br>F_H = 154.508\\,\\text{kN}<br><br>e = \\dfrac{I_g}{A\\bar{h}}<br>e = \\dfrac{1.5\\left(3\\right)^3/12}{\\left(1.5\\right)\\left(3\\right)\\left(3.5\\right)}<br>e = 0.214\\,\\text{m}<br><br>D = 2 + 1.5 + 0.214<br>D = 3.714\\,\\text{m}",
     "image": "",
     "solutionImage": ""
   },
@@ -1349,7 +1349,7 @@
     "batch": "May",
     "topic": "Buoyancy",
     "question": "A solid block having specific gravity of \\(3.5\\) is placed in a container containing liquid having specific gravity of \\(13.6\\).\\n\\n1. If the volume of the block is \\(0.020\\,\\text{m}^3\\), obtain the weight of the block, in kN.\\n2. Evaluate the percentage volume of the block that floats above the liquid surface.\\n3. Obtain the downward force in kN required to make it completely submerged in the liquid.",
-    "solution": "Given:\\n s_b = 3.5\\n s_l = 13.6\\n V = 0.02\\,\\text{m}^3\\n\\nRequired:\\n W_B = ?\\n \\%V_E = ?\\n F = ?\\n\\nSolution:\\n W_B = B_F\\n W_B = 0.02\\left(3.5\\right)\\left(9.81\\right)\\n W_B = 0.687\\,\\text{kN}\\n\\n V \\gamma_b = V_l s_l\\n 0.02\\left(3.5\\right) = V_l\\left(13.6\\right)\\n V_l = 5.147 \\times 10^{-3}\\,\\text{m}^3\\n\\n \\dfrac{V_l}{V} = \\dfrac{5.147 \\times 10^{-3}}{0.02} = 0.25735 \\approx 25.735\\%\\n\\n \\%V_E = 100 - 25.735 = 74.265\\%\\n\\n V_2 + V_1 = V\\n V_2 + 5.147 \\times 10^{-3} = 0.02\\n V_2 = 0.015\\,\\text{m}^3\\n\\n F = V_2 \\gamma_w s_l\\n F = 0.015\\left(9.81\\right)\\left(13.6\\right)\\n F = 2.001\\,\\text{kN}",
+    "solution": "<strong>Given:</strong><br>s_b = 3.5<br>s_l = 13.6<br>V = 0.02\\,\\text{m}^3<br><br><strong>Required:</strong><br>W_B = ?<br>%V_E = ?<br>F = ?<br><br><strong>Solution:</strong><br>W_B = B_F<br>W_B = 0.02\\left(3.5\\right)\\left(9.81\\right)<br>W_B = 0.687\\,\\text{kN}<br><br>V \\gamma_b = V_l s_l<br>0.02\\left(3.5\\right) = V_l\\left(13.6\\right)<br>V_l = 5.147 \\times 10^{-3}\\,\\text{m}^3<br><br>\\dfrac{V_l}{V} = \\dfrac{5.147 \\times 10^{-3}}{0.02} = 0.25735 \\approx 25.735\\%<br><br>%V_E = 100 - 25.735 = 74.265\\%<br><br>V_2 + V_1 = V<br>V_2 + 5.147 \\times 10^{-3} = 0.02<br>V_2 = 0.015\\,\\text{m}^3<br><br>F = V_2 \\gamma_w s_l<br>F = 0.015\\left(9.81\\right)\\left(13.6\\right)<br>F = 2.001\\,\\text{kN}",
     "image": "",
     "solutionImage": ""
   },
@@ -1360,7 +1360,7 @@
     "batch": "May",
     "topic": "Buoyancy",
     "question": "A spherical balloon \\(6\\,\\text{m}\\) in diameter is filled with gas weighing \\(5\\,\\text{N}/\\text{m}^3\\). In standard air weighing \\(12\\,\\text{N}/\\text{m}^3\\), evaluate the maximum load, in N, excluding its own weight, that the balloon can lift.",
-    "solution": "Given:\\n D = 6m\\n \\gamma_{gas} = 5\\,\\text{N}/\\text{m}^3\\n \\gamma_{SA} = 12\\,\\text{N}/\\text{m}^3\\n\\nRequired:\\n W = ?\\n\\nSolution:\\n W_{gas} = \\dfrac{4}{3}\\pi\\left(3\\right)^3\\left(5\\right)\\n W_{gas} = 565.487\\,\\text{N}\\n\\n B_F = \\dfrac{4}{3}\\pi\\left(3\\right)^3\\left(12\\right)\\n B_F = 1357.168\\,\\text{N}\\n\\n W + W_{gas} = B_F\\n W + 565.487 = 1357.168\\n W = 791.681\\,\\text{N}",
+    "solution": "<strong>Given:</strong><br>D = 6m<br>\\gamma_{gas} = 5\\,\\text{N}/\\text{m}^3<br>\\gamma_{SA} = 12\\,\\text{N}/\\text{m}^3<br><br><strong>Required:</strong><br>W = ?<br><br><strong>Solution:</strong><br>W_{gas} = \\dfrac{4}{3}\\pi\\left(3\\right)^3\\left(5\\right)<br>W_{gas} = 565.487\\,\\text{N}<br><br>B_F = \\dfrac{4}{3}\\pi\\left(3\\right)^3\\left(12\\right)<br>B_F = 1357.168\\,\\text{N}<br><br>W + W_{gas} = B_F<br>W + 565.487 = 1357.168<br>W = 791.681\\,\\text{N}",
     "image": "",
     "solutionImage": ""
   },
@@ -1371,7 +1371,7 @@
     "batch": "May",
     "topic": "Stability of Floating Bodies",
     "question": "A barge, weighing \\(350\\,\\text{kN}\\) when empty, is \\(6\\,\\text{m}\\) wide, \\(15\\,\\text{m}\\) long, and \\(3\\,\\text{m}\\) high. Floating upright, evaluate the draft of the barge, in meters, when transporting 5000 bags of cement along a river, each bag having a mass of \\(40\\,\\text{kg}\\). Assume the specific gravity of the water in the river to be \\(1.02\\).",
-    "solution": "Given:\\n W_b = 350\\,\\text{kN}\\n L = 15m\\n b = 6m\\n h = 3m\\n W_c = 40\\left(9.81\\right) = 392.4\\,\\text{N}\\n s = 1.02\\n\\nRequired:\\n d = ?\\n\\nSolution:\\n W = W_b + W_c\\n W = 350 + \\dfrac{5000\\left(392.4\\right)}{1000}\\n W = 2312\\,\\text{kN}\\n\\n W = B_F\\n 2312 = 6\\left(15\\right)d\\left(9.81\\right)\\left(1.02\\right)\\n d = 2.567\\,\\text{m}",
+    "solution": "<strong>Given:</strong><br>W_b = 350\\,\\text{kN}<br>L = 15m<br>b = 6m<br>h = 3m<br>W_c = 40\\left(9.81\\right) = 392.4\\,\\text{N}<br>s = 1.02<br><br><strong>Required:</strong><br>d = ?<br><br><strong>Solution:</strong><br>W = W_b + W_c<br>W = 350 + \\dfrac{5000\\left(392.4\\right)}{1000}<br>W = 2312\\,\\text{kN}<br><br>W = B_F<br>2312 = 6\\left(15\\right)d\\left(9.81\\right)\\left(1.02\\right)<br>d = 2.567\\,\\text{m}",
     "image": "",
     "solutionImage": ""
   },
@@ -1382,7 +1382,7 @@
     "batch": "May",
     "topic": "Rotating Vessel",
     "question": "An open cylindrical vessel \\(1.3\\,\\text{m}\\) in diameter and \\(2.1\\,\\text{m}\\) high is \\(2/3\\) full of water. If rotated about the vertical axis at a constant angular speed of \\(90\\,\\text{rpm}\\):\\n\\n1. Determine how high is the paraboloid formed of the water surface, in meters.\\n2. Determine the amount of water in liters that will be spilled out.\\n3. What should have been the least height of the vessel, in meters, so that no water is spilled out?",
-    "solution": "Given:\\n d = 1.3m\\n h = 2.1m\\n \\omega = 90\\,\\text{rpm}\\n\\nRequired:\\n y = ?\\n V_{spill} = ?\\n H = ?\\n\\nSolution:\\n r = 0.65m\\n \\omega = 90\\left(\\dfrac{\\pi}{30}\\right) = 9.425\\,\\text{rad/s}\\n\\n y = \\dfrac{\\omega^2 r^2}{2g}\\n y = \\dfrac{\\left(9.425\\right)^2\\left(0.65\\right)^2}{2\\left(9.81\\right)}\\n y = 1.913\\,\\text{m}\\n\\n V = \\dfrac{\\pi\\left(0.65\\right)^2\\left(1.913\\right)}{2} - \\dfrac{\\pi\\left(0.65\\right)^2\\left(1.4\\right)}{2}\\n V = 0.340458\\,\\text{m}^3\\n V = 340.458\\,\\text{L}\\n\\n H = 1.4 + 0.9565\\n H = 2.357\\,\\text{m}",
+    "solution": "<strong>Given:</strong><br>d = 1.3m<br>h = 2.1m<br>\\omega = 90\\,\\text{rpm}<br><br><strong>Required:</strong><br>y = ?<br>V_{spill} = ?<br>H = ?<br><br><strong>Solution:</strong><br>r = 0.65m<br>\\omega = 90\\left(\\dfrac{\\pi}{30}\\right) = 9.425\\,\\text{rad/s}<br><br>y = \\dfrac{\\omega^2 r^2}{2g}<br>y = \\dfrac{\\left(9.425\\right)^2\\left(0.65\\right)^2}{2\\left(9.81\\right)}<br>y = 1.913\\,\\text{m}<br><br>V = \\dfrac{\\pi\\left(0.65\\right)^2\\left(1.913\\right)}{2} - \\dfrac{\\pi\\left(0.65\\right)^2\\left(1.4\\right)}{2}<br>V = 0.340458\\,\\text{m}^3<br>V = 340.458\\,\\text{L}<br><br>H = 1.4 + 0.9565<br>H = 2.357\\,\\text{m}",
     "image": "",
     "solutionImage": ""
   },
@@ -1393,7 +1393,7 @@
     "batch": "May",
     "topic": "Fundamentals of Fluid Flow",
     "question": "Given a velocity head of \\(5\\,\\text{m}\\). What will be the velocity head if the velocity is increased to three times its original velocity?",
-    "solution": "Given:\\n \\dfrac{V_1^2}{2g} = 5m\\n\\nRequired:\\n \\dfrac{V_2^2}{2g} = ?\\n\\nSolution:\\n \\dfrac{3V_1^2}{2g} = \\dfrac{9V_1^2}{2g} = 9\\left(5\\right) = 45m",
+    "solution": "<strong>Given:</strong><br>\\dfrac{V_1^2}{2g} = 5m<br><br><strong>Required:</strong><br>\\dfrac{V_2^2}{2g} = ?<br><br><strong>Solution:</strong><br>\\dfrac{3V_1^2}{2g} = \\dfrac{9V_1^2}{2g} = 9\\left(5\\right) = 45m",
     "image": "",
     "solutionImage": ""
   },
@@ -1404,7 +1404,7 @@
     "batch": "May",
     "topic": "Fundamentals of Fluid Flow",
     "question": "A fireman has to put out a fire but is blocked by a firewall. To reach over the wall, he directed the water jet from the nozzle at an angle of \\(30^\\circ\\) to the horizontal. Evaluate the velocity of the water, in m/s, leaving the nozzle of his hose to reach over the wall if he stands \\(30\\,\\text{m}\\) away from the wall and the wall is standing \\(2\\,\\text{m}\\) higher than the nozzle of the hose. Neglect friction in the jet.",
-    "solution": "Given:\\n \\theta = 30^\\circ\\n x = 30m\\n y = 2m\\n\\nRequired:\\n v = ?\\n\\nSolution:\\n y = x \\tan\\theta - \\dfrac{g x^2}{2v^2 \\cos^2\\theta}\\n 2 = 30 \\tan 30^\\circ - \\dfrac{9.81\\left(30\\right)^2}{2v^2 \\cos^2\\left(30^\\circ\\right)}\\n v = 19.601\\,\\text{m}/\\text{s}",
+    "solution": "<strong>Given:</strong><br>\\theta = 30^\\circ<br>x = 30m<br>y = 2m<br><br><strong>Required:</strong><br>v = ?<br><br><strong>Solution:</strong><br>y = x \\tan\\theta - \\dfrac{g x^2}{2v^2 \\cos^2\\theta}<br>2 = 30 \\tan 30^\\circ - \\dfrac{9.81\\left(30\\right)^2}{2v^2 \\cos^2\\left(30^\\circ\\right)}<br>v = 19.601\\,\\text{m}/\\text{s}",
     "image": "",
     "solutionImage": ""
   },
@@ -1415,7 +1415,7 @@
     "batch": "May",
     "topic": "Pipes",
     "question": "In the figure shown, reservoir A is the source of water supply and is at Elev. \\(150\\,\\text{m}\\), B is the junction at Elev. \\(91.46\\,\\text{m}\\), C is a town at Elev. \\(30.49\\,\\text{m}\\) with 25,000 inhabitants, D is another town at Elev. \\(15.24\\,\\text{m}\\) with a population of 30,000. Length AB is \\(15,240\\,\\text{m}\\), BC is \\(9150\\,\\text{m}\\), BD is \\(6100\\,\\text{m}\\). Determine the size of the pipes if the consumption is \\(150\\) liters per capita per day. For the pipes, frictional factor \\(f = 0.02\\).",
-    "solution": "Given:\\n El_A = 150m\\n El_B = 91.46m\\n El_C = 30.49m\\n El_D = 15.24m\\n Q = 150\\,\\text{L}/(\\text{capita} \\cdot \\text{day})\\n f = 0.02\\n\\nRequired:\\n D_1 = ? (Pipe AB)\\n D_2 = ? (Pipe BC)\\n D_3 = ? (Pipe BD)\\n\\nSolution:\\n Q_3 = \\dfrac{150(30{,}000)}{24(3600)(1000)} = 0.052\\,\\text{m}^3/\\text{s}\\n Q_2 = \\dfrac{150(25{,}000)}{24(3600)(1000)} = 0.043\\,\\text{m}^3/\\text{s}\\n Q_1 = Q_2 + Q_3\\n Q_1 = 0.043 + 0.052 = 0.095\\,\\text{m}^3/\\text{s}\\n\\n h_{f1} = \\dfrac{0.0826 f L Q_1^2}{D_1^5}\\n 150 - 91.46 = \\dfrac{0.0826(0.02)(15240)(0.095)^2}{D_1^5}\\n D_1 = 0.329\\,\\text{m}\\n\\n h_{f2} = \\dfrac{0.0826 f L Q_2^2}{D_2^5}\\n 91.46 - 30.49 = \\dfrac{0.0826(0.02)(9150)(0.043)^2}{D_2^5}\\n D_2 = 0.217\\,\\text{m}\\n\\n h_{f3} = \\dfrac{0.0826 f L Q_3^2}{D_3^5}\\n 91.46 - 15.24 = \\dfrac{0.0826(0.02)(6100)(0.052)^2}{D_3^5}\\n D_3 = 0.204\\,\\text{m}",
+    "solution": "<strong>Given:</strong><br>El_A = 150m<br>El_B = 91.46m<br>El_C = 30.49m<br>El_D = 15.24m<br>Q = 150\\,\\text{L}/(\\text{capita} \\cdot \\text{day})<br>f = 0.02<br><br><strong>Required:</strong><br>D_1 = ? (Pipe AB)<br>D_2 = ? (Pipe BC)<br>D_3 = ? (Pipe BD)<br><br><strong>Solution:</strong><br>Q_3 = \\dfrac{150(30{,}000)}{24(3600)(1000)} = 0.052\\,\\text{m}^3/\\text{s}<br>Q_2 = \\dfrac{150(25{,}000)}{24(3600)(1000)} = 0.043\\,\\text{m}^3/\\text{s}<br>Q_1 = Q_2 + Q_3<br>Q_1 = 0.043 + 0.052 = 0.095\\,\\text{m}^3/\\text{s}<br><br>h_{f1} = \\dfrac{0.0826 f L Q_1^2}{D_1^5}<br>150 - 91.46 = \\dfrac{0.0826(0.02)(15240)(0.095)^2}{D_1^5}<br>D_1 = 0.329\\,\\text{m}<br><br>h_{f2} = \\dfrac{0.0826 f L Q_2^2}{D_2^5}<br>91.46 - 30.49 = \\dfrac{0.0826(0.02)(9150)(0.043)^2}{D_2^5}<br>D_2 = 0.217\\,\\text{m}<br><br>h_{f3} = \\dfrac{0.0826 f L Q_3^2}{D_3^5}<br>91.46 - 15.24 = \\dfrac{0.0826(0.02)(6100)(0.052)^2}{D_3^5}<br>D_3 = 0.204\\,\\text{m}",
     "image": "",
     "solutionImage": ""
   },
@@ -1426,7 +1426,7 @@
     "batch": "May",
     "topic": "Open Channels",
     "question": "Water flows through a rectangular irrigation canal, \\(500\\,\\text{mm}\\) deep by \\(1\\,\\text{m}\\) wide, with a mean velocity of \\(2\\,\\text{m}/\\text{s}\\). Determine the rate of flow in \\(\\text{m}^3/\\text{min}\\).",
-    "solution": "Given:\\n h = 0.5m\\n L = 1m\\n v = 2\\,\\text{m}/\\text{s}\\n\\nRequired:\\n Q = ?\\,(\\text{m}^3/\\text{min})\\n\\nSolution:\\n Q = A v\\n Q = 1\\left(0.5\\right)\\left(2\\right)\\left(\\dfrac{60\\,\\text{s}}{1\\,\\text{min}}\\right)\\n Q = 60\\,\\text{m}^3/\\text{min}",
+    "solution": "<strong>Given:</strong><br>h = 0.5m<br>L = 1m<br>v = 2\\,\\text{m}/\\text{s}<br><br><strong>Required:</strong><br>Q = ?\\,(\\text{m}^3/\\text{min})<br><br><strong>Solution:</strong><br>Q = A v<br>Q = 1\\left(0.5\\right)\\left(2\\right)\\left(\\dfrac{60\\,\\text{s}}{1\\,\\text{min}}\\right)<br>Q = 60\\,\\text{m}^3/\\text{min}",
     "image": "",
     "solutionImage": ""
   },
@@ -1437,7 +1437,7 @@
     "batch": "May",
     "topic": "Open Channels",
     "question": "A trapezoidal canal has a bottom width of \\(4\\,\\text{m}\\) and side slopes of 2 horizontal to 1 vertical. When the depth of the flow is \\(1.2\\,\\text{m}\\), the flow is \\(30\\,\\text{m}^3/\\text{s}\\). The roughness coefficient \\(n = 0.015\\). Evaluate the slope of the channel using Manning\u2019s formula.",
-    "solution": "Given:\\n b = 4m\\n Q = 30\\,\\text{m}^3/\\text{s}\\n n = 0.015\\n h = 1.2m\\n\\nRequired:\\n S = ?\\n\\nSolution:\\n A = \\dfrac{4 + 8.8}{2}\\left(1.2\\right) = 7.68\\,\\text{m}^2\\n Q = A v\\n 30 = 7.68 v\\n v = 3.906\\,\\text{m}/\\text{s}\\n\\n R = \\dfrac{A}{P}\\n R = \\dfrac{7.68}{4 + 2(2.68)}\\n R = 0.821\\,\\text{m}\\n\\n v = \\dfrac{1}{n} R^{2/3} S^{1/2}\\n 3.906 = \\dfrac{1}{0.015}(0.821)^{2/3} S^{1/2}\\n S = 0.004465\\n S = 4.465 \\times 10^{-3}",
+    "solution": "<strong>Given:</strong><br>b = 4m<br>Q = 30\\,\\text{m}^3/\\text{s}<br>n = 0.015<br>h = 1.2m<br><br><strong>Required:</strong><br>S = ?<br><br><strong>Solution:</strong><br>A = \\dfrac{4 + 8.8}{2}\\left(1.2\\right) = 7.68\\,\\text{m}^2<br>Q = A v<br>30 = 7.68 v<br>v = 3.906\\,\\text{m}/\\text{s}<br><br>R = \\dfrac{A}{P}<br>R = \\dfrac{7.68}{4 + 2(2.68)}<br>R = 0.821\\,\\text{m}<br><br>v = \\dfrac{1}{n} R^{2/3} S^{1/2}<br>3.906 = \\dfrac{1}{0.015}(0.821)^{2/3} S^{1/2}<br>S = 0.004465<br>S = 4.465 \\times 10^{-3}",
     "image": "",
     "solutionImage": ""
   },
@@ -1448,7 +1448,7 @@
     "batch": "May",
     "topic": "Open Channels",
     "question": "An irrigation canal with trapezoidal cross section has the following dimensions: bottom width \\(= 2\\,\\text{m}\\), depth of water \\(= 0.90\\,\\text{m}\\), side slope is 1.5 horizontal to 1 vertical, slope of the canal bed \\(= 0.001\\), coefficient of roughness \\(= 0.025\\). The canal will serve clay-loam riceland for which the duty of water per hectare is \\(3.0\\,\\text{L}/\\text{s}\\). Use Manning's formula.\\n\\n1. Determine the hydraulic radius of the canal, in meters.\\n2. Determine the velocity of the water in \\(\\text{m}/\\text{s}\\).\\n3. Determine the number of hectares served by the irrigation canal.",
-    "solution": "Given:\\n b_1 = 2m\\n h = 0.90m\\n S = 0.001\\n n = 0.025\\n a = 3\\,\\text{L}/\\text{s}\\n\\nRequired:\\n R = ?\\n V = ?\\n \\text{no. of hectares} = ?\\n\\nSolution:\\n x^2 = 0.9^2 + 1.35^2\\n x = 1.622m\\n\\n A = \\dfrac{4.7 + 2}{2}\\left(0.9\\right) = 3.015\\,\\text{m}^2\\n P = 2 + 2\\left(1.622\\right) = 5.244m\\n R = \\dfrac{A}{P} = \\dfrac{3.015}{5.244} = 0.575m\\n\\n V = \\dfrac{1}{n} R^{2/3} S^{1/2}\\n V = \\dfrac{1}{0.025}(0.575)^{2/3}(0.001)^{1/2}\\n V = 0.874\\,\\text{m}/\\text{s}\\n\\n Q = A v\\n Q = 3.015(0.874) = 2.63511\\,\\text{m}^3/\\text{s}\\n Q = 2635.11\\,\\text{L}/\\text{s}\\n\\n \\text{No. of hectares served} = \\dfrac{2635.11}{3} = 878.37\\,\\text{hectares}",
+    "solution": "<strong>Given:</strong><br>b_1 = 2m<br>h = 0.90m<br>S = 0.001<br>n = 0.025<br>a = 3\\,\\text{L}/\\text{s}<br><br><strong>Required:</strong><br>R = ?<br>V = ?<br>no. of hectares = ?<br><br><strong>Solution:</strong><br>x^2 = 0.9^2 + 1.35^2<br>x = 1.622m<br><br>A = \\dfrac{4.7 + 2}{2}\\left(0.9\\right) = 3.015\\,\\text{m}^2<br>P = 2 + 2\\left(1.622\\right) = 5.244m<br>R = \\dfrac{A}{P} = \\dfrac{3.015}{5.244} = 0.575m<br><br>V = \\dfrac{1}{n} R^{2/3} S^{1/2}<br>V = \\dfrac{1}{0.025}(0.575)^{2/3}(0.001)^{1/2}<br>V = 0.874\\,\\text{m}/\\text{s}<br><br>Q = A v<br>Q = 3.015(0.874) = 2.63511\\,\\text{m}^3/\\text{s}<br>Q = 2635.11\\,\\text{L}/\\text{s}<br><br>No. of hectares served = \\dfrac{2635.11}{3} = 878.37\\,\\text{hectares}",
     "image": "",
     "solutionImage": ""
   },
@@ -1459,7 +1459,7 @@
     "batch": "May",
     "topic": "Open Channels",
     "question": "A rectangular channel \\(6\\,\\text{m}\\) wide by \\(1\\,\\text{m}\\) deep is laid on a slope of \\(0.001\\) and has a roughness coefficient of \\(0.013\\).\\n\\n1. What is the mean velocity of flow (m/s) when the canal is full?\\n2. What is the maximum capacity of the channel in \\(\\text{m}^3/\\text{s}\\)?\\n3. If the most efficient rectangular section is used, what depth of canal is required for the same discharge, slope, and roughness coefficient?",
-    "solution": "Given:\\n b = 6m\\n h = 1m\\n S = 0.001\\n n = 0.013\\n\\nRequired:\\n V = ?\\n Q = ?\\n d = ?\\n\\nSolution:\\n A = b h = 6(1) = 6\\,\\text{m}^2\\n P = 1 + 6 + 1 = 8m\\n R = \\dfrac{A}{P} = \\dfrac{6}{8} = 0.75m\\n\\n V = \\dfrac{1}{n} R^{2/3} S^{1/2}\\n V = \\dfrac{1}{0.013}(0.75)^{2/3}(0.001)^{1/2}\\n V = 2.008\\,\\text{m}/\\text{s}\\n\\n Q = A v\\n Q = 6(2.008) = 12.048\\,\\text{m}^3/\\text{s}\\n\\n \\text{Most efficient section:}\\n b = 2d\\n A = b d = 2d^2\\n P = b + 2d = 4d\\n R = \\dfrac{A}{P} = \\dfrac{2d^2}{4d} = \\dfrac{d}{2}\\n\\n Q = A v\\n 12.048 = \\dfrac{2d^2\\left(1\\right)\\left(\\dfrac{d}{2}\\right)^{2/3}(0.001)^{1/2}}{0.013}\\n d = 1.671\\,\\text{m}",
+    "solution": "<strong>Given:</strong><br>b = 6m<br>h = 1m<br>S = 0.001<br>n = 0.013<br><br><strong>Required:</strong><br>V = ?<br>Q = ?<br>d = ?<br><br><strong>Solution:</strong><br>A = b h = 6(1) = 6\\,\\text{m}^2<br>P = 1 + 6 + 1 = 8m<br>R = \\dfrac{A}{P} = \\dfrac{6}{8} = 0.75m<br><br>V = \\dfrac{1}{n} R^{2/3} S^{1/2}<br>V = \\dfrac{1}{0.013}(0.75)^{2/3}(0.001)^{1/2}<br>V = 2.008\\,\\text{m}/\\text{s}<br><br>Q = A v<br>Q = 6(2.008) = 12.048\\,\\text{m}^3/\\text{s}<br><br>Most efficient section:<br>b = 2d<br>A = b d = 2d^2<br>P = b + 2d = 4d<br>R = \\dfrac{A}{P} = \\dfrac{2d^2}{4d} = \\dfrac{d}{2}<br><br>Q = A v<br>12.048 = \\dfrac{2d^2\\left(1\\right)\\left(\\dfrac{d}{2}\\right)^{2/3}(0.001)^{1/2}}{0.013}<br>d = 1.671\\,\\text{m}",
     "image": "",
     "solutionImage": ""
   }
