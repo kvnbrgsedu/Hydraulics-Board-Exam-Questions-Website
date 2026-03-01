@@ -155,7 +155,7 @@ const escapeHtml = (value) =>
     return map[match];
   });
 
-// Allow safe HTML from JSON (admin-controlled content): bold, strong, br, lists, and newlines
+// Allow safe HTML from JSON (admin-controlled content): bold, strong, br, lists, tables, and newlines
 const allowBasicTags = (html) =>
   html
     .replace(/\n/g, "<br>")
@@ -177,7 +177,11 @@ const allowBasicTags = (html) =>
     .replace(/&lt;sup&gt;/gi, "<sup>")
     .replace(/&lt;\/sup&gt;/gi, "</sup>")
     .replace(/&lt;sub&gt;/gi, "<sub>")
-    .replace(/&lt;\/sub&gt;/gi, "</sub>");
+    .replace(/&lt;\/sub&gt;/gi, "</sub>")
+    // Table elements (with optional style attribute) so reservoir/data tables render
+    .replace(/&lt;(table|th|td)\s+style=&quot;([^&]*)&quot;&gt;/gi, "<$1 style=\"$2\">")
+    .replace(/&lt;(thead|tbody|tr)&gt;/gi, "<$1>")
+    .replace(/&lt;\/(table|thead|tbody|tr|th|td)&gt;/gi, "</$1>");
 
 const buildHighlights = (text, query) => {
   if (!query.trim()) return allowBasicTags(escapeHtml(text));
