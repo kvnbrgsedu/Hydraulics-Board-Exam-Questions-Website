@@ -79,6 +79,30 @@ const globalSearchToggle = document.getElementById("global-search-toggle");
 const globalSearch = document.getElementById("global-search");
 const globalSearchInput = document.getElementById("global-search-input");
 const globalSearchResults = document.getElementById("global-search-results");
+const darkModeToggle = document.getElementById("dark-mode-toggle");
+const navMenuBtn = document.getElementById("nav-menu-btn");
+const navDrawer = document.getElementById("nav-drawer");
+const navDrawerBackdrop = document.getElementById("nav-drawer-backdrop");
+const drawerSearchInput = document.getElementById("drawer-search-input");
+const drawerSearchResults = document.getElementById("drawer-search-results");
+
+const DARK_MODE_STORAGE_KEY = "hydraulics-theme";
+
+const setDarkMode = (enabled) => {
+  const root = document.documentElement;
+  if (enabled) {
+    root.setAttribute("data-theme", "dark");
+    try { localStorage.setItem(DARK_MODE_STORAGE_KEY, "dark"); } catch (e) {}
+  } else {
+    root.removeAttribute("data-theme");
+    try { localStorage.setItem(DARK_MODE_STORAGE_KEY, "light"); } catch (e) {}
+  }
+};
+
+const toggleDarkMode = () => {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  setDarkMode(!isDark);
+};
 
 const syncHeaderSpacing = () => {
   if (!topNav) return;
@@ -196,9 +220,171 @@ const buildHighlights = (text, query) => {
   return safeText.replace(regex, "<mark>$1</mark>");
 };
 
+/**
+ * Insert a horizontal divider between the problem statement and a numbered list (1., 2., 3.)
+ * when the question uses the common "<br><br>1." format.
+ */
+const addQuestionDivider = (questionHtml) => {
+  if (!questionHtml || typeof questionHtml !== "string") return questionHtml;
+  // Only add once: before the first "1." that starts a numbered section.
+  return questionHtml.replace(
+    /<br\s*\/?>\s*<br\s*\/?>\s*(?=1\.)/i,
+    `<br><hr class="question-divider"><br>`
+  );
+};
+
+/**
+ * Wrap numbered solution parts (1., 2., 3., ...) into separate containers.
+ * This is purely presentational and preserves all existing text and LaTeX.
+ */
+const wrapNumberedSolutionSteps = (solutionBodyHtml) => {
+  if (!solutionBodyHtml || typeof solutionBodyHtml !== "string") return solutionBodyHtml;
+
+  const html = solutionBodyHtml.trim();
+  // Detect presence of at least a "1." step near a line break or start.
+  if (!/(^|<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?>)\s*1\.\s*/i.test(html)) return solutionBodyHtml;
+
+  const stepRegex = /(^|<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?>)\s*(\d+)\.\s*/gi;
+  const matches = Array.from(html.matchAll(stepRegex));
+  if (!matches.length) return solutionBodyHtml;
+
+  const steps = [];
+  let prefix = html.slice(0, matches[0].index || 0).trim();
+
+  for (let i = 0; i < matches.length; i += 1) {
+    const m = matches[i];
+    const stepNum = m[2];
+    const start = (m.index || 0) + m[0].length;
+    const end = i + 1 < matches.length ? (matches[i + 1].index || html.length) : html.length;
+    const body = html.slice(start, end).trim();
+    steps.push({ stepNum, body });
+  }
+
+  const prefixBlock = prefix
+    ? `<div class="solution-step solution-step--prefix"><div class="solution-step__body">${prefix}</div></div>`
+    : "";
+
+  const stepBlocks = steps
+    .map(
+      (s) => `<div class="solution-step">
+        <div class="solution-step__title"><span class="solution-step__num">${s.stepNum}.</span></div>
+        <div class="solution-step__body">${s.body}</div>
+      </div>`
+    )
+    .join("");
+
+  return `<div class="solution-steps">${prefixBlock}${stepBlocks}</div>`;
+};
+
+/**
+ * Parse solution HTML into Given, Required, and Solution sections.
+ * Content and LaTeX are preserved exactly; only structure is detected for layout.
+ */
+const parseSolutionSections = (solutionHtml) => {
+  if (!solutionHtml || typeof solutionHtml !== "string") {
+    return { given: "", required: "", solutionBody: solutionHtml || "" };
+  }
+  const s = solutionHtml;
+  const givenLabel = /<strong>Given:<\/strong>\s*/i;
+  const requiredLabel = /<strong>Required:<\/strong>\s*/i;
+  const solutionLabel = /<strong>Solution:<\/strong>\s*/i;
+
+  let given = "";
+  let required = "";
+  let solutionBody = s;
+
+  const hasGiven = givenLabel.test(s);
+  const hasRequired = requiredLabel.test(s);
+  const hasSolution = solutionLabel.test(s);
+
+  if (hasGiven) {
+    const afterGiven = s.replace(givenLabel, "\x00").split("\x00")[1] || "";
+    if (hasRequired) {
+      const parts = afterGiven.split(requiredLabel);
+      given = (parts[0] || "").replace(/<br\s*\/?>\s*$/i, "").trim();
+      const afterRequired = (parts[1] || "").trim();
+      if (hasSolution) {
+        const solParts = afterRequired.split(solutionLabel);
+        required = (solParts[0] || "").replace(/<br\s*\/?>\s*$/i, "").trim();
+        solutionBody = (solParts[1] || "").trim();
+      } else {
+        required = afterRequired;
+        solutionBody = "";
+      }
+    } else {
+      if (hasSolution) {
+        const parts = afterGiven.split(solutionLabel);
+        given = (parts[0] || "").replace(/<br\s*\/?>\s*$/i, "").trim();
+        solutionBody = (parts[1] || "").trim();
+      } else {
+        given = afterGiven.replace(/<br\s*\/?>\s*$/i, "").trim();
+        solutionBody = "";
+      }
+    }
+  } else if (hasRequired) {
+    const afterRequired = s.replace(requiredLabel, "\x00").split("\x00")[1] || "";
+    if (hasSolution) {
+      const parts = afterRequired.split(solutionLabel);
+      required = (parts[0] || "").replace(/<br\s*\/?>\s*$/i, "").trim();
+      solutionBody = (parts[1] || "").trim();
+    } else {
+      required = afterRequired.replace(/<br\s*\/?>\s*$/i, "").trim();
+      solutionBody = "";
+    }
+  } else if (hasSolution) {
+    const parts = s.split(solutionLabel);
+    solutionBody = (parts[1] || parts[0] || "").trim();
+  }
+
+  /** Turn br-separated block into bullet list HTML; content unchanged. */
+  const toBulletList = (block) => {
+    if (!block) return "";
+    const items = block
+      .split(/<br\s*\/?>/i)
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (!items.length) return "";
+    return "<ul class=\"solution-list\">" + items.map((item) => "<li>" + item + "</li>").join("") + "</ul>";
+  };
+
+  const givenList = toBulletList(given);
+  const requiredList = toBulletList(required);
+  return {
+    given: givenList,
+    required: requiredList,
+    solutionBody: solutionBody,
+    hasGiven: !!givenList,
+    hasRequired: !!requiredList,
+  };
+};
+
+let mathTypesetRetryCount = 0;
 const typesetMath = () => {
-  if (window.MathJax && window.MathJax.typesetPromise) {
-    window.MathJax.typesetPromise();
+  // If MathJax v3 with typesetPromise is available, use it
+  if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+    window.MathJax.typesetPromise()
+      .then(() => {
+        mathTypesetRetryCount = 0;
+      })
+      .catch(() => {
+        // In case of transient failures, allow retry below
+      });
+    return;
+  }
+  // Fallback for environments where only MathJax.typeset exists
+  if (window.MathJax && typeof window.MathJax.typeset === "function") {
+    try {
+      window.MathJax.typeset();
+      mathTypesetRetryCount = 0;
+      return;
+    } catch (e) {
+      // fall through to retry
+    }
+  }
+  // If MathJax is not yet ready (e.g., on first load), retry for a longer window
+  if (mathTypesetRetryCount < 40) { // up to ~10s with 250ms interval
+    mathTypesetRetryCount += 1;
+    setTimeout(typesetMath, 250);
   }
 };
 
@@ -406,7 +592,7 @@ const buildHierarchy = (items) => {
 };
 
 const buildCardHtml = (item, index = 0) => {
-  const question = buildHighlights(item.question, state.search);
+  const question = addQuestionDivider(buildHighlights(item.question, state.search));
   let solution = buildHighlights(item.solution, state.search);
   const yearTag = `${item.year} - ${item.batch}`;
   const questionImage = item.image
@@ -415,39 +601,57 @@ const buildCardHtml = (item, index = 0) => {
          ${item.imageCaption ? `<span class="image-caption">${item.imageCaption}</span>` : ""}
        </div>`
     : "";
-  
-  // Special handling for Situation 28 with multiple solution images
-  let solutionImage = "";
+
+  const sections = parseSolutionSections(solution);
+
+  // Special handling for Situation 28 with multiple solution images (insert into solution body)
   if (item.solutionImages && Array.isArray(item.solutionImages) && item.solutionImages.length > 0) {
-    // Create image tags for each solution part
-    const imageTags = item.solutionImages.map((img, idx) => 
+    const imageTags = item.solutionImages.map((img, idx) =>
       `<div class="solution-image-section">
          <img src="${getAssetUrl(img)}" alt="Solution image ${idx + 1}" loading="lazy" />
        </div>`
     );
-    
-    // Insert images below each numbered solution part (after "1.", "2.", "3.")
-    // Process in reverse order to avoid interfering with earlier replacements
     for (let i = imageTags.length; i >= 1; i--) {
-      const pattern = new RegExp(`(${i}\\.\\s)`, 'g');
-      solution = solution.replace(pattern, (match, numPart) => {
-        return numPart + imageTags[i - 1];
-      });
+      const pattern = new RegExp(`(${i}\\.\\s)`, "g");
+      sections.solutionBody = sections.solutionBody.replace(pattern, (match, numPart) => numPart + imageTags[i - 1]);
     }
-  } else {
-    // Regular single solution image handling
-    solutionImage = item.solutionImage
-      ? `<div class="solution-image-section">
-           <img src="${getAssetUrl(item.solutionImage)}" alt="Solution image" loading="lazy" />
-           ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
+  }
+
+  const solutionImageContainer =
+    item.solutionImage && (!item.solutionImages || !item.solutionImages.length)
+      ? `<div class="solution-card__image-wrap">
+           <div class="solution-image-section">
+             <img src="${getAssetUrl(item.solutionImage)}" alt="Solution image" loading="lazy" />
+             ${item.solutionImageCaption ? `<span class="image-caption">${item.solutionImageCaption}</span>` : ""}
+           </div>
          </div>`
       : "";
-  }
-  
+
+  const givenRequiredRow =
+    sections.hasGiven || sections.hasRequired
+      ? `<div class="solution-card__given-required">
+           <div class="solution-card__given-card">
+             <div class="solution-card__section-title">Given</div>
+             <div class="solution-card__section-body">${sections.hasGiven ? sections.given : "<ul class=\"solution-list\"><li>—</li></ul>"}</div>
+           </div>
+           <div class="solution-card__required-card">
+             <div class="solution-card__section-title">Required</div>
+             <div class="solution-card__section-body">${sections.hasRequired ? sections.required : "<ul class=\"solution-list\"><li>—</li></ul>"}</div>
+           </div>
+         </div>`
+      : "";
+
+  const solutionSectionBlock = sections.solutionBody
+    ? `<div class="solution-card__solution-wrap">
+         <div class="solution-card__solution-title">Solution</div>
+         <div class="solution-section solution-content">${wrapNumberedSolutionSteps(sections.solutionBody)}</div>
+       </div>`
+    : "";
+
   const finalAnswer = item.finalAnswer
-    ? `<div class="final-answer">
-         <span>Final Answer</span>
-         <p>${buildHighlights(item.finalAnswer, state.search)}</p>
+    ? `<div class="solution-card__final-answer">
+         <span class="solution-card__final-answer-label">Final Answer</span>
+         <div class="solution-card__final-answer-content">${buildHighlights(item.finalAnswer, state.search)}</div>
        </div>`
     : "";
 
@@ -457,18 +661,21 @@ const buildCardHtml = (item, index = 0) => {
         <span>${item.topic}</span>
       </div>
       <div class="tags">
-        <span class="tag" data-year="${item.year}" data-batch="${
-    item.batch
-  }">${yearTag}</span>
+        <span class="tag" data-year="${item.year}" data-batch="${item.batch}">${yearTag}</span>
         <span class="tag" data-topic="${item.topic}">${item.topic}</span>
       </div>
       <div class="question-content card__question">${question}</div>
       ${questionImage}
       <button type="button" class="btn btn--primary solution-toggle" aria-expanded="false">Show Answer</button>
       <div class="solution">
-        ${solutionImage}
-        <div class="solution-section solution-content">${solution}</div>
-        ${finalAnswer}
+        <div class="solution-card">
+          ${givenRequiredRow}
+          ${solutionImageContainer}
+          <div class="solution-card__solution-panel">
+            ${solutionSectionBlock}
+            ${finalAnswer}
+          </div>
+        </div>
       </div>
     </article>
   `;
@@ -1399,22 +1606,21 @@ const renderCards = () => {
       isAllYears || 
       isSpecificTopic || 
       isSpecificYear;
-    
+    let usedFullHierarchy = false;
     if ((topicValue === "all" || state.topic === "all") && (yearValue === "all" || state.year === "all")) {
       state.topic = "all";
       state.year = "all";
       renderFullHierarchyView(state.hierarchy && state.hierarchy.length ? state.hierarchy : state.data);
-  typesetMath();
-      return;
+      usedFullHierarchy = true;
     }
 
     // Always use hierarchical view when appropriate, even if filtered is empty
     // The hierarchical view functions handle empty states internally
-    if (shouldUseHierarchical) {
+    if (!usedFullHierarchy && shouldUseHierarchical) {
       console.log("renderCards: Using hierarchical view with", filtered.length, "items");
       console.log("renderCards: isAllTopics:", isAllTopics, "isAllYears:", isAllYears);
       renderHierarchicalView(filtered);
-  } else {
+  } else if (!usedFullHierarchy) {
       console.log("renderCards: Using grid view with", filtered.length, "items");
     renderGrid(filtered);
   }
@@ -1831,9 +2037,10 @@ const updateHomeViewFromHash = () => {
 };
 
 const clearGlobalSearchResults = () => {
-  if (!globalSearchResults) return;
-  globalSearchResults.classList.remove("show");
-  globalSearchResults.innerHTML = "";
+  document.querySelectorAll(".global-search__results").forEach((el) => {
+    el.classList.remove("show");
+    el.innerHTML = "";
+  });
 };
 
 const updateSidebarSearch = (value) => {
@@ -1849,7 +2056,8 @@ const buildFormulaGroups = (formulas, query) => {
     return acc;
   }, {});
 
-  const topics = Object.keys(grouped).sort();
+  // Show topics in canonical order; only include topics that have formulas (or are selected)
+  const topics = ALL_TOPICS.filter((topic) => grouped[topic] && grouped[topic].length > 0);
   formulaGroups.innerHTML = topics
     .map((topic) => {
       const cards = grouped[topic]
@@ -1899,17 +2107,20 @@ const filterFormulas = () => {
 
 const renderFormulaFilters = () => {
   if (!formulaTopic) return;
-  const topics = Array.from(new Set(state.formulas.map((f) => f.topic))).sort();
-  formulaTopic.innerHTML =
+  // Formula sheet uses the canonical 15 topics in order (all shown; some may have no formulas yet)
+  const topicOptions =
     `<option value="all">All Topics</option>` +
-    topics.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+    ALL_TOPICS.map((topic) => `<option value="${topic}">${topic}</option>`).join("");
+  formulaTopic.innerHTML = topicOptions;
 };
 
+const allGlobalSearchResults = () => document.querySelectorAll(".global-search__results");
+
 const renderGlobalResults = (query) => {
-  if (!globalSearchResults) return;
+  const resultsContainers = allGlobalSearchResults();
+  if (!resultsContainers.length) return;
   if (!query.trim()) {
-    globalSearchResults.classList.remove("show");
-    globalSearchResults.innerHTML = "";
+    clearGlobalSearchResults();
     return;
   }
 
@@ -1938,26 +2149,29 @@ const renderGlobalResults = (query) => {
     }
   });
 
-  globalSearchResults.innerHTML = matches
-    .slice(0, 8)
-    .map(
-      (item) => `
+  const html =
+    matches.length > 0
+      ? matches
+          .slice(0, 8)
+          .map(
+            (item) => `
         <div class="global-search__item" data-target="${item.target}">
           <strong>${buildHighlights(item.label, query)}</strong>
           <div>${buildHighlights(item.detail, query)}</div>
         </div>
       `
-    )
-    .join("");
-  if (!matches.length) {
-    globalSearchResults.innerHTML = `
+          )
+          .join("")
+      : `
       <div class="global-search__item">
         <strong>No matches found</strong>
         <div>Try another keyword or topic.</div>
       </div>
     `;
-  }
-  globalSearchResults.classList.toggle("show", true);
+  resultsContainers.forEach((el) => {
+    el.innerHTML = html;
+    el.classList.add("show");
+  });
 };
 
 const loadQuestionsData = async () => {
@@ -2395,17 +2609,55 @@ const bindEvents = () => {
 
   addListener(globalSearchInput, "input", (event) => {
     renderGlobalResults(event.target.value);
+    if (drawerSearchInput && event.target !== drawerSearchInput) drawerSearchInput.value = event.target.value;
   });
 
-  addListener(globalSearchResults, "click", (event) => {
+  addListener(document, "click", (event) => {
     const item = event.target.closest(".global-search__item");
-    if (!item) return;
+    if (!item || !item.dataset.target) return;
     const target = item.dataset.target;
     const targetElement = document.querySelector(target);
     if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
     if (topNav) topNav.classList.remove("search-open");
     clearGlobalSearchResults();
+    document.body.classList.remove("nav-drawer-open");
+    if (navMenuBtn) navMenuBtn.setAttribute("aria-expanded", "false");
+    if (navDrawer) navDrawer.setAttribute("aria-hidden", "true");
   });
+
+  addListener(darkModeToggle, "click", () => {
+    toggleDarkMode();
+  });
+
+  if (navMenuBtn && navDrawer && navDrawerBackdrop) {
+    addListener(navMenuBtn, "click", () => {
+      const open = document.body.classList.toggle("nav-drawer-open");
+      navMenuBtn.setAttribute("aria-expanded", open);
+      navMenuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      navDrawer.setAttribute("aria-hidden", !open);
+    });
+    addListener(navDrawerBackdrop, "click", () => {
+      document.body.classList.remove("nav-drawer-open");
+      navMenuBtn.setAttribute("aria-expanded", "false");
+      navMenuBtn.setAttribute("aria-label", "Open menu");
+      navDrawer.setAttribute("aria-hidden", "true");
+    });
+    navDrawer.querySelectorAll(".nav-drawer__link").forEach((link) => {
+      addListener(link, "click", () => {
+        document.body.classList.remove("nav-drawer-open");
+        if (navMenuBtn) navMenuBtn.setAttribute("aria-expanded", "false");
+        navDrawer.setAttribute("aria-hidden", "true");
+      });
+    });
+  }
+
+  if (drawerSearchInput) {
+    addListener(drawerSearchInput, "input", (event) => {
+      const value = event.target.value;
+      if (globalSearchInput && globalSearchInput !== event.target) globalSearchInput.value = value;
+      renderGlobalResults(value);
+    });
+  }
 
   document.querySelectorAll(".nav-link").forEach((link) => {
     link.addEventListener("click", () => {
@@ -2446,6 +2698,9 @@ const bindEvents = () => {
       isPinned = false;
       setSidebarOpen(false);
     } else {
+      document.body.classList.remove("nav-drawer-open");
+      if (navMenuBtn) navMenuBtn.setAttribute("aria-expanded", "false");
+      if (navDrawer) navDrawer.setAttribute("aria-hidden", "true");
       isPinned = loadPinnedPreference();
       if (isPinned) {
         setSidebarOpen(true);
