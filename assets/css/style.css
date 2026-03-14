@@ -36,6 +36,13 @@
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+/* Dark mode home: keep default home view fully blended with the hero
+   background; don't show a solid dark block under the hero until the
+   question/content zone is activated. */
+[data-theme="dark"] body.home-page:not(.content-zone-active) .content {
+  background: transparent;
+}
+
 [data-theme="dark"] body.home-page {
   background: #0A0A0A;
 }
@@ -140,7 +147,13 @@ html {
   background: #0A0A0A;
 }
 
+/* Dark mode: on the default home view, keep the area under the hero transparent.
+   The dark background for the questions section should only appear once the
+   questions zone becomes active. */
 [data-theme="dark"] body.home-page .questions-section {
+  background: transparent;
+}
+[data-theme="dark"] body.home-page .questions-section.is-active {
   background: #0A0A0A;
 }
 
