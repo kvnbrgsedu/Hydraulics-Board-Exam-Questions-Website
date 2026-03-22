@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hydraulics Board Exam Review (PH)</title>
+    <title>Flowcrastinate</title>
     <link rel="icon" href="assets/images/engineering.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -65,7 +65,7 @@
           <span class="nav-menu-btn__bar"></span>
         </button>
         <div class="top-nav__brand">
-          <span>Hydraulics Review (PH)</span>
+          <span>Flowcrastinate</span>
         </div>
         <div class="top-nav__right">
           <nav class="top-nav__links">
@@ -102,7 +102,7 @@
     <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
       <div class="nav-drawer__backdrop" id="nav-drawer-backdrop"></div>
       <div class="nav-drawer__panel">
-        <div class="nav-drawer__brand">Hydraulics Review (PH)</div>
+        <div class="nav-drawer__brand">Flowcrastinate</div>
         <nav class="nav-drawer__links">
           <a href="#home" class="nav-drawer__link nav-link active">Home</a>
           <a href="quiz.html" class="nav-drawer__link nav-link">Quiz</a>
@@ -120,11 +120,11 @@
       <div class="hero__overlay"></div>
       <div class="hero__inner">
         <div class="hero__content">
-          <p class="hero__eyebrow">PH Civil Engineering Review</p>
-          <h1>Hydraulics Board Exam Review (PH)</h1>
+          <p class="hero__eyebrow">Stop procrastinating, start flowcrastinating.</p>
+          <h1>Flowcrastinate</h1>
           <p class="hero__subtitle">
-            A complete, organized archive of Philippine board exam hydraulics
-            questions from 2011-2025, designed for focused and effective review.
+            All hydraulics board exam questions from 2011 to 2025 in one place so you
+            can study, practice, and suffer (just a little) smarter.
           </p>
           
           <section class="start-review">
@@ -149,10 +149,6 @@
 
     <main class="content">
       <section id="questions" class="questions-section">
-        <div class="scroll-indicator">
-          <span>Scroll to view questions</span>
-        </div>
-        
       <section class="active-filters">
         <div id="active-chips" class="chips"></div>
         <button id="clear-filters" class="btn btn--ghost">Clear filters</button>
@@ -166,6 +162,53 @@
         <h3>No results found</h3>
         <p>Try adjusting your filters or search keywords.</p>
       </section>
+
+      <div
+        class="questions-bottom-dock"
+        id="questions-bottom-dock"
+        hidden
+      >
+        <div class="scroll-indicator">
+          <span>Scroll to view questions</span>
+        </div>
+        <nav
+          id="questions-bottom-nav"
+          class="questions-bottom-nav"
+          aria-label="Browse topics and years"
+        >
+        <div class="questions-bottom-nav__panel">
+          <div class="questions-bottom-nav__top">
+            <p class="questions-bottom-nav__status" id="bottom-nav-status" aria-live="polite"></p>
+            <button
+              type="button"
+              class="questions-bottom-nav__collapse btn btn--ghost btn--icon"
+              id="bottom-nav-collapse"
+              aria-expanded="true"
+              aria-controls="bottom-nav-rows"
+              title="Collapse or expand filter bar"
+            >
+              <span class="questions-bottom-nav__collapse-icon" aria-hidden="true">−</span>
+            </button>
+          </div>
+          <div class="questions-bottom-nav__rows" id="bottom-nav-rows">
+            <div class="questions-bottom-nav__row" role="group" aria-label="Topics">
+              <div
+                class="questions-bottom-nav__scroll"
+                id="bottom-nav-topic-scroll"
+                data-scroll-row="topics"
+              ></div>
+            </div>
+            <div class="questions-bottom-nav__row" role="group" aria-label="Years">
+              <div
+                class="questions-bottom-nav__scroll"
+                id="bottom-nav-year-scroll"
+                data-scroll-row="years"
+              ></div>
+            </div>
+          </div>
+        </div>
+        </nav>
+      </div>
       </section>
 
 

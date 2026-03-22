@@ -1722,6 +1722,113 @@ const updateHomeLock = () => {
   }
   
   syncStartSelectCards();
+
+  renderBottomNav();
+};
+
+const getBottomNavYearList = () => {
+  if (!state.data || !state.data.length) return [];
+  return Array.from(new Set(state.data.map((item) => item.year)))
+    .filter(Boolean)
+    .sort((a, b) => parseInt(String(a), 10) - parseInt(String(b), 10));
+};
+
+const renderBottomNav = () => {
+  const dock = document.getElementById("questions-bottom-dock");
+  const nav = document.getElementById("questions-bottom-nav");
+  const topicScroll = document.getElementById("bottom-nav-topic-scroll");
+  const yearScroll = document.getElementById("bottom-nav-year-scroll");
+  const statusEl = document.getElementById("bottom-nav-status");
+  if (!nav || !topicScroll || !yearScroll || !statusEl) return;
+  if (!startTopic || !startYear) return;
+
+  const locked = document.body.classList.contains("home-locked");
+  if (
+    locked ||
+    document.body.classList.contains("home-show-all") ||
+    !state.data ||
+    !state.data.length
+  ) {
+    if (dock) dock.hidden = true;
+    return;
+  }
+
+  if (dock) dock.hidden = false;
+
+  const topicOrder = ["all", ...ALL_TOPICS];
+  const years = getBottomNavYearList();
+  const yearOrder = ["all", ...years];
+
+  const tv = startTopic.value;
+  const yv = startYear.value;
+
+  const topicLabel =
+    tv === "all" ? "All topics" : tv === "choose" || tv === "none" ? "—" : tv;
+  const yearLabel =
+    yv === "all" ? "All years" : yv === "choose" || yv === "none" ? "—" : String(yv);
+  statusEl.textContent = `Viewing: ${topicLabel} · ${yearLabel}`;
+
+  topicScroll.innerHTML = topicOrder
+    .map((t) => {
+      const label = t === "all" ? "All" : escapeHtml(t);
+      const isActive = tv === t;
+      const title = t === "all" ? "All topics" : t;
+      return `<button type="button" class="questions-bottom-nav__pill pill-nav-btn btn--ripple ${isActive ? "is-active" : ""}" data-topic="${escapeHtml(t)}" title="${escapeHtml(title)}">${label}</button>`;
+    })
+    .join("");
+
+  yearScroll.innerHTML = yearOrder
+    .map((y) => {
+      const label = y === "all" ? "All" : String(y);
+      const isActive = String(yv) === String(y);
+      const title = y === "all" ? "All years" : `View ${y} questions`;
+      return `<button type="button" class="questions-bottom-nav__pill pill-nav-btn btn--ripple ${isActive ? "is-active" : ""}" data-year="${String(y)}" title="${escapeHtml(title)}">${label}</button>`;
+    })
+    .join("");
+
+  requestAnimationFrame(() => {
+    topicScroll.querySelector(".is-active")?.scrollIntoView({
+      inline: "center",
+      block: "nearest",
+      behavior: "smooth",
+    });
+    yearScroll.querySelector(".is-active")?.scrollIntoView({
+      inline: "center",
+      block: "nearest",
+      behavior: "smooth",
+    });
+  });
+};
+
+const bindBottomNav = () => {
+  const nav = document.getElementById("questions-bottom-nav");
+  if (!nav) return;
+
+  addListener(nav, "click", (event) => {
+    const topicPill = event.target.closest("[data-topic].questions-bottom-nav__pill");
+    if (topicPill && topicPill.dataset.topic !== undefined) {
+      if (!startTopic) return;
+      startTopic.value = topicPill.dataset.topic;
+      startTopic.dispatchEvent(new Event("change", { bubbles: true }));
+      return;
+    }
+    const yearPill = event.target.closest("[data-year].questions-bottom-nav__pill");
+    if (yearPill && yearPill.dataset.year !== undefined) {
+      if (!startYear) return;
+      startYear.value = yearPill.dataset.year;
+      startYear.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
+
+  const collapseBtn = document.getElementById("bottom-nav-collapse");
+  addListener(collapseBtn, "click", () => {
+    const collapsed = nav.classList.toggle("questions-bottom-nav--collapsed");
+    if (collapseBtn) {
+      collapseBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      const icon = collapseBtn.querySelector(".questions-bottom-nav__collapse-icon");
+      if (icon) icon.textContent = collapsed ? "+" : "−";
+    }
+  });
 };
 
 const initHomeBackground = () => {
@@ -2031,6 +2138,7 @@ const updateHomeViewFromHash = () => {
   document.body.classList.toggle("home-show-all", showAll);
   if (showAll) {
     document.body.classList.remove("home-locked");
+    renderBottomNav();
   } else {
     updateHomeLock();
   }
@@ -2711,6 +2819,8 @@ const bindEvents = () => {
   });
 
   addListener(window, "pageshow", syncHeaderSpacing);
+
+  bindBottomNav();
 };
 
 // ========== QUIZ FUNCTIONALITY ==========
