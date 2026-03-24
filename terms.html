@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formula Sheet • Flowcrastinate</title>
+    <title>Terms & Concepts • Flowcrastinate</title>
     <link rel="icon" href="assets/images/engineering.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -61,8 +61,8 @@
           <nav class="top-nav__links">
             <a href="index.html#home" class="nav-link">Home</a>
             <a href="quiz.html" class="nav-link">Quiz</a>
-            <a href="formula.html" class="nav-link active">Formula Sheet</a>
-            <a href="terms.html" class="nav-link">Terms/Concepts</a>
+            <a href="formula.html" class="nav-link">Formula Sheet</a>
+            <a href="terms.html" class="nav-link active">Terms/Concepts</a>
             <a href="about.html" class="nav-link">About</a>
           </nav>
           <div class="top-nav__actions">
@@ -97,8 +97,8 @@
         <nav class="nav-drawer__links">
           <a href="index.html#home" class="nav-drawer__link nav-link">Home</a>
           <a href="quiz.html" class="nav-drawer__link nav-link">Quiz</a>
-          <a href="formula.html" class="nav-drawer__link nav-link active">Formula Sheet</a>
-          <a href="terms.html" class="nav-drawer__link nav-link">Terms/Concepts</a>
+          <a href="formula.html" class="nav-drawer__link nav-link">Formula Sheet</a>
+          <a href="terms.html" class="nav-drawer__link nav-link active">Terms/Concepts</a>
           <a href="about.html" class="nav-drawer__link nav-link">About</a>
         </nav>
         <div class="nav-drawer__search">
@@ -109,30 +109,57 @@
     </div>
 
     <main class="content">
-      <section id="formulas" class="formula-section">
-        <div class="section-header">
-          <p class="section-eyebrow">Formula Sheet</p>
-          <h2>Hydraulics Formula Library</h2>
-          <p class="section-subtitle">
-            Filter by topic and search formulas instantly.
+      <section class="terms-hero">
+        <div class="terms-hero__bg" aria-hidden="true">
+          <span class="terms-float terms-float--1">Flow</span>
+          <span class="terms-float terms-float--2">Pressure</span>
+          <span class="terms-float terms-float--3">Velocity</span>
+          <span class="terms-float terms-float--4">Q = AV</span>
+          <span class="terms-float terms-float--5">Bernoulli</span>
+        </div>
+        <div class="terms-hero__content">
+          <p class="section-eyebrow">Terms / Concepts</p>
+          <h1>Hydraulics Terms & Concepts</h1>
+          <p>
+            A structured dictionary of essential hydraulics definitions and engineering
+            concepts for board exam mastery.
           </p>
         </div>
-        <div class="formula-controls">
-          <input
-            id="formula-search"
-            type="text"
-            placeholder="Search formulas..."
-          />
-          <select id="formula-topic">
-            <option value="all">All Topics</option>
-          </select>
+      </section>
+
+      <section class="terms-controls" aria-label="Search and filter terms">
+        <input
+          id="terms-search"
+          class="terms-search"
+          type="text"
+          placeholder="Search terms or concepts..."
+          autocomplete="off"
+        />
+        <div class="terms-filter" id="terms-filter" role="tablist" aria-label="Filter content">
+          <button type="button" class="terms-filter__btn is-active" data-mode="all">All</button>
+          <button type="button" class="terms-filter__btn" data-mode="terms">Terms</button>
+          <button type="button" class="terms-filter__btn" data-mode="concepts">Concepts</button>
         </div>
-        <div id="formula-groups" class="formula-groups"></div>
-        <div id="formula-empty" class="empty hidden">
-          <div class="empty__bubble"></div>
-          <h3>No formulas found</h3>
-          <p>Try a different topic or keyword.</p>
+      </section>
+
+      <section class="terms-page-section" id="terms-section">
+        <div class="terms-page-section__head">
+          <h2>Terms</h2>
         </div>
+        <div class="terms-grid terms-grid--terms" id="terms-grid"></div>
+      </section>
+
+      <section class="terms-page-section" id="concepts-section">
+        <div class="terms-page-section__head">
+          <h2>Concepts</h2>
+        </div>
+        <div class="terms-grid terms-grid--concepts" id="concepts-grid"></div>
+      </section>
+
+      <section id="terms-empty" class="empty hidden">
+        <div class="empty__bubble"></div>
+        <h3>No matches found</h3>
+        <p>Try another keyword or switch to a different filter.</p>
       </section>
     </main>
 

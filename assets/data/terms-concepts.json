@@ -1,0 +1,131 @@
+{
+  "terms": [
+    {
+      "term": "Discharge",
+      "definition": "The volume of liquid passing a cross-section of a stream.",
+      "year": "Nov 2015"
+    },
+    {
+      "term": "Hydraulic Jump",
+      "definition": "Is an abrupt rise in water surface which results from retarding water flowing at lower stage.",
+      "year": "Nov 2022"
+    },
+    {
+      "term": "Hydraulic Gradient",
+      "definition": "A line joining the points of highest elevation of water in a series of vertical open pipes rising from a pipeline to which water flows under pressure.",
+      "year": "May 2016, Nov 2021"
+    },
+    {
+      "term": "Hydrodynamics",
+      "definition": "A branch of hydraulics which deals with the study of forces (including velocity and acceleration) exerted by or upon liquids in motion.",
+      "year": "Nov 2022, April 2025"
+    },
+    {
+      "term": "Specific Weight",
+      "definition": "The weight per unit volume of a liquid at a standard temperature and pressure.",
+      "year": "Apr 2023"
+    },
+    {
+      "term": "Steady Flow",
+      "definition": "A flow in which the velocity of the fluid at a particular fixed point does not change with time or, at any instant, the amount of fluid particles passing through a section is constant.",
+      "year": "Nov 2015, Nov 2019"
+    },
+    {
+      "term": "Surface Tension",
+      "definition": "The elastic tendency of liquids which makes them acquire the least surface area possible. It is responsible, for example, when an object or insect such as mosquitoes that is denser that water is able to float or run along the water surface.",
+      "year": "May 2015, Apr 2023"
+    },
+    {
+      "term": "Turbulent Flow",
+      "definition": "When the path lines of the individual particles of a flowing liquid are irregular curves and continually cross each other and form a complicated network.",
+      "year": "May 2016"
+    },
+    {
+      "term": "Uniform Flow",
+      "definition": "A steady flow, in any length or reach of a stream, wherein the average velocity at every crosssection is the same.",
+      "year": "Nov 2015, Nov 2024"
+    },
+    {
+      "term": "Water Hammer",
+      "definition": "A pressure surge or wave or wave caused when a fluid in motion is forced to stop or change direction suddenly (momentum change).",
+      "year": "May 2016, Nov 2021"
+    }
+  ],
+  "concepts": [
+    {
+      "question": "A body placed in a liquid is buoyed up by a force equal to the weight of the displaced liquid. This principle of buoyancy was attributed to:",
+      "answer": "Archimedes",
+      "year": "Nov 2015"
+    },
+    {
+      "question": "A ship floating in seawater is stable if the metacentric height is",
+      "answer": "Above the center of gravity",
+      "year": "Nov 2015"
+    },
+    {
+      "question": "At what temperature (°C) at which liquid water has the highest density?",
+      "answer": "4",
+      "year": "Nov 2016"
+    },
+    {
+      "question": "The pressure exerted onto a liquid is transmitted equally and undiminished to all portions of the liquid. This principle is attributed to:",
+      "answer": "Pascals",
+      "year": "Nov 2016"
+    },
+    {
+      "question": "In any stream flowing steadily without friction the total energy contained is the same at every point in its path of flow. This principle is attributed to:",
+      "answer": "Bernoulli",
+      "year": "Nov 2016"
+    },
+    {
+      "question": "Approximately how many times is the pressure of mercury greater than the pressure exerted by water?",
+      "answer": "13.6",
+      "year": "Nov 2017"
+    },
+    {
+      "question": "Molecules of liquid gets attracted due to ____",
+      "answer": "Surface Tension",
+      "year": "Apr 2023"
+    },
+    {
+      "question": "Where is the metacenter for stable equilibrium?",
+      "answer": "Above center of gravity",
+      "year": "Apr 2023"
+    },
+    {
+      "question": "When the metacenter of a floating body is lower than the center of gravity, then the body will be in",
+      "answer": "Unstable Equilibrium",
+      "year": "Apr 2023"
+    },
+    {
+      "question": "Metacentric height is the distance between the",
+      "answer": "Center of the gravity of the floating body and the metacenter",
+      "year": "Apr 2023"
+    },
+    {
+      "question": "Specific weight of liquid",
+      "answer": "Does not remain constant at every place",
+      "year": "Apr 2023"
+    },
+    {
+      "question": "In a triangular channel section, the most economical section is achieved when sloping sides make an angle of ____ with the vertical.",
+      "answer": "45°",
+      "year": "Nov 2023"
+    },
+    {
+      "question": "For the most efficient of a triangular channel, the angle between the channel sides is ____ degrees.",
+      "answer": "90°",
+      "year": "Nov 2023"
+    },
+    {
+      "question": "Falling drops of water becomes spherical due to",
+      "answer": "Surface Tension",
+      "year": "Nov 2023"
+    },
+    {
+      "question": "In an open tube, what is the shape of mercury?",
+      "answer": "Curved up",
+      "year": "Nov 2023"
+    }
+  ]
+}

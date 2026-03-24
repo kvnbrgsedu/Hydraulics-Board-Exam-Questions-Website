@@ -1,6 +1,7 @@
 const DATA_URL = "assets/data/questions.json";
 const FORMULA_URL = "assets/data/formulas.json";
 const QUIZ_URL = "assets/data/quiz.json";
+const TERMS_CONCEPTS_URL = "assets/data/terms-concepts.json";
 const QUIZ_STORAGE_KEY = "quizProgressV2";
 
 /** Resolve asset path so images work on GitHub Pages (site may be at /repo-name/) and locally */
@@ -39,6 +40,11 @@ const state = {
   data: [],
   hierarchy: [],
   formulas: [],
+  termsConcepts: {
+    terms: [],
+    concepts: [],
+  },
+  termsFilterMode: "all",
 };
 
 const quizState = {
@@ -74,6 +80,13 @@ const formulaSearch = document.getElementById("formula-search");
 const formulaTopic = document.getElementById("formula-topic");
 const formulaGroups = document.getElementById("formula-groups");
 const formulaEmpty = document.getElementById("formula-empty");
+const termsSearchInput = document.getElementById("terms-search");
+const termsFilter = document.getElementById("terms-filter");
+const termsGrid = document.getElementById("terms-grid");
+const conceptsGrid = document.getElementById("concepts-grid");
+const termsSection = document.getElementById("terms-section");
+const conceptsSection = document.getElementById("concepts-section");
+const termsEmpty = document.getElementById("terms-empty");
 const topNav = document.getElementById("top-nav");
 const globalSearchToggle = document.getElementById("global-search-toggle");
 const globalSearch = document.getElementById("global-search");
@@ -2222,6 +2235,81 @@ const renderFormulaFilters = () => {
   formulaTopic.innerHTML = topicOptions;
 };
 
+const renderTermsConcepts = () => {
+  if (
+    !termsGrid ||
+    !conceptsGrid ||
+    !termsSection ||
+    !conceptsSection ||
+    !termsFilter ||
+    !termsEmpty
+  ) {
+    return;
+  }
+
+  const query = (termsSearchInput?.value || "").trim().toLowerCase();
+  const mode = state.termsFilterMode || "all";
+  const terms = state.termsConcepts?.terms || [];
+  const concepts = state.termsConcepts?.concepts || [];
+
+  const filteredTerms = terms.filter((item) => {
+    if (!query) return true;
+    const haystack = `${item.term || ""} ${item.definition || ""} ${item.year || ""}`.toLowerCase();
+    return haystack.includes(query);
+  });
+
+  const filteredConcepts = concepts.filter((item) => {
+    if (!query) return true;
+    const haystack = `${item.question || ""} ${item.answer || ""} ${item.year || ""}`.toLowerCase();
+    return haystack.includes(query);
+  });
+
+  const showTerms = mode === "all" || mode === "terms";
+  const showConcepts = mode === "all" || mode === "concepts";
+  termsSection.classList.toggle("hidden", !showTerms);
+  conceptsSection.classList.toggle("hidden", !showConcepts);
+
+  termsGrid.innerHTML = filteredTerms
+    .map(
+      (item, index) => `
+        <article class="term-card" style="--stagger: ${index * 32}ms;">
+          <h3 class="term-card__title">${buildHighlights(item.term || "", query)}</h3>
+          <p class="term-card__definition">${buildHighlights(item.definition || "", query)}</p>
+          <span class="term-card__year">${buildHighlights(item.year || "—", query)}</span>
+        </article>
+      `
+    )
+    .join("");
+
+  conceptsGrid.innerHTML = filteredConcepts
+    .map(
+      (item, index) => `
+        <article class="concept-card" style="--stagger: ${index * 32}ms;">
+          <p class="concept-card__question">${buildHighlights(item.question || "", query)}</p>
+          <p class="concept-card__answer"><strong>${buildHighlights(item.answer || "", query)}</strong></p>
+          <span class="concept-card__year">${buildHighlights(item.year || "—", query)}</span>
+        </article>
+      `
+    )
+    .join("");
+
+  const visibleCount =
+    (showTerms ? filteredTerms.length : 0) + (showConcepts ? filteredConcepts.length : 0);
+  termsEmpty.classList.toggle("hidden", visibleCount > 0);
+
+  termsFilter.querySelectorAll("[data-mode]").forEach((btn) => {
+    const selected = btn.dataset.mode === mode;
+    btn.classList.toggle("is-active", selected);
+    btn.setAttribute("aria-pressed", selected ? "true" : "false");
+  });
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".term-card, .concept-card").forEach((card) => {
+      card.classList.add("is-visible");
+    });
+  });
+};
+
 const allGlobalSearchResults = () => document.querySelectorAll(".global-search__results");
 
 const renderGlobalResults = (query) => {
@@ -2293,6 +2381,21 @@ const loadFormulaData = async () => {
   if (state.formulas.length) return;
   const response = await fetch(FORMULA_URL);
   state.formulas = await response.json();
+};
+
+const loadTermsConceptsData = async () => {
+  if (
+    (state.termsConcepts?.terms?.length || 0) > 0 ||
+    (state.termsConcepts?.concepts?.length || 0) > 0
+  ) {
+    return;
+  }
+  const response = await fetch(TERMS_CONCEPTS_URL);
+  const payload = await response.json();
+  state.termsConcepts = {
+    terms: Array.isArray(payload.terms) ? payload.terms : [],
+    concepts: Array.isArray(payload.concepts) ? payload.concepts : [],
+  };
 };
 
 // Global sync functions for dropdown synchronization
@@ -2689,6 +2792,13 @@ const bindEvents = () => {
 
   addListener(formulaSearch, "input", filterFormulas);
   addListener(formulaTopic, "change", filterFormulas);
+  addListener(termsSearchInput, "input", renderTermsConcepts);
+  addListener(termsFilter, "click", (event) => {
+    const button = event.target.closest("[data-mode]");
+    if (!button) return;
+    state.termsFilterMode = button.dataset.mode || "all";
+    renderTermsConcepts();
+  });
 
   addListener(formulaGroups, "click", (event) => {
     const header = event.target.closest(".formula-group__header");
@@ -3371,6 +3481,14 @@ const initQuiz = async () => {
 const init = async () => {
   const hasQuestionUI = Boolean(grid && resultsInfo);
   const hasFormulaUI = Boolean(formulaGroups && formulaTopic);
+  const hasTermsUI = Boolean(
+    termsGrid &&
+      conceptsGrid &&
+      termsSection &&
+      conceptsSection &&
+      termsFilter &&
+      termsEmpty
+  );
 
   if (hasQuestionUI) {
     try {
@@ -3440,6 +3558,22 @@ const init = async () => {
         formulaEmpty.classList.remove("hidden");
       }
       if (formulaGroups) formulaGroups.innerHTML = "";
+    }
+  }
+
+  if (hasTermsUI) {
+    try {
+      await loadTermsConceptsData();
+      renderTermsConcepts();
+    } catch (error) {
+      console.error("Failed to load terms and concepts:", error);
+      if (termsEmpty) {
+        termsEmpty.querySelector("h3").textContent = "Terms unavailable";
+        termsEmpty.querySelector("p").textContent = getLoadErrorMessage("terms and concepts");
+        termsEmpty.classList.remove("hidden");
+      }
+      if (termsGrid) termsGrid.innerHTML = "";
+      if (conceptsGrid) conceptsGrid.innerHTML = "";
     }
   }
 
