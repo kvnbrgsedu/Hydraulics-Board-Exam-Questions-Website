@@ -44,7 +44,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
   </head>
-  <body id="top">
+  <body id="top" class="about-page">
     <div id="progress-bar"></div>
 
     <header class="top-nav" id="top-nav">
@@ -108,57 +108,68 @@
       </div>
     </div>
 
+    <!-- Animated background (About page only) -->
+    <div class="about-topo-bg" aria-hidden="true">
+      <div id="about-topo-stage" class="about-topo-bg__stage">
+        <canvas id="about-topo-canvas"></canvas>
+      </div>
+      <svg class="about-topo-bg__defs" aria-hidden="true">
+        <defs>
+          <filter id="about-topo-hollow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="35" result="blur" />
+            <feComponentTransfer in="blur" result="rings">
+              <feFuncA type="discrete" tableValues="0 1 0 1 0 1 0 1 0 1 0 1 0 1 0" />
+            </feComponentTransfer>
+            <feFlood id="about-topo-flood" flood-color="#1A1A1A" result="inkFill" />
+            <feComposite in="inkFill" in2="rings" operator="in" />
+          </filter>
+        </defs>
+      </svg>
+    </div>
+
     <main class="content">
       <section id="about" class="about-section">
         <div class="section-header">
           <p class="section-eyebrow">About</p>
-          <h2>Designed for Focused Review</h2>
-          <p class="section-subtitle">
-            Built to make board exam preparation organized, accessible, and
-            premium in quality.
+          
+        </div>
+        <div class="about-paragraph-card">
+          <p class="about-paragraph">
+            Hydraulics is one of the core subjects in civil engineering, and understanding its concepts is
+            definitely important. But if you’ve spent time looking through past board exam questions, you’ve
+            probably noticed something. Many of them follow similar patterns year after year. The formulas stay
+            familiar, the approaches repeat, and the challenge often comes down to how well you recognize and
+            apply what you’ve practiced.
+          </p>
+          <p class="about-paragraph">
+            Because of this, preparing for the Hydraulics portion of the board exam is not just about studying
+            theories. It is about practice, repetition, and building confidence with the problems themselves. The
+            more you expose yourself to these questions, the more intuitive they become.
+          </p>
+          <p class="about-paragraph">
+            That’s exactly why we created this website. We took the initiative to compile Hydraulics questions
+            from the CELE (2011–2025) and organize them into one accessible place. Instead of searching
+            through scattered materials, you can focus on what really matters: practicing, learning from
+            mistakes, and improving step by step.
+          </p>
+          <p class="about-paragraph">
+            We know that reviewing for the boards can feel overwhelming at times. There will be days when
+            problems don’t make sense, when formulas slip your mind, or when you start doubting yourself, and
+            that’s completely normal. Just remember that progress in this journey is built on consistency. Every
+            problem you solve, every mistake you correct, and every concept you revisit is already moving you
+            forward.
+          </p>
+          <p class="about-paragraph">
+            Take your time, trust the process, and don’t be too hard on yourself. You’ve made it this far for a
+            reason. Keep showing up, keep practicing, and keep believing that you can do this.
+          </p>
+          <p class="about-paragraph">
+            We hope this platform becomes a small but meaningful part of your preparation.
+          </p>
+          <p class="about-paragraph about-paragraph--signoff">
+            Padayon, future engineer :)
           </p>
         </div>
-        <p class="about-paragraph">
-          Hydraulics is one of the core subjects in civil engineering, and understanding its concepts is
-          definitely important. But if you’ve spent time looking through past board exam questions, you’ve
-          probably noticed something. Many of them follow similar patterns year after year. The formulas stay
-          familiar, the approaches repeat, and the challenge often comes down to how well you recognize and
-          apply what you’ve practiced. 
-        </p>
-        <br>
-        <p class="about-paragraph">
-          Because of this, preparing for the Hydraulics portion of the board exam is not just about studying
-          theories. It is about practice, repetition, and building confidence with the problems themselves. The
-          more you expose yourself to these questions, the more intuitive they become.
-        </p>
-        <br>
-        <p class="about-paragraph">
-          That’s exactly why we created this website. We took the initiative to compile Hydraulics questions
-          from the CELE (2011–2025) and organize them into one accessible place. Instead of searching
-          through scattered materials, you can focus on what really matters: practicing, learning from
-          mistakes, and improving step by step.
-        </p>
-        <br>
-        <p class="about-paragraph">
-          We know that reviewing for the boards can feel overwhelming at times. There will be days when
-          problems don’t make sense, when formulas slip your mind, or when you start doubting yourself, and
-          that’s completely normal. Just remember that progress in this journey is built on consistency. Every
-          problem you solve, every mistake you correct, and every concept you revisit is already moving you
-          forward.          
-        </p>
-        <br>
-        <p class="about-paragraph">
-          Take your time, trust the process, and don’t be too hard on yourself. You’ve made it this far for a
-          reason. Keep showing up, keep practicing, and keep believing that you can do this.
-        </p>
-        <br>
-        <p class="about-paragraph">
-          We hope this platform becomes a small but meaningful part of your preparation.
-        </p>
-        <br>
-        <p class="about-paragraph">
-          Padayon, future engineer :)
-        </p>
       </section>
     </main>
 
@@ -167,5 +178,122 @@
     </button>
 
     <script src="assets/js/app.js"></script>
+    <script>
+      (function () {
+        const canvas = document.getElementById("about-topo-canvas");
+        const stage = document.getElementById("about-topo-stage");
+        const flood = document.getElementById("about-topo-flood");
+        if (!canvas || !stage || !flood) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        stage.style.filter = "url(#about-topo-hollow)";
+
+        const dots = [];
+        const dotCount = 14;
+        const DPR = Math.min(2, window.devicePixelRatio || 1);
+
+        const getInkColor = () => {
+          const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+          // Match site palette (teal ink in light, neon-cyan ink in dark)
+          return isDark ? "#00E5FF" : "#09637E";
+        };
+
+        const resize = () => {
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          canvas.width = Math.floor(w * DPR);
+          canvas.height = Math.floor(h * DPR);
+          canvas.style.width = w + "px";
+          canvas.style.height = h + "px";
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        };
+
+        class Dot {
+          constructor() {
+            this.reset(true);
+          }
+          reset(initial = false) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.radius = Math.random() * 90 + 140;
+            this.angle = Math.random() * Math.PI * 2;
+            this.speed = 0.004 + Math.random() * 0.007;
+            this.range = 90 + Math.random() * 160;
+            this.baseX = this.x;
+            this.baseY = this.y;
+            if (!initial) {
+              this.baseX = Math.max(0, Math.min(w, this.baseX));
+              this.baseY = Math.max(0, Math.min(h, this.baseY));
+            }
+          }
+          update() {
+            this.angle += this.speed;
+            this.x = this.baseX + Math.cos(this.angle) * this.range;
+            this.y = this.baseY + Math.sin(this.angle) * this.range;
+          }
+          draw() {
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        const syncThemeInk = () => {
+          flood.setAttribute("flood-color", getInkColor());
+        };
+
+        const init = () => {
+          resize();
+          dots.length = 0;
+          for (let i = 0; i < dotCount; i++) dots.push(new Dot());
+          syncThemeInk();
+          animate();
+        };
+
+        let rafId = null;
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (const dot of dots) {
+            dot.update();
+            dot.draw();
+          }
+          rafId = window.requestAnimationFrame(animate);
+        };
+
+        window.addEventListener("resize", () => {
+          resize();
+          dots.forEach((d) => d.reset(false));
+        });
+
+        // Watch theme changes (dark mode toggle updates data-theme attribute)
+        const observer = new MutationObserver(() => syncThemeInk());
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+        // Reduce motion support
+        const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (prefersReduced) {
+          resize();
+          syncThemeInk();
+          dots.length = 0;
+          for (let i = 0; i < dotCount; i++) dots.push(new Dot());
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          dots.forEach((d) => d.draw());
+          return;
+        }
+
+        init();
+
+        window.addEventListener("pagehide", () => {
+          if (rafId) window.cancelAnimationFrame(rafId);
+          rafId = null;
+          observer.disconnect();
+        });
+      })();
+    </script>
   </body>
 </html>

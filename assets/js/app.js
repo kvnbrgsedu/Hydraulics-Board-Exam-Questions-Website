@@ -37,6 +37,8 @@ const state = {
   batch: "all",
   topic: "choose",
   search: "",
+  // When set, filtering is strict to exactly one question (year+batch+number).
+  searchExact: null,
   data: [],
   hierarchy: [],
   formulas: [],
@@ -230,7 +232,20 @@ const buildHighlights = (text, query) => {
   if (!terms.length) return allowBasicTags(escapeHtml(text));
   const regex = new RegExp(`(${terms.join("|")})`, "gi");
   const safeText = allowBasicTags(escapeHtml(text));
-  return safeText.replace(regex, "<mark>$1</mark>");
+
+  // Avoid inserting <mark> inside MathJax delimiters since it can break rendering.
+  // We only highlight non-math segments.
+  const mathSegmentRegex =
+    /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\$(?:\\.|[^$\\])+\$)/g;
+
+  const parts = safeText.split(mathSegmentRegex);
+  return parts
+    .map((part, idx) => {
+      // Odd indexes are captured math segments due to split with capturing group.
+      if (idx % 2 === 1) return part;
+      return part.replace(regex, "<mark>$1</mark>");
+    })
+    .join("");
 };
 
 /**
@@ -261,6 +276,33 @@ const wrapNumberedSolutionSteps = (solutionBodyHtml) => {
   const matches = Array.from(html.matchAll(stepRegex));
   if (!matches.length) return solutionBodyHtml;
 
+  const splitBr = (s) => String(s || "").split(/<br\s*\/?>/i);
+  const stripTags = (s) => String(s || "").replace(/<[^>]*>/g, "");
+  const trimLine = (s) => String(s || "").replace(/\s+/g, " ").trim();
+  const isMeaningful = (s) => !!trimLine(stripTags(s));
+  const looksLikeAnswer = (s) => {
+    const t = trimLine(stripTags(s));
+    if (!t) return false;
+    // Many final answers end with '=' line, or units, or "hp/kPa/m/s" etc.
+    return t.includes("=") || /\\text\{|kPa|hp|m\^3|m\/s|kg|N|Pa\b|ft\b|psi\b/i.test(t);
+  };
+  const boxLastAnswerLine = (bodyHtml) => {
+    const parts = splitBr(bodyHtml);
+    // Find last meaningful line; prefer one that looks like an answer.
+    let idx = -1;
+    for (let i = parts.length - 1; i >= 0; i -= 1) {
+      if (!isMeaningful(parts[i])) continue;
+      idx = i;
+      if (looksLikeAnswer(parts[i])) break;
+    }
+    if (idx < 0) return bodyHtml;
+    const line = parts[idx].trim();
+    if (/solution-card__final-answer\b/.test(line)) return bodyHtml; // avoid double boxing
+    const boxed = `<div class="solution-card__final-answer solution-card__final-answer--inline"><div class="solution-card__final-answer-content"><strong>${line}</strong></div></div>`;
+    parts[idx] = boxed;
+    return parts.join("<br>");
+  };
+
   const steps = [];
   let prefix = html.slice(0, matches[0].index || 0).trim();
 
@@ -270,7 +312,7 @@ const wrapNumberedSolutionSteps = (solutionBodyHtml) => {
     const start = (m.index || 0) + m[0].length;
     const end = i + 1 < matches.length ? (matches[i + 1].index || html.length) : html.length;
     const body = html.slice(start, end).trim();
-    steps.push({ stepNum, body });
+    steps.push({ stepNum, body: boxLastAnswerLine(body) });
   }
 
   const prefixBlock = prefix
@@ -497,6 +539,20 @@ const filterData = () => {
     console.warn("filterData: No data available");
     return [];
   }
+
+  // Strict single-question filtering (used when clicking a global search match)
+  if (state.searchExact && typeof state.searchExact === "object") {
+    const n = String(state.searchExact.number ?? "");
+    const y = String(state.searchExact.year ?? "");
+    const b = String(state.searchExact.batch ?? "");
+    return state.data.filter(
+      (item) =>
+        item &&
+        String(item.number ?? "") === n &&
+        String(item.year ?? "") === y &&
+        String(item.batch ?? "") === b
+    );
+  }
   
   // CRITICAL: Always check dropdowns first to get the most current values
   const topicValue = startTopic ? startTopic.value : state.topic;
@@ -661,13 +717,6 @@ const buildCardHtml = (item, index = 0) => {
        </div>`
     : "";
 
-  const finalAnswer = item.finalAnswer
-    ? `<div class="solution-card__final-answer">
-         <span class="solution-card__final-answer-label">Final Answer</span>
-         <div class="solution-card__final-answer-content">${buildHighlights(item.finalAnswer, state.search)}</div>
-       </div>`
-    : "";
-
   return `
     <article class="card question-card" style="--stagger: ${index * 40}ms;">
       <div class="card__header">
@@ -686,7 +735,6 @@ const buildCardHtml = (item, index = 0) => {
           ${solutionImageContainer}
           <div class="solution-card__solution-panel">
             ${solutionSectionBlock}
-            ${finalAnswer}
           </div>
         </div>
       </div>
@@ -1516,7 +1564,9 @@ const renderCards = () => {
   const allSelected =
     (startTopic?.value === "all" || state.topic === "all") &&
     (startYear?.value === "all" || state.year === "all");
-  if (allSelected && state.data && state.data.length) {
+  // IMPORTANT: Don't blow away search filtering when both dropdowns are "All".
+  // Only use the full dataset when no search is active.
+  if (allSelected && !state.search.trim() && state.data && state.data.length) {
     filtered = state.data;
   }
   const isAllView =
@@ -2320,13 +2370,44 @@ const renderGlobalResults = (query) => {
     return;
   }
 
+  // If datasets aren't ready yet, load them and re-render.
+  // This prevents "No matches found" while data is still fetching.
+  if (!state.data.length || !state.formulas.length) {
+    const loadingHtml = `
+      <div class="global-search__item">
+        <strong>Loading…</strong>
+        <div>Please wait while search data loads.</div>
+      </div>
+    `;
+    resultsContainers.forEach((el) => {
+      el.innerHTML = loadingHtml;
+      el.classList.add("show");
+    });
+    Promise.all([loadQuestionsData(), loadFormulaData()])
+      .then(() => {
+        // Only re-render if the user hasn't cleared/changed away to empty
+        const current =
+          (globalSearchInput && globalSearchInput.value) ||
+          (drawerSearchInput && drawerSearchInput.value) ||
+          "";
+        if (current.trim()) renderGlobalResults(current);
+      })
+      .catch(() => {
+        // Fall through; below will show "No matches" if needed.
+      });
+    return;
+  }
+
   const matches = [];
   state.data.forEach((item) => {
-    const haystack = `${item.question} ${item.topic} ${item.year} ${item.batch}`;
+    const haystack = `${item.number} ${item.question} ${item.topic} ${item.year} ${item.batch}`;
     if (haystack.toLowerCase().includes(query.toLowerCase())) {
       matches.push({
         label: `Q${item.number} - ${item.topic}`,
         detail: item.question,
+        number: item.number,
+        year: item.year,
+        batch: item.batch,
         target: "#questions",
         type: "question",
       });
@@ -2351,7 +2432,11 @@ const renderGlobalResults = (query) => {
           .slice(0, 8)
           .map(
             (item) => `
-        <div class="global-search__item" data-target="${item.target}">
+        <div class="global-search__item" data-target="${item.target}" data-search="${escapeHtml(
+              item.type === "question" ? item.detail : item.label
+            )}" data-qnumber="${escapeHtml(String(item.number ?? ""))}" data-qyear="${escapeHtml(
+              String(item.year ?? "")
+            )}" data-qbatch="${escapeHtml(String(item.batch ?? ""))}">
           <strong>${buildHighlights(item.label, query)}</strong>
           <div>${buildHighlights(item.detail, query)}</div>
         </div>
@@ -2368,6 +2453,10 @@ const renderGlobalResults = (query) => {
     el.innerHTML = html;
     el.classList.add("show");
   });
+
+  // Ensure any LaTeX in question snippets is rendered as MathJax output.
+  // Use rAF so the new DOM is in place before typesetting.
+  requestAnimationFrame(typesetMath);
 };
 
 const loadQuestionsData = async () => {
@@ -2830,11 +2919,59 @@ const bindEvents = () => {
     if (drawerSearchInput && event.target !== drawerSearchInput) drawerSearchInput.value = event.target.value;
   });
 
+  addListener(globalSearchInput, "keydown", (event) => {
+    if (event.key !== "Enter") return;
+    const q = globalSearchInput.value || "";
+    if (!q.trim()) return;
+    if (document.body.classList.contains("home-page")) {
+      if (startTopic) startTopic.value = "all";
+      if (startYear) startYear.value = "all";
+      state.topic = "all";
+      state.year = "all";
+      state.searchExact = null;
+      state.search = q;
+      applyFilters();
+      const questionsSection = document.getElementById("questions");
+      if (questionsSection) questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (topNav) topNav.classList.remove("search-open");
+    clearGlobalSearchResults();
+  });
+
   addListener(document, "click", (event) => {
     const item = event.target.closest(".global-search__item");
     if (!item || !item.dataset.target) return;
     const target = item.dataset.target;
     const targetElement = document.querySelector(target);
+
+    // If the home page is "locked", unlock it so the Questions section is visible/scrollable.
+    if (document.body.classList.contains("home-page") && target === "#questions") {
+      try {
+        if (startTopic) startTopic.value = "all";
+        if (startYear) startYear.value = "all";
+        state.topic = "all";
+        state.year = "all";
+
+        // Filter to exactly what was clicked (usually a single question)
+        const qn = item.dataset.qnumber;
+        const qy = item.dataset.qyear;
+        const qb = item.dataset.qbatch;
+        if (qn && qy && qb) {
+          state.searchExact = { number: qn, year: qy, batch: qb };
+          state.search = "";
+        } else if (item.dataset.search) {
+          // Fallback: best-effort text search
+          state.searchExact = null;
+          state.search = item.dataset.search;
+        }
+        applyFilters();
+        // Ensure MathJax renders immediately after the filtered content appears
+        setTimeout(typesetMath, 0);
+      } catch (e) {
+        // If anything fails, fall back to just attempting the scroll below.
+      }
+    }
+
     if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
     if (topNav) topNav.classList.remove("search-open");
     clearGlobalSearchResults();
@@ -2874,6 +3011,27 @@ const bindEvents = () => {
       const value = event.target.value;
       if (globalSearchInput && globalSearchInput !== event.target) globalSearchInput.value = value;
       renderGlobalResults(value);
+    });
+
+    addListener(drawerSearchInput, "keydown", (event) => {
+      if (event.key !== "Enter") return;
+      const q = drawerSearchInput.value || "";
+      if (!q.trim()) return;
+      if (document.body.classList.contains("home-page")) {
+        if (startTopic) startTopic.value = "all";
+        if (startYear) startYear.value = "all";
+        state.topic = "all";
+        state.year = "all";
+        state.searchExact = null;
+        state.search = q;
+        applyFilters();
+        const questionsSection = document.getElementById("questions");
+        if (questionsSection) questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      document.body.classList.remove("nav-drawer-open");
+      if (navMenuBtn) navMenuBtn.setAttribute("aria-expanded", "false");
+      if (navDrawer) navDrawer.setAttribute("aria-hidden", "true");
+      clearGlobalSearchResults();
     });
   }
 
