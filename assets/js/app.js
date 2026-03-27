@@ -269,13 +269,6 @@ const wrapNumberedSolutionSteps = (solutionBodyHtml) => {
   if (!solutionBodyHtml || typeof solutionBodyHtml !== "string") return solutionBodyHtml;
 
   const html = solutionBodyHtml.trim();
-  // Detect presence of at least a "1." step near a line break or start.
-  if (!/(^|<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?>)\s*1\.\s*/i.test(html)) return solutionBodyHtml;
-
-  const stepRegex = /(^|<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?>)\s*(\d+)\.\s*/gi;
-  const matches = Array.from(html.matchAll(stepRegex));
-  if (!matches.length) return solutionBodyHtml;
-
   const splitBr = (s) => String(s || "").split(/<br\s*\/?>/i);
   const stripTags = (s) => String(s || "").replace(/<[^>]*>/g, "");
   const trimLine = (s) => String(s || "").replace(/\s+/g, " ").trim();
@@ -297,11 +290,24 @@ const wrapNumberedSolutionSteps = (solutionBodyHtml) => {
     }
     if (idx < 0) return bodyHtml;
     const line = parts[idx].trim();
+    if (!line) return bodyHtml;
     if (/solution-card__final-answer\b/.test(line)) return bodyHtml; // avoid double boxing
-    const boxed = `<div class="solution-card__final-answer solution-card__final-answer--inline"><div class="solution-card__final-answer-content"><strong>${line}</strong></div></div>`;
+    const alreadyStrong = /<\s*strong\b/i.test(line);
+    const content = alreadyStrong ? line : `<strong>${line}</strong>`;
+    const boxed = `<div class="solution-card__final-answer solution-card__final-answer--inline"><div class="solution-card__final-answer-content">${content}</div></div>`;
     parts[idx] = boxed;
     return parts.join("<br>");
   };
+
+  // Detect presence of at least a "1." step near a line break or start.
+  if (!/(^|<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?>)\s*1\.\s*/i.test(html)) {
+    // Single-answer (non-numbered) solutions: box the last meaningful line too.
+    return boxLastAnswerLine(solutionBodyHtml);
+  }
+
+  const stepRegex = /(^|<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?>)\s*(\d+)\.\s*/gi;
+  const matches = Array.from(html.matchAll(stepRegex));
+  if (!matches.length) return boxLastAnswerLine(solutionBodyHtml);
 
   const steps = [];
   let prefix = html.slice(0, matches[0].index || 0).trim();
