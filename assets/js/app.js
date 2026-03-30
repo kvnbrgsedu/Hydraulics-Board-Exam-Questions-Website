@@ -23,7 +23,7 @@ const ALL_TOPICS = [
   "Buoyancy",
   "Stability of Floating Bodies",
   "Rectilinear Translation",
-  "Rotating Vessel",
+  "Rotating Vessels",
   "Fundamentals of Fluid Flow",
   "Orifice",
   "Pipes",
