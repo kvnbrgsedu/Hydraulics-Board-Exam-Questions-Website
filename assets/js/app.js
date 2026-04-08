@@ -125,6 +125,28 @@ const syncHeaderSpacing = () => {
   document.body.style.paddingTop = `${headerHeight}px`;
 };
 
+const scrollToQuestionsSection = (behavior = "smooth") => {
+  const questionsSection = document.getElementById("questions");
+  if (!questionsSection) return;
+  // Body already has top padding equal to fixed-header height via syncHeaderSpacing(),
+  // so do not subtract header height again (that leaves part of home/hero visible).
+  const targetTop = Math.max(
+    0,
+    Math.round(window.scrollY + questionsSection.getBoundingClientRect().top)
+  );
+
+  window.scrollTo({ top: targetTop, behavior });
+
+  // Second-pass snap after transitions/layout settle so we land exactly at questions.
+  setTimeout(() => {
+    const exactTop = Math.max(
+      0,
+      Math.round(window.scrollY + questionsSection.getBoundingClientRect().top)
+    );
+    window.scrollTo({ top: exactTop, behavior: "auto" });
+  }, 420);
+};
+
 const yearRange = Array.from({ length: 15 }, (_, i) => 2011 + i);
 const SIDEBAR_PIN_KEY = "sidebarPinned";
 const BATCH_STATE_KEY = "batchState";
@@ -1773,7 +1795,7 @@ const updateHomeLock = () => {
       document.body.style.overflow = 'auto';
       // Smooth scroll to content zone after a brief delay
       setTimeout(() => {
-        questionsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToQuestionsSection("smooth");
       }, 100);
     } else {
       // Deactivate Question Viewing Zone with animation
@@ -2876,9 +2898,8 @@ const bindEvents = () => {
     updateHomeLock();
     
     // Scroll to questions if unlocked
-    const questionsSection = document.getElementById("questions");
-    if (questionsSection && !document.body.classList.contains("home-locked")) {
-      questionsSection.scrollIntoView({ behavior: "smooth" });
+    if (!document.body.classList.contains("home-locked")) {
+      scrollToQuestionsSection("smooth");
     }
   };
 
@@ -2937,8 +2958,7 @@ const bindEvents = () => {
       state.searchExact = null;
       state.search = q;
       applyFilters();
-      const questionsSection = document.getElementById("questions");
-      if (questionsSection) questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      scrollToQuestionsSection("smooth");
     }
     if (topNav) topNav.classList.remove("search-open");
     clearGlobalSearchResults();
@@ -2978,7 +2998,11 @@ const bindEvents = () => {
       }
     }
 
-    if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
+    if (target === "#questions") {
+      scrollToQuestionsSection("smooth");
+    } else if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
     if (topNav) topNav.classList.remove("search-open");
     clearGlobalSearchResults();
     document.body.classList.remove("nav-drawer-open");
@@ -3031,8 +3055,7 @@ const bindEvents = () => {
         state.searchExact = null;
         state.search = q;
         applyFilters();
-        const questionsSection = document.getElementById("questions");
-        if (questionsSection) questionsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollToQuestionsSection("smooth");
       }
       document.body.classList.remove("nav-drawer-open");
       if (navMenuBtn) navMenuBtn.setAttribute("aria-expanded", "false");
