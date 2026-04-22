@@ -3132,6 +3132,17 @@ section {
   padding-top: 0;
 }
 
+body.about-page .content {
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.about-page .about-section {
+  width: min(1240px, 100%);
+}
+
 .formula-section {
   background: #f7f9fc;
   padding: 32px 0 48px;
@@ -3246,8 +3257,8 @@ section {
 
 /* About page: 3D hover paragraph container */
 .about-paragraph-card {
-  max-width: 1120px;
-  margin: 14px auto 0;
+  max-width: 1180px;
+  margin: 10px auto 0;
   padding: 22px 22px;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -6963,7 +6974,7 @@ body.home-page .questions-bottom-dock > * {
 .questions-bottom-nav__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 8px;
   margin-bottom: 6px;
 }
@@ -7242,8 +7253,10 @@ body.home-page .questions-bottom-dock > * {
 
 .terms-controls {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 14px;
   margin: 0 0 22px;
 }
@@ -7457,12 +7470,21 @@ body.home-page .questions-bottom-dock > * {
 }
 
 @media (max-width: 900px) {
+  body.about-page .content {
+    min-height: auto;
+    align-items: flex-start;
+  }
+
   .terms-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
+  .terms-controls {
+    flex-direction: column;
+  }
+
   .terms-hero {
     padding: 32px 16px;
     border-radius: 18px;

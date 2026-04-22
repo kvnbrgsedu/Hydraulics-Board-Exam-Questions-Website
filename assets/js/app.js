@@ -1829,8 +1829,7 @@ const renderBottomNav = () => {
   const nav = document.getElementById("questions-bottom-nav");
   const topicScroll = document.getElementById("bottom-nav-topic-scroll");
   const yearScroll = document.getElementById("bottom-nav-year-scroll");
-  const statusEl = document.getElementById("bottom-nav-status");
-  if (!nav || !topicScroll || !yearScroll || !statusEl) return;
+  if (!nav || !topicScroll || !yearScroll) return;
   if (!startTopic || !startYear) return;
 
   const locked = document.body.classList.contains("home-locked");
@@ -1852,12 +1851,6 @@ const renderBottomNav = () => {
 
   const tv = startTopic.value;
   const yv = startYear.value;
-
-  const topicLabel =
-    tv === "all" ? "All topics" : tv === "choose" || tv === "none" ? "—" : tv;
-  const yearLabel =
-    yv === "all" ? "All years" : yv === "choose" || yv === "none" ? "—" : String(yv);
-  statusEl.textContent = `Viewing: ${topicLabel} · ${yearLabel}`;
 
   topicScroll.innerHTML = topicOrder
     .map((t) => {
