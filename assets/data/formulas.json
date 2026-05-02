@@ -2,55 +2,55 @@
   {
     "id": "fp-01",
     "topic": "Fluid Properties",
-    "formula": "\\(\\rho = \\frac{m}{V}\\)",
+    "formula": "\\( \\rho = \\frac{m}{V} \\)",
     "description": "Density definition (mass per unit volume)."
   },
   {
     "id": "fp-02",
     "topic": "Fluid Properties",
-    "formula": "\\(\\gamma = \\rho g\\)",
+    "formula": "\\( \\gamma = \\rho g \\)",
     "description": "Specific weight of a fluid."
   },
   {
     "id": "hs-01",
     "topic": "Pressure",
-    "formula": "\\(F = \\gamma A \\bar{y}\\)",
+    "formula": "\\( F = \\gamma A \\bar{y} \\)",
     "description": "Hydrostatic force on a plane surface."
   },
   {
     "id": "hs-02",
     "topic": "Pressure",
-    "formula": "\\(y_{cp} = \\bar{y} + \\frac{I_G}{\\bar{y}A}\\)",
+    "formula": "\\( y_{cp} = \\bar{y} + \\frac{I_G}{\\bar{y}A} \\)",
     "description": "Center of pressure for a submerged plane area."
   },
   {
     "id": "pf-01",
     "topic": "Pipes",
-    "formula": "\\(Re = \\frac{\\rho V D}{\\mu}\\)",
+    "formula": "\\( Re = \\frac{\\rho V D}{\\mu} \\)",
     "description": "Reynolds number for internal flow."
   },
   {
     "id": "pf-02",
     "topic": "Pipes",
-    "formula": "\\(h_f = f\\frac{L}{D}\\frac{V^2}{2g}\\)",
+    "formula": "\\( h_f = f \\frac{L}{D} \\frac{V^2}{2g} \\)",
     "description": "Darcy-Weisbach head loss."
   },
   {
     "id": "oc-01",
     "topic": "Open Channels",
-    "formula": "\\(R = \\frac{A}{P}\\)",
+    "formula": "\\( R = \\frac{A}{P} \\)",
     "description": "Hydraulic radius definition."
   },
   {
     "id": "pt-01",
     "topic": "Fundamentals of Fluid Flow",
-    "formula": "\\(P = \\frac{\\rho g Q H}{\\eta}\\)",
+    "formula": "\\( P = \\frac{\\rho g Q H}{\\eta} \\)",
     "description": "Input power for a pump."
   },
   {
     "id": "da-01",
     "topic": "Hydrodynamics",
-    "formula": "\\(\\pi = \\frac{F}{\\rho V^2 D^2}\\)",
+    "formula": "\\( \\pi = \\frac{F}{\\rho V^2 D^2} \\)",
     "description": "Typical drag coefficient group."
   }
 ]

@@ -60,23 +60,10 @@
         <div class="top-nav__right">
           <nav class="top-nav__links">
             <a href="index.html#home" class="nav-link">Home</a>
-            <a href="quiz.html" class="nav-link">Quiz</a>
-            <a href="formula.html" class="nav-link">Formula Sheet</a>
             <a href="terms.html" class="nav-link active">Terms/Concepts</a>
             <a href="about.html" class="nav-link">About</a>
           </nav>
           <div class="top-nav__actions">
-            <button id="global-search-toggle" class="icon-btn" aria-label="Search">
-              ⌕
-            </button>
-            <div class="global-search" id="global-search">
-              <input
-                id="global-search-input"
-                type="text"
-                placeholder="Search questions, formulas, topics, years..."
-              />
-              <div id="global-search-results" class="global-search__results"></div>
-            </div>
             <button id="dark-mode-toggle" class="icon-btn dark-mode-toggle" aria-label="Toggle dark mode" type="button">
               <span class="dark-mode-toggle__icon dark-mode-toggle__icon--moon" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -96,15 +83,9 @@
         <div class="nav-drawer__brand">Flowcrastinate</div>
         <nav class="nav-drawer__links">
           <a href="index.html#home" class="nav-drawer__link nav-link">Home</a>
-          <a href="quiz.html" class="nav-drawer__link nav-link">Quiz</a>
-          <a href="formula.html" class="nav-drawer__link nav-link">Formula Sheet</a>
           <a href="terms.html" class="nav-drawer__link nav-link active">Terms/Concepts</a>
           <a href="about.html" class="nav-drawer__link nav-link">About</a>
         </nav>
-        <div class="nav-drawer__search">
-          <input type="text" id="drawer-search-input" class="nav-drawer__search-input" placeholder="Search questions, formulas, topics, years..." />
-          <div id="drawer-search-results" class="global-search__results nav-drawer__results"></div>
-        </div>
       </div>
     </div>
 
@@ -127,14 +108,7 @@
         </div>
       </section>
 
-      <section class="terms-controls" aria-label="Search and filter terms">
-        <input
-          id="terms-search"
-          class="terms-search"
-          type="text"
-          placeholder="Search terms or concepts..."
-          autocomplete="off"
-        />
+      <section class="terms-controls" aria-label="Filter terms and concepts">
         <div class="terms-filter" id="terms-filter" role="tablist" aria-label="Filter content">
           <button type="button" class="terms-filter__btn is-active" data-mode="all">All</button>
           <button type="button" class="terms-filter__btn" data-mode="terms">Terms</button>
@@ -159,7 +133,7 @@
       <section id="terms-empty" class="empty hidden">
         <div class="empty__bubble"></div>
         <h3>No matches found</h3>
-        <p>Try another keyword or switch to a different filter.</p>
+        <p>Try switching to a different filter.</p>
       </section>
     </main>
 

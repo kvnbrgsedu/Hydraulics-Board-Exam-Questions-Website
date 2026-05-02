@@ -1,0 +1,138 @@
+[
+  {
+    "topic": "Fluid Properties",
+    "formulas": [
+      { "title": "Mass Density", "formula": "rho = M/V <br/> rho = p/(RT)" },
+      { "title": "Specific Volume", "formula": "\\( V_s = \\frac{1}{\\rho} = \\frac{V}{M} \\)" },
+      { "title": "Unit Weight", "formula": "\\( \\gamma = \\frac{W}{V} = \\rho g \\)" },
+      { "title": "Specific Gravity", "formula": "\\( s = \\frac{\\rho_{liquid}}{\\rho_{water}} \\)" },
+      { "title": "Viscosity", "formula": "mu = tau / (dV/dy)" },
+      { "title": "Kinematic Viscosity", "formula": "nu = mu / rho" },
+      { "title": "Surface Tension", "formula": "\\( p = \\frac{4 \\sigma}{d} \\)" },
+      { "title": "Capillarity", "formula": "\\( h = \\frac{4 \\sigma \\cos{\\theta}}{\\gamma d} \\)" },
+      { "title": "Compressibility", "formula": "\\( \\mathbf{\\beta} = -\\frac{\\Delta V / V}{\\Delta p} = \\frac{1}{E_B} = -\\frac{dV / V}{dp} \\)" },
+      { "title": "Bulk Modulus of Elasticity", "formula": "\\( E_B = \\frac{\\text{stress}}{\\text{strain}} = \\frac{\\Delta p}{\\frac{\\Delta V}{V}} = -\\frac{dp}{\\frac{dV}{V}} \\)" },
+      { "title": "Pressure Disturbances", "formula": "\\( c = \\sqrt{\\dfrac{E_B}{\\rho}} = \\sqrt{\\dfrac{1}{\\beta \\rho}} \\)" },
+      { "title": "Property Changes in Ideal Gas", "formula": "\\[ \\frac{p_1 v_1}{t_1} = \\frac{p_2 v_2}{t_2} \\] <br>\\[ \\left( \\frac{v_1}{v_2} \\right)^k = \\frac{p_2}{p_1} \\] <br>\\[ \\frac{t_2}{t_1} = \\left( \\frac{p_2}{p_1} \\right)^{\\frac{k-1}{k}} \\]" }]
+  },
+  {
+    "topic": "Pressure",
+    "formulas": [
+      { "title": "Pressure", "formula": "p = F/A" },
+      { "title": "Absolute Pressure", "formula": "\\( p_{abs} = p_{gage} + p_{atm} \\)" },
+      { "title": "Variations in Pressure", "formula": "p2 - p1 = gamma h" },
+      { "title": "Pressures below Layers of Different Fluids/Liquids", "formula": "\\( p_{\\text{bottom}} = \\sum \\gamma h + p = {\\gamma_1 h}_1 + {\\gamma_2 h}_2 + {\\gamma_3 h}_3 + p_A \\)" },
+      { "title": "Pressure Head", "formula": "h = p/gamma" },
+      { "title": "From Liquid A to Liquid B", "formula": "\\[ h_b = h_a \\frac{s_a}{s_b} \\] <br>\\[ h_b = h_a \\frac{\\rho_a}{\\rho_b} \\] <br>\\[ h_b = h_a \\frac{\\gamma_a}{\\gamma_b} \\]" },
+      { "title": "From Any Liquid to Water", "formula": "\\( h_{\\text{water}} = h_{\\text{liquid}} \\cdot s_{\\text{liquid}} \\)" }]
+  },
+  {
+    "topic": "Dams",
+    "formulas": [
+      { "title": "Total Hydrostatic Force", "formula": "\\( \\mathbf{F} = \\gamma \\bar{h} A \\)" }, 
+      { "title": "Factor of Safety Against Sliding", "formula": "\\( \\mathrm{FS}_s = \\frac{\\mu R_y}{R_x} > 1 \\)" }, 
+      { "title": "Righting Moment", "formula": "\\( \\mathrm{RM} = \\sum W x \\)" },
+      { "title": "Overturning Moment", "formula": "\\( OM = F_h y + U z \\)" },
+      { "title": "Factor of Safety Against Overturning", "formula": "\\( \\mathrm{FS}_o = \\frac{RM}{OM} > 1 \\)" },
+      { "title": "Location of Ry", "formula": "\\( \\bar{x} = \\frac{RM - OM}{R_y} \\)" },
+      { "title": "Foundation Pressure/Stress", "formula": "\\[ q = -\\frac{R_y}{B}\\left(1 \\pm \\frac{6e}{B}\\right) \\] <br> \\[ q_{\\text{max}} = \\frac{2 R_y}{3 \\bar{x}} \\]" },
+      { "title": "Eccentricity", "formula": "\\( e = \\frac{B}{2} - \\bar{x} \\)" }]
+  },
+  {
+    "topic": "Plane Gates",
+    "formulas": [
+      { "title": "Hydrostatic Force", "formula": "\\( \\mathbf{F}_H = P_{cg} A \\) <br>\\( \\mathbf{F}_H = \\gamma \\bar{h} A \\)" },
+      { "title": "Eccentricity", "formula": "\\[ e = \\frac{I_g \\sin \\theta}{A \\bar{h}} \\]" },
+      { "title": "Common Ig", "formula": "\\[ \\mathbf{I}_g\\ (\\text{Triangle}) = \\frac{bh^3}{36} \\] <br>\\[ \\mathbf{I}_g\\ (\\text{Quadrilateral}) = \\frac{bh^3}{12} \\] <br>\\[ \\mathbf{I}_g\\ (\\text{Circle}) = \\frac{\\pi D^4}{64} \\]"}]
+  },
+  {
+    "topic": "Curved Gates",
+    "formulas": [
+      { "title": "Horizontal Force", "formula": "\\( \\mathbf{F}_H = \\gamma \\bar{h} A \\)" },
+      { "title": "Vertical Force", "formula": "\\( \\mathbf{F}_V = \\gamma V_t \\)" }]
+  },
+  {
+    "topic": "Buoyancy",
+    "formulas": [
+      { "title": "Buoyant Force", "formula": "\\[ \\mathbf{BF} = \\gamma_{\\text{fluid}} V_D \\]" },
+      { "title": "Weight", "formula": "\\( \\mathbf{W} = \\gamma_{\\text{object}} V_{\\text{object}} \\)" },
+      { "title": "Floating Condition", "formula": "W = BF" },
+      { "title": "Apparent Weight (Submerged)", "formula": "W = BF + AW" },
+      { "title": "Forced Submergence", "formula": "W + F = BF" }]
+  },
+  {
+    "topic": "Stability of Floating Bodies",
+    "formulas": [
+      { "title": "Righting Moment / Overturning Moment", "formula": "\\[ \\mathbf{RM}/\\mathbf{OM} = W \\left( MG \\sin{\\theta} \\right) \\]" },
+      { "title": "Distance from M to Bo", "formula": "\\[ MB_o = \\frac{B^2}{12D} \\left( 1 + \\frac{\\tan^2{\\theta}}{2} \\right) \\]" }]
+  },
+  {
+    "topic": "Rectilinear Translation",
+    "formulas": [
+      { "title": "Horizontal Motion", "formula": "tan(theta) = a/g" },
+      { "title": "Inclined Motion", "formula": "\\( \\tan{\\theta} = \\frac{a_H}{g \\pm a_V} \\)" },
+      { "title": "Vertical Motion", "formula": "\\[ \\mathbf{p} = \\gamma h \\left( 1 \\pm \\frac{a}{g} \\right) \\]" }]
+  },
+  {
+    "topic": "Rotating Vessels",
+    "formulas": [
+      { "title": "Height of the Paraboloid", "formula": "\\[ y = \\frac{\\omega^2 r^2}{2g} \\]" },
+      { "title": "Volume of the Paraboloid", "formula": "\\[ \\mathbf{V} = \\frac{1}{2} \\pi r^2 h \\]" }]
+  },
+  {
+    "topic": "Fundamentals of Fluid Flow",
+    "formulas": [
+      { "title": "Volume Flow Rate", "formula": "Q = Av" },
+      { "title": "Mass Flow Rate", "formula": "M = rho Q" },
+      { "title": "Weight Flow Rate", "formula": "W = gamma Q" },
+      { "title": "Kinetic or Velocity Head", "formula": "\\[ \\frac{\\mathrm{KE}}{W} = \\frac{v^2}{2g} = \\frac{8Q^2}{\\pi^2 g D^4} \\]" },
+      { "title": "Power", "formula": "Power = Q gamma E" },
+      { "title": "Efficiency", "formula": "\\[ \\text{Efficiency} = \\frac{\\text{Output}}{\\text{Input}} \\times 100 \\]" }]
+  },
+  {
+    "topic": "Orifice",
+    "formulas": [
+      { "title": "Coefficient of Discharge", "formula": "\\[ \\mathbfit{c}_\\mathrm{d} = \\frac{\\text{Actual Discharge}}{\\text{Theoretical Discharge}} = \\frac{Q}{Q_T} \\]" },
+      { "title": "Coefficient of Velocity", "formula": "\\[ \\mathbf{c}_v = \\frac{\\text{Actual Velocity}}{\\text{Theoretical Velocity}} = \\frac{v}{v_T} \\]" },
+      { "title": "Coefficient of Contraction", "formula": "\\[ \\mathbf{c}_c = \\frac{\\text{Area of the stream or jet}}{\\text{Area of the Opening}} = \\frac{a}{A} \\]" },
+      { "title": "Theoretical Velocity", "formula": "\\[ \\mathbf{v}_T = \\sqrt{2gH} \\]" },
+      { "title": "Discharge", "formula": "Q = V/t" },
+      { "title": "Projectile Motion", "formula": "\\[ y = x \\tan{\\theta} - \\frac{g x^2}{2 v_i^2 \\cos^2{\\theta}} \\]" }]
+  },
+  {
+    "topic": "Pipes",
+    "formulas": [
+      { "title": "Reynold's Number", "formula": "\\[ \\mathbf{R}_\\mathrm{e} = \\frac{v D \\rho}{\\mu} = \\frac{v D}{\\nu} \\] <br> \\[ \\mathbf{R}_\\mathrm{e} = \\frac{v \\cdot 4R \\rho}{\\mu} = \\frac{v \\cdot 4R}{\\nu} = \\frac{v \\cdot 4 \\left( \\frac{A}{P} \\right)}{\\nu} \\]" },
+      { "title": "Maximum Shearing Stress", "formula": "\\[ \\tau_0 = \\frac{\\gamma h_{\\mathrm{loss}} D}{4L} = \\frac{f}{4} \\gamma \\left( \\frac{v^2}{2g} \\right) \\]" },
+      { "title": "Shear Velocity", "formula": "\\( V_s = \\sqrt{\\frac{\\tau_0}{\\rho}} = \\sqrt{\\frac{f}{8}} \\)" },
+      { "title": "Darcy-Weisbach Formula", "formula": "\\[ HL = \\frac{fL}{D} = \\frac{v^2}{2g} \\] <br> \\[ HL = \\frac{0.0826 f L Q^2}{D^5} \\]" },
+      { "title": "Friction Factor", "formula": "\\[ \\mathbf{f} = \\frac{64}{R_e} = \\frac{64\\mu}{v D \\rho} \\]" },
+      { "title": "Manning's Formula", "formula": "\\[ HL = \\frac{6.35\\, n^2 L v^2}{D^{4/3}} \\] <br> \\[ HL = \\frac{10.29\\, n^2 L Q^2}{D^{16/3}} \\]" },
+      { "title": "Hazen-Williams Formula", "formula": "\\[ HL = \\frac{10.67\\, L\\, Q^{1.85}}{C_1^{1.85}\\, D^{4.87}} \\]" }]
+  },
+  {
+    "topic": "Reservoir",
+    "formulas": []
+  },
+  {
+    "topic": "Open Channels",
+    "formulas": [
+      { "title": "Specific Energy", "formula": "\\[ \\mathbf{H} = \\frac{\\mathbf{v}^2}{2\\mathbf{g}} + \\mathbf{d} \\]" },
+      { "title": "Hydraulic Radius", "formula": "R = A/P" },
+      { "title": "Manning's Formula for Velocity", "formula": "\\[ v = \\frac{1}{n} R^{2/3} S^{1/2} \\]" },
+      { "title": "Rectangular Section", "formula": "\\[ \\mathbf{b} = 2\\mathbf{d} \\] <br>\\[ \\mathbf{P} = \\mathbf{b} + 2\\mathbf{d} \\] <br>\\[ \\mathbf{R} = \\frac{\\mathbf{d}}{2} \\] <br>\\[ \\mathbf{A} = \\mathbf{b}\\mathbf{d} \\]" },
+      { "title": "Trapezoidal Section", "formula": "x = 2y <br> R = d/2" },
+      { "title": "Triangular Section", "formula": "\\[ \\mathbf{A} = d^2 \\] <br>\\[ \\mathbf{P} = 2 d \\sqrt{2} \\] <br>\\[ \\theta = 90^\\circ \\] <br>\\[ R = \\frac{d}{2 \\sqrt{2}} \\]" },
+      { "title": "Circular Section", "formula": "\\[ \\mathbf{Q}_{\\max} = 93.8\\%\\ d \\] <br> \\[ \\mathbf{v}_{\\max} = 82\\%\\ d \\]" },
+      { "title": "Boundary Shear Stress", "formula": "\\[ \\boldsymbol{\\tau}_o = \\gamma R S \\]" },
+      { "title": "Froude Number", "formula": "\\[ \\mathbf{F_N} = \\frac{\\mathbf{v}}{\\sqrt{\\mathbf{g} \\mathbf{L}}} \\] <br> \\[ \\mathbf{F_N} = \\frac{\\mathbf{v}}{\\sqrt{\\mathbf{g} \\mathbf{d}}} \\]" },
+      { "title": "Critical Depth for Rectangular Section", "formula": "\\[ \\mathbf{d}_{\\mathbf{c}} = \\frac{2}{3} \\mathbf{H} \\] <br>\\[ \\mathbf{d}_{\\mathbf{c}} = \\sqrt[3]{\\frac{\\mathbf{q}^2}{\\mathbf{g}}} \\] <br>\\[ \\mathbf{q} = \\mathbf{v} \\mathbf{d} = \\frac{\\mathbf{Q}}{\\mathbf{b}} \\]" },
+      { "title": "Critical Slope for Rectangular Section", "formula": "\\[ \\mathbfit{S}_\\mathrm{c} = \\frac{g n^2}{d_{c}^{1/3}} \\]" }]
+  },
+  {
+    "topic": "Hydrodynamics",
+    "formulas": [
+      { "title": "Dynamic Force", "formula": "F = rho Q v" }
+    ]
+  }
+]
