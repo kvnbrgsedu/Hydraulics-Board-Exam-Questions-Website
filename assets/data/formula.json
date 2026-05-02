@@ -21,7 +21,7 @@
       { "title": "Pressure", "formula": "p = F/A" },
       { "title": "Absolute Pressure", "formula": "\\( p_{abs} = p_{gage} + p_{atm} \\)" },
       { "title": "Variations in Pressure", "formula": "p2 - p1 = gamma h" },
-      { "title": "Pressures below Layers of Different Fluids/Liquids", "formula": "\\( p_{\\text{bottom}} = \\sum \\gamma h + p = {\\gamma_1 h}_1 + {\\gamma_2 h}_2 + {\\gamma_3 h}_3 + p_A \\)" },
+      { "title": "Pressures below Layers of Different Fluids/Liquids", "formula": "\\( p_{\\text{bottom}} = \\sum \\gamma h + p \\)" },
       { "title": "Pressure Head", "formula": "h = p/gamma" },
       { "title": "From Liquid A to Liquid B", "formula": "\\[ h_b = h_a \\frac{s_a}{s_b} \\] <br>\\[ h_b = h_a \\frac{\\rho_a}{\\rho_b} \\] <br>\\[ h_b = h_a \\frac{\\gamma_a}{\\gamma_b} \\]" },
       { "title": "From Any Liquid to Water", "formula": "\\( h_{\\text{water}} = h_{\\text{liquid}} \\cdot s_{\\text{liquid}} \\)" }]

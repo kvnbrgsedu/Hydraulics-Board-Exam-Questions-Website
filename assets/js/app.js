@@ -2384,7 +2384,6 @@ const formulaSidebarMarkup = () => `
     <div class="formula-sidebar__meta" id="formula-sidebar-meta"></div>
     <div class="formula-sidebar__body" id="formula-sidebar-body"></div>
   </aside>
-  <div class="formula-toast" id="formula-toast" role="status" aria-live="polite"></div>
 `;
 
 const setFormulaSidebarMode = (mode) => {
@@ -2404,14 +2403,6 @@ const setFormulaSidebarMode = (mode) => {
   if (toggleBtn) {
     toggleBtn.classList.toggle("is-hidden", mode === "open");
   }
-};
-
-const showFormulaToast = (message) => {
-  const toast = document.getElementById("formula-toast");
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add("is-visible");
-  window.setTimeout(() => toast.classList.remove("is-visible"), 1700);
 };
 
 const loadFormulaSidebarPrefs = () => {
@@ -2513,10 +2504,12 @@ const renderFormulaSidebar = () => {
   }
 
   const query = formulaSidebarState.query.trim();
+  const hasActiveSearch = query.length > 0;
   body.innerHTML = filteredTopics
     .map((topicEntry, topicIndex) => {
       const topicId = `topic-${topicEntry.topic.replace(/[^a-z0-9]/gi, "-").toLowerCase()}`;
-      const isExpanded = formulaSidebarState.expandedTopics.has(topicEntry.topic);
+      // During search, auto-expand matching topics so formulas are visible immediately.
+      const isExpanded = hasActiveSearch || formulaSidebarState.expandedTopics.has(topicEntry.topic);
       const formulasHtml = topicEntry.formulas
         .map((item, formulaIndex) => {
           const itemId = `${topicId}-${formulaIndex}`;
@@ -2528,9 +2521,6 @@ const renderFormulaSidebar = () => {
                 <button class="formula-card__star ${favorite ? "is-active" : ""}" data-action="favorite" data-id="${itemId}" title="Favorite">★</button>
               </div>
               <div class="formula-card__math">${formatFormulaForRender(item.formula)}</div>
-              <div class="formula-card__foot">
-                <button data-action="copy" data-copy="${escapeHtml(item.formula)}">Copy</button>
-              </div>
             </article>
           `;
         })
@@ -2620,22 +2610,6 @@ const initFormulaSidebar = async () => {
       if (formulaSidebarState.expandedTopics.has(topic)) formulaSidebarState.expandedTopics.delete(topic);
       else formulaSidebarState.expandedTopics.add(topic);
       renderFormulaSidebar();
-      return;
-    }
-    if (action === "copy") {
-      const formula = actionTarget.dataset.copy || "";
-      if (!formula) return;
-      try {
-        await navigator.clipboard.writeText(formula);
-        showFormulaToast("Formula copied");
-      } catch (error) {
-        showFormulaToast("Copy failed");
-      }
-      const card = actionTarget.closest(".formula-card");
-      if (card?.dataset.formulaId) {
-        formulaSidebarState.recent = [card.dataset.formulaId, ...formulaSidebarState.recent.filter((id) => id !== card.dataset.formulaId)].slice(0, 8);
-        persistFormulaSidebarPrefs();
-      }
       return;
     }
     if (action === "favorite") {
