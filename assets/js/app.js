@@ -179,6 +179,14 @@ const escapeHtml = (value) =>
     return map[match];
   });
 
+// Normalize unsupported/malformed TeX commands found in source JSON.
+const normalizeLatexSyntax = (value) =>
+  String(value || "")
+    .replace(/\\mathbfit\s*\{([^{}]+)\}/g, "\\mathbf{$1}")
+    .replace(/\\mathbit\s*\{([^{}]+)\}/g, "\\mathbf{$1}")
+    .replace(/\\mathbfit\b/g, "\\mathbf")
+    .replace(/\\mathbit\b/g, "\\mathbf");
+
 // Allow safe HTML from JSON (admin-controlled content): bold, strong, br, lists, tables, and newlines
 const allowBasicTags = (html) =>
   html
@@ -417,17 +425,49 @@ const queueMathTypeset = (target) => {
   pendingMathTargets.add(target);
   scheduleMathTypeset();
 };
+const clearMathTypeset = (targets = []) => {
+  const validTargets = (Array.isArray(targets) ? targets : [targets]).filter(Boolean);
+  validTargets.forEach((target) => {
+    if (!(target instanceof Element)) return;
+    target.removeAttribute("data-math-typeset");
+    target
+      .querySelectorAll("[data-math-typeset]")
+      .forEach((node) => node.removeAttribute("data-math-typeset"));
+  });
+  if (!window.MathJax || typeof window.MathJax.typesetClear !== "function") return;
+  try {
+    if (validTargets.length) {
+      window.MathJax.typesetClear(validTargets);
+    } else {
+      window.MathJax.typesetClear();
+    }
+  } catch (error) {
+    try {
+      window.MathJax.typesetClear();
+    } catch (innerError) {}
+  }
+};
 const typesetMath = (targets = []) => {
   const validTargets = (Array.isArray(targets) ? targets : [targets]).filter(Boolean);
   // If MathJax v3 with typesetPromise is available, type only specific nodes.
   if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
-    window.MathJax.typesetPromise(validTargets.length ? validTargets : undefined)
+    return window.MathJax.typesetPromise(validTargets.length ? validTargets : undefined)
       .then(() => {
         mathTypesetRetryCount = 0;
         validTargets.forEach(markMathTypeset);
       })
-      .catch(() => {});
-    return;
+      .catch(async () => {
+        // If a batched typeset fails, isolate targets so one malformed equation
+        // does not block all other equations from rendering.
+        if (validTargets.length <= 1) return;
+        await Promise.allSettled(
+          validTargets.map((target) =>
+            window.MathJax
+              .typesetPromise([target])
+              .then(() => markMathTypeset(target))
+          )
+        );
+      });
   }
   // Fallback for environments where only MathJax.typeset exists.
   if (window.MathJax && typeof window.MathJax.typeset === "function") {
@@ -436,14 +476,86 @@ const typesetMath = (targets = []) => {
       else window.MathJax.typeset();
       mathTypesetRetryCount = 0;
       validTargets.forEach(markMathTypeset);
-      return;
+      return Promise.resolve();
     } catch (e) {}
   }
   // If MathJax is not yet ready, retry briefly.
   if (mathTypesetRetryCount < 40) {
+    validTargets.forEach((target) => {
+      if (target instanceof Element) pendingMathTargets.add(target);
+    });
     mathTypesetRetryCount += 1;
     setTimeout(scheduleMathTypeset, 250);
   }
+  return Promise.resolve();
+};
+const waitForMathJaxReady = (timeoutMs = 4000) =>
+  new Promise((resolve) => {
+    const start = Date.now();
+    const check = () => {
+      if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+        resolve(true);
+        return;
+      }
+      if (Date.now() - start >= timeoutMs) {
+        resolve(false);
+        return;
+      }
+      setTimeout(check, 50);
+    };
+    check();
+  });
+const hasRawLatexDelimiters = (text) =>
+  /\\\(|\\\)|\\\[|\\\]|\$\$/.test(String(text || ""));
+const collectMathCandidates = (container) =>
+  Array.from(
+    (container || document).querySelectorAll(
+      ".question-content, .solution-content, .solution-card__section-body, .formula-card__math"
+    )
+  );
+const forceTypesetUnrenderedMath = async (container, maxPasses = 3) => {
+  if (!container) return;
+  const isReady = await waitForMathJaxReady();
+  if (!isReady) {
+    queueMathTypeset(container);
+    return;
+  }
+  for (let pass = 0; pass < maxPasses; pass += 1) {
+    const unresolved = collectMathCandidates(container).filter((el) =>
+      hasRawLatexDelimiters(el.textContent || "")
+    );
+    if (!unresolved.length) return;
+    clearMathTypeset(unresolved);
+    await Promise.allSettled(unresolved.map((el) => typesetMath([el])));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+};
+const typesetMathInChunks = async (container, chunkSize = 20) => {
+  if (!container) return;
+  const isReady = await waitForMathJaxReady();
+  if (!isReady) {
+    queueMathTypeset(container);
+    return;
+  }
+  const mathTargets = Array.from(
+    container.querySelectorAll(
+      ".question-content, .solution-content, .solution-card__section-body, .formula-card__math"
+    )
+  );
+  if (!mathTargets.length) {
+    await typesetMath([container]);
+    return;
+  }
+  for (let i = 0; i < mathTargets.length; i += chunkSize) {
+    const chunk = mathTargets.slice(i, i + chunkSize);
+    await typesetMath(chunk);
+    // Yield to the browser so large All/All renders stay responsive.
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+  // Final pass on container catches any missed delimiters after chunked render.
+  await typesetMath([container]);
+  // Strict guarantee pass for all filter/switching scenarios.
+  await forceTypesetUnrenderedMath(container, 3);
 };
 const flushMathTypesetQueue = () => {
   mathTypesetScheduled = false;
@@ -477,7 +589,9 @@ const mathObserver =
     : null;
 const observeMathIn = (container) => {
   if (!container) return;
-  const candidates = container.querySelectorAll(".card, .solution-content, .formula-card__math");
+  const candidates = container.querySelectorAll(
+    ".question-content, .solution-content, .solution-card__section-body, .formula-card__math"
+  );
   candidates.forEach((candidate) => {
     if (candidate.getAttribute("data-math-observed") === "1") return;
     candidate.setAttribute("data-math-observed", "1");
@@ -681,8 +795,10 @@ const buildHierarchy = (items) => {
 };
 
 const buildCardHtml = (item, index = 0) => {
-  const question = addQuestionDivider(allowBasicTags(escapeHtml(item.question || "")));
-  const solution = item.solution;
+  const question = addQuestionDivider(
+    allowBasicTags(escapeHtml(normalizeLatexSyntax(item.question || "")))
+  );
+  const solution = normalizeLatexSyntax(item.solution);
   const yearTag = `${item.year} - ${item.batch}`;
   const safeYearTag = allowBasicTags(escapeHtml(yearTag));
   const safeTopic = allowBasicTags(escapeHtml(item.topic || ""));
@@ -1663,7 +1779,7 @@ const renderCards = () => {
   grid.style.opacity = "0";
   grid.style.transition = "opacity 0.25s ease";
   
-  setTimeout(() => {
+  setTimeout(async () => {
     if (currentToken !== renderToken) return;
     // Determine if we should use hierarchical view
     // CRITICAL: Always check dropdowns FIRST since they are the source of truth
@@ -1728,6 +1844,12 @@ const renderCards = () => {
       console.log("renderCards: Using grid view with", filtered.length, "items");
     renderGrid(filtered);
   }
+
+    // Critical sequence: render content first, then typeset MathJax, then fade in.
+    clearMathTypeset([grid]);
+    await typesetMathInChunks(grid, 20);
+    await forceTypesetUnrenderedMath(grid, 3);
+    if (currentToken !== renderToken) return;
 
     // Fade in new content
   requestAnimationFrame(() => {
@@ -2455,7 +2577,7 @@ const normalizeFormulaExpression = (value) => {
 };
 
 const formatFormulaForRender = (value) => {
-  const raw = String(value || "").trim();
+  const raw = normalizeLatexSyntax(value).trim();
   if (!raw) return "\\(\\)";
 
   // Render each <br>-separated line as its own math expression so visible line breaks appear.
@@ -2873,6 +2995,8 @@ const bindEvents = () => {
       button.textContent = isOpen ? "Hide Answer" : "Show Answer";
       button.setAttribute("aria-expanded", String(isOpen));
       if (isOpen && solution) {
+        clearMathTypeset([solution]);
+        typesetMath([solution]).then(() => forceTypesetUnrenderedMath(solution, 2));
         observeMathIn(solution);
       }
     }
