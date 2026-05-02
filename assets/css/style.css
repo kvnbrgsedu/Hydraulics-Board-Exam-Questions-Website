@@ -8068,3 +8068,25 @@ body.home-page .questions-bottom-dock > * {
     transform: translateY(-8px);
   }
 }
+
+/* Performance optimization: skip layout/paint for off-screen repeated blocks. */
+.year-section,
+.topic-section,
+.card,
+.formula-topic {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 240px;
+}
+
+/* Mobile performance: reduce expensive visual effects on low-power devices. */
+@media (max-width: 768px) {
+  .card,
+  .formula-card,
+  .topic-section,
+  .year-section,
+  .questions-bottom-nav__panel {
+    box-shadow: 0 4px 12px rgba(9, 99, 126, 0.1) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

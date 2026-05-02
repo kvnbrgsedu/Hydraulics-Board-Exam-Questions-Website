@@ -46,7 +46,6 @@ const state = {
 const formulaSidebarState = {
   topics: [],
   query: "",
-  selectedTopic: "all",
   expandedTopics: new Set(),
   open: false,
   collapsed: false,
@@ -86,7 +85,6 @@ const navDrawerBackdrop = document.getElementById("nav-drawer-backdrop");
 const DARK_MODE_STORAGE_KEY = "hydraulics-theme";
 const FORMULA_FAVORITES_KEY = "formula-sidebar-favorites";
 const FORMULA_RECENT_KEY = "formula-sidebar-recent";
-const FORMULA_TOPIC_FILTER_KEY = "formula-sidebar-topic-filter";
 
 const setDarkMode = (enabled) => {
   const root = document.documentElement;
@@ -407,33 +405,85 @@ const parseSolutionSections = (solutionHtml) => {
 };
 
 let mathTypesetRetryCount = 0;
-const typesetMath = () => {
-  // If MathJax v3 with typesetPromise is available, use it
+let mathTypesetScheduled = false;
+const pendingMathTargets = new Set();
+const markMathTypeset = (target) => {
+  if (!target || !(target instanceof Element)) return;
+  target.setAttribute("data-math-typeset", "1");
+};
+const queueMathTypeset = (target) => {
+  if (!target || !(target instanceof Element)) return;
+  if (target.getAttribute("data-math-typeset") === "1") return;
+  pendingMathTargets.add(target);
+  scheduleMathTypeset();
+};
+const typesetMath = (targets = []) => {
+  const validTargets = (Array.isArray(targets) ? targets : [targets]).filter(Boolean);
+  // If MathJax v3 with typesetPromise is available, type only specific nodes.
   if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
-    window.MathJax.typesetPromise()
+    window.MathJax.typesetPromise(validTargets.length ? validTargets : undefined)
       .then(() => {
         mathTypesetRetryCount = 0;
+        validTargets.forEach(markMathTypeset);
       })
-      .catch(() => {
-        // In case of transient failures, allow retry below
-      });
+      .catch(() => {});
     return;
   }
-  // Fallback for environments where only MathJax.typeset exists
+  // Fallback for environments where only MathJax.typeset exists.
   if (window.MathJax && typeof window.MathJax.typeset === "function") {
     try {
-      window.MathJax.typeset();
+      if (validTargets.length) window.MathJax.typeset(validTargets);
+      else window.MathJax.typeset();
       mathTypesetRetryCount = 0;
+      validTargets.forEach(markMathTypeset);
       return;
-    } catch (e) {
-      // fall through to retry
-    }
+    } catch (e) {}
   }
-  // If MathJax is not yet ready (e.g., on first load), retry for a longer window
-  if (mathTypesetRetryCount < 40) { // up to ~10s with 250ms interval
+  // If MathJax is not yet ready, retry briefly.
+  if (mathTypesetRetryCount < 40) {
     mathTypesetRetryCount += 1;
-    setTimeout(typesetMath, 250);
+    setTimeout(scheduleMathTypeset, 250);
   }
+};
+const flushMathTypesetQueue = () => {
+  mathTypesetScheduled = false;
+  if (!pendingMathTargets.size) return;
+  const targets = Array.from(pendingMathTargets).filter(
+    (target) => target && target.isConnected && target.getAttribute("data-math-typeset") !== "1"
+  );
+  pendingMathTargets.clear();
+  if (!targets.length) return;
+  typesetMath(targets);
+};
+const scheduleMathTypeset = () => {
+  if (mathTypesetScheduled) return;
+  mathTypesetScheduled = true;
+  requestAnimationFrame(() => {
+    setTimeout(flushMathTypesetQueue, 0);
+  });
+};
+const mathObserver =
+  "IntersectionObserver" in window
+    ? new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            queueMathTypeset(entry.target);
+            mathObserver.unobserve(entry.target);
+          });
+        },
+        { rootMargin: "220px 0px", threshold: 0.01 }
+      )
+    : null;
+const observeMathIn = (container) => {
+  if (!container) return;
+  const candidates = container.querySelectorAll(".card, .solution-content, .formula-card__math");
+  candidates.forEach((candidate) => {
+    if (candidate.getAttribute("data-math-observed") === "1") return;
+    candidate.setAttribute("data-math-observed", "1");
+    if (mathObserver) mathObserver.observe(candidate);
+    else queueMathTypeset(candidate);
+  });
 };
 
 const observer =
@@ -785,7 +835,30 @@ const resetGridViewClasses = () => {
 const renderGrid = (items) => {
   resetGridViewClasses();
   grid.classList.add("grid");
-  grid.innerHTML = items.map((item, index) => buildCardHtml(item, index)).join("");
+  const CHUNK_SIZE = 36;
+  if (!Array.isArray(items) || items.length <= CHUNK_SIZE) {
+    grid.innerHTML = (items || []).map((item, index) => buildCardHtml(item, index)).join("");
+    return;
+  }
+  // Progressive chunk rendering prevents long main-thread stalls on large lists.
+  grid.innerHTML = "";
+  let index = 0;
+  const appendChunk = () => {
+    const end = Math.min(index + CHUNK_SIZE, items.length);
+    const fragment = document.createDocumentFragment();
+    for (let i = index; i < end; i += 1) {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = buildCardHtml(items[i], i);
+      if (wrapper.firstElementChild) fragment.appendChild(wrapper.firstElementChild);
+    }
+    grid.appendChild(fragment);
+    observeMathIn(grid);
+    index = end;
+    if (index < items.length) {
+      requestAnimationFrame(appendChunk);
+    }
+  };
+  appendChunk();
 };
 
 // Helper function to add animation delay to card HTML
@@ -1660,7 +1733,7 @@ const renderCards = () => {
   requestAnimationFrame(() => {
       grid.style.opacity = "1";
       
-      typesetMath();
+      observeMathIn(grid);
       
       // Animate year headers
       document.querySelectorAll(".year-header.reveal, .hierarchical-year-header.reveal").forEach((header) => {
@@ -2304,15 +2377,6 @@ const formulaSidebarMarkup = () => `
         <button class="formula-sidebar__icon-btn" id="formula-hide-btn" type="button" title="Hide">✕</button>
       </div>
     </header>
-    <div class="formula-sidebar__filter-wrap">
-      <label class="formula-sidebar__filter-label" for="formula-topic-filter">Topic</label>
-      <div class="formula-sidebar__filter-controls">
-        <select id="formula-topic-filter" class="formula-sidebar__filter-select" aria-label="Filter formulas by topic">
-          <option value="all">All Topics</option>
-        </select>
-        <button id="formula-filter-reset" class="formula-sidebar__filter-reset" type="button">Reset</button>
-      </div>
-    </div>
     <div class="formula-sidebar__search-wrap">
       <span class="formula-sidebar__search-icon">⌕</span>
       <input id="formula-sidebar-search" class="formula-sidebar__search" type="text" placeholder="Search title, formula, topic..." />
@@ -2356,12 +2420,9 @@ const loadFormulaSidebarPrefs = () => {
     const recent = JSON.parse(localStorage.getItem(FORMULA_RECENT_KEY) || "[]");
     formulaSidebarState.favorites = new Set(Array.isArray(favorites) ? favorites : []);
     formulaSidebarState.recent = Array.isArray(recent) ? recent.slice(0, 8) : [];
-    const savedTopic = localStorage.getItem(FORMULA_TOPIC_FILTER_KEY);
-    formulaSidebarState.selectedTopic = savedTopic || "all";
   } catch (error) {
     formulaSidebarState.favorites = new Set();
     formulaSidebarState.recent = [];
-    formulaSidebarState.selectedTopic = "all";
   }
 };
 
@@ -2369,23 +2430,7 @@ const persistFormulaSidebarPrefs = () => {
   try {
     localStorage.setItem(FORMULA_FAVORITES_KEY, JSON.stringify(Array.from(formulaSidebarState.favorites)));
     localStorage.setItem(FORMULA_RECENT_KEY, JSON.stringify(formulaSidebarState.recent.slice(0, 8)));
-    localStorage.setItem(FORMULA_TOPIC_FILTER_KEY, formulaSidebarState.selectedTopic || "all");
   } catch (error) {}
-};
-
-const renderTopicFilterOptions = () => {
-  const select = document.getElementById("formula-topic-filter");
-  if (!select) return;
-  const options =
-    `<option value="all">All Topics</option>` +
-    formulaSidebarState.topics
-      .filter((entry) => entry.formulas.length > 0)
-      .map((entry) => `<option value="${escapeHtml(entry.topic)}">${escapeHtml(entry.topic)}</option>`)
-      .join("");
-  select.innerHTML = options;
-  const hasSelected = Array.from(select.options).some((opt) => opt.value === formulaSidebarState.selectedTopic);
-  if (!hasSelected) formulaSidebarState.selectedTopic = "all";
-  select.value = formulaSidebarState.selectedTopic || "all";
 };
 
 const buildFormulaSearchHighlight = (value, query) => {
@@ -2439,9 +2484,7 @@ const formatFormulaForRender = (value) => {
 
 const filterFormulaTopics = () => {
   const query = formulaSidebarState.query.trim().toLowerCase();
-  const selectedTopic = formulaSidebarState.selectedTopic || "all";
   return formulaSidebarState.topics
-    .filter((topicEntry) => selectedTopic === "all" || topicEntry.topic === selectedTopic)
     .map((topicEntry) => {
       const filteredFormulas = topicEntry.formulas.filter((item) => {
         if (!query) return true;
@@ -2504,18 +2547,18 @@ const renderFormulaSidebar = () => {
     })
     .join("");
 
-  typesetMath();
+  observeMathIn(body);
 };
 
 const initFormulaSidebar = async () => {
   if (document.getElementById("formula-sidebar")) return;
   document.body.insertAdjacentHTML("beforeend", formulaSidebarMarkup());
   loadFormulaSidebarPrefs();
-  ALL_TOPICS.forEach((topic) => formulaSidebarState.expandedTopics.add(topic));
+  // Default to collapsed topics; user opens each topic with the + control.
+  formulaSidebarState.expandedTopics.clear();
 
   try {
     await loadFormulaSidebarData();
-    renderTopicFilterOptions();
   } catch (error) {
     const body = document.getElementById("formula-sidebar-body");
     if (body) body.innerHTML = `<div class="formula-sidebar__empty">Formula data failed to load.</div>`;
@@ -2527,8 +2570,6 @@ const initFormulaSidebar = async () => {
   const hideBtn = document.getElementById("formula-hide-btn");
   const backdrop = document.getElementById("formula-sidebar-backdrop");
   const search = document.getElementById("formula-sidebar-search");
-  const topicFilter = document.getElementById("formula-topic-filter");
-  const resetFilter = document.getElementById("formula-filter-reset");
   const body = document.getElementById("formula-sidebar-body");
   const updateQuery = debounce((value) => {
     formulaSidebarState.query = value || "";
@@ -2569,19 +2610,6 @@ const initFormulaSidebar = async () => {
   addListener(hideBtn, "click", () => setFormulaSidebarMode("hidden"));
   addListener(backdrop, "click", () => setFormulaSidebarMode("hidden"));
   addListener(search, "input", (event) => updateQuery(event.target.value));
-  addListener(topicFilter, "change", (event) => {
-    formulaSidebarState.selectedTopic = event.target.value || "all";
-    persistFormulaSidebarPrefs();
-    renderFormulaSidebar();
-  });
-  addListener(resetFilter, "click", () => {
-    formulaSidebarState.selectedTopic = "all";
-    formulaSidebarState.query = "";
-    if (topicFilter) topicFilter.value = "all";
-    if (search) search.value = "";
-    persistFormulaSidebarPrefs();
-    renderFormulaSidebar();
-  });
   addListener(body, "click", async (event) => {
     const actionTarget = event.target.closest("[data-action]");
     if (!actionTarget) return;
@@ -2870,8 +2898,8 @@ const bindEvents = () => {
       const isOpen = solution.classList.toggle("open");
       button.textContent = isOpen ? "Hide Answer" : "Show Answer";
       button.setAttribute("aria-expanded", String(isOpen));
-      if (isOpen) {
-        typesetMath();
+      if (isOpen && solution) {
+        observeMathIn(solution);
       }
     }
 
